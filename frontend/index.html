@@ -1,13 +1,301 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Могу Чисто — Скоро запуск</title>
+  <meta name="description" content="Могу Чисто — клининг по СПб. Работаем с проверенными клинерами. Уборка за 1 день. Оплата после уборки. Запуск — Ноябрь 2025." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #fbfdff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --text: #0f172a;
+      --accent: #059669; /* зелёный акцент */
+      --soft-shadow: 0 8px 30px rgba(16,24,40,0.06);
+      --thin-shadow: 0 4px 18px rgba(16,24,40,0.04);
+      --radius: 16px;
+      --container-max: 1120px;
+      --g: 28px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,var(--bg),#fff 60%);
+      font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      padding:40px 20px;
+    }
+
+    /* layout */
+    .wrap{
+      max-width:var(--container-max);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:var(--g);
+      align-items:start;
+    }
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr; padding:0}
+    }
+
+    /* left main card */
+    .card {
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:36px;
+      box-shadow:var(--soft-shadow);
+      border:1px solid rgba(15,23,42,0.03);
+    }
+
+    .brand {
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .logo-box{
+      width:64px;height:64px;
+      border-radius:12px;
+      background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:var(--thin-shadow);
+      flex-shrink:0;
+      overflow:hidden;
+    }
+    .brand-title{font-weight:700;font-size:16px}
+    .brand-sub{font-size:13px;color:var(--muted);margin-top:3px}
+
+    h1{
+      margin:6px 0 12px 0;
+      font-size:44px;
+      line-height:1.02;
+      font-weight:800;
+      letter-spacing:-0.01em;
+    }
+    @media (max-width:520px){ h1{font-size:32px} }
+
+    p.lead{
+      margin:0 0 20px 0;
+      color:var(--muted);
+      font-size:15px;
+      max-width:64ch;
+    }
+
+    /* CTAs */
+    .cta-row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:22px; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none;
+      border:1px solid transparent; cursor:pointer;
+      box-shadow:var(--thin-shadow);
+      background:linear-gradient(180deg,#ffffff,#f6fffb);
+      color:var(--text);
+      transition:transform .14s ease, box-shadow .14s ease;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn.primary{
+      background: linear-gradient(90deg, var(--accent), #10b981);
+      color:white;
+    }
+    .btn.ghost{
+      background:transparent;
+      border:1px solid #eef2f3;
+      color:var(--muted);
+      box-shadow:none;
+      font-weight:600;
+    }
+
+    /* info box */
+    .info {
+      margin-top:10px;
+      padding:18px;
+      border-radius:14px;
+      background:#fbfcfd;
+      border:1px solid #eef4f6;
+      box-shadow:var(--thin-shadow);
+    }
+    .info h3{ margin:0 0 8px 0; font-size:15px; font-weight:700 }
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px }
+    .chip{
+      padding:8px 12px; border-radius:10px; background:white; border:1px solid #eef2f5; font-weight:600; font-size:13px;
+    }
+    .muted{ color:var(--muted) }
+
+    footer.small{
+      margin-top:20px; color:var(--muted); font-size:13px;
+    }
+
+    /* right column - list of extra services */
+    .side {
+      position:relative;
+      top:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .side .panel{
+      background:var(--card);
+      border-radius:14px;
+      padding:18px;
+      border:1px solid #eef4f7;
+      box-shadow:var(--thin-shadow);
+    }
+    .side h3{ margin:0 0 8px 0; font-size:15px; font-weight:700 }
+    .services-list{ list-style:none; padding:0; margin:0; display:grid; gap:10px }
+    .services-list li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:10px 8px;
+      border-radius:10px;
+      transition:background .12s ease;
+    }
+    .services-list li:hover{ background:#fbfefe }
+    .services-list svg{ flex-shrink:0; margin-top:3px }
+    .services-list .t{ font-weight:600; font-size:14px }
+    .services-list .d{ font-size:13px; color:var(--muted); margin-top:2px }
+
+    /* small visual polish */
+    .divider{ height:1px; background:#f0f4f7; margin:18px 0; border-radius:1px }
+
+    /* accessibility focus */
+    a:focus, button:focus { outline:3px solid rgba(6,95,70,0.12); outline-offset:3px }
+  </style>
+</head>
+<body>
+<main class="wrap" role="main" aria-labelledby="site-title">
+
+  <!-- Left main card -->
+  <section class="card" aria-labelledby="site-title">
+    <div class="brand" aria-hidden="false">
+      <div class="logo-box" aria-hidden="true">
+        <!-- inline svg logo (вставлено твоё) -->
+        <svg width="2000" height="2000" viewBox="0 0 2000 2000" fill="none" xmlns="http://www.w3.org/2000/svg"> <rect width="2000" height="2000" fill="white"/> <path d="M512.929 979.387L471.841 1075.1H446.732C446.225 1071.03 444.576 1060.73 441.786 1044.21C438.996 1027.43 437.094 1015.87 436.08 1009.51C434.051 993.75 432.656 983.709 431.895 979.387L409.449 1089.59H374.068L414.394 916.47H450.156C450.41 919.012 451.044 923.079 452.058 928.672C453.073 934.01 454.087 940.112 455.102 946.975C456.37 953.585 457.638 960.83 458.906 968.71C460.174 976.59 461.316 984.217 462.33 991.589C463.345 998.707 464.232 1005.32 464.993 1011.42C465.754 1017.52 466.388 1022.35 466.896 1025.91C467.91 1022.6 469.685 1017.9 472.222 1011.8C475.012 1005.7 477.928 998.962 480.972 991.589C484.015 984.217 487.312 976.718 490.863 969.092C494.415 961.211 497.711 953.839 500.755 946.975C504.052 940.112 506.842 934.01 509.125 928.672C511.66 923.079 513.563 919.012 514.831 916.47H550.593L542.223 1089.59H505.32C505.573 1086.79 505.828 1082.6 506.081 1077C506.334 1071.41 506.715 1065.18 507.222 1058.32C507.983 1051.2 508.491 1043.83 508.744 1036.2C509.252 1028.58 509.758 1021.2 510.266 1014.09C510.774 1006.97 511.28 1000.36 511.788 994.258C512.295 987.904 512.676 982.946 512.929 979.387Z" fill="#292929"/> <path opacity="0.7" d="M698.583 1004.24C698.583 1063.06 677.952 1092.47 636.689 1092.47C616.182 1092.47 600.72 1084.99 590.3 1070.03C579.88 1054.99 574.669 1033.06 574.669 1004.24C574.669 945.5 595.301 916.132 636.563 916.132C656.737 916.132 672.116 923.485 682.703 938.189C693.29 952.894 698.583 974.91 698.583 1004.24ZM659.07 1004.24C659.07 981.176 657.279 965.845 653.694 958.241C650.11 950.555 644.399 946.712 636.563 946.712C628.812 946.712 623.143 950.555 619.558 958.241C615.975 965.928 614.182 981.259 614.182 1004.24C614.182 1026.79 615.932 1042.04 619.433 1049.98C623.018 1057.92 628.728 1061.89 636.563 1061.89C644.316 1061.89 649.984 1058.08 653.569 1050.48C657.236 1042.88 659.07 1027.46 659.07 1004.24ZM823.5 918.764V948.09H757.231V1089.83H719.72V918.764H823.5ZM876.897 1038.7L825.381 918.764H863.643L893.027 993.458L918.535 918.764H953.295L907.657 1047.35C901.739 1064.14 895.403 1075.42 888.651 1081.19C881.982 1086.95 872.688 1089.83 860.768 1089.83H844.887V1058.13H860.768C863.268 1058.13 865.769 1057.33 868.269 1055.75C870.853 1054.07 873.73 1048.39 876.897 1038.7ZM1071.72 1089.83V1027.17C1063.3 1033.69 1053.63 1036.95 1042.71 1036.95C1033.37 1036.95 1025.16 1034.73 1018.08 1030.3C1011.07 1025.79 1005.86 1019.74 1002.45 1012.13C999.111 1004.45 997.444 993.626 997.444 979.672V918.764H1034.96V981.05C1034.96 990.325 1036 996.842 1038.08 1000.6C1040.17 1004.36 1043.92 1006.24 1049.33 1006.24C1057.34 1006.24 1064.8 1002.23 1071.72 994.21V918.764H1109.23V1089.83H1071.72ZM1173.88 1072.29V1089.83H1136.37V918.764H1173.88V1014.76L1179.5 1004.36L1217.64 937.688V918.764H1255.15V1089.83H1217.64V1001.23L1217.77 994.461L1211.77 1005.74L1173.88 1072.29ZM1365.32 1027.55L1399.95 1029.68C1398.7 1048.23 1392.83 1063.35 1382.32 1075.05C1371.82 1086.66 1357.94 1092.47 1340.68 1092.47C1319.68 1092.47 1303.67 1084.65 1292.67 1069.03C1281.67 1053.41 1276.16 1031.89 1276.16 1004.49C1276.16 976.832 1281.62 955.192 1292.54 939.568C1303.46 923.944 1319.68 916.132 1341.18 916.132C1376.78 916.132 1396.16 938.189 1399.33 982.304L1365.07 984.81C1364.15 959.411 1356.23 946.712 1341.31 946.712C1333.47 946.712 1327.22 950.806 1322.55 958.994C1317.97 967.181 1315.68 983.056 1315.68 1006.62C1315.68 1027.67 1317.8 1042.17 1322.05 1050.11C1326.31 1057.96 1332.68 1061.89 1341.18 1061.89C1354.86 1061.89 1362.9 1050.44 1365.32 1027.55ZM1402.08 918.764H1508.49V950.847H1473.61V1089.83H1436.09V950.847H1402.08V918.764ZM1635.91 1004.24C1635.91 1063.06 1615.28 1092.47 1574.02 1092.47C1553.51 1092.47 1538.05 1084.99 1527.63 1070.03C1517.21 1054.99 1512 1033.06 1512 1004.24C1512 945.5 1532.63 916.132 1573.89 916.132C1594.06 916.132 1609.44 923.485 1620.03 938.189C1630.62 952.894 1635.91 974.91 1635.91 1004.24ZM1596.4 1004.24C1596.4 981.176 1594.61 965.845 1591.02 958.241C1587.44 950.555 1581.73 946.712 1573.89 946.712C1566.14 946.712 1560.47 950.555 1556.89 958.241C1553.3 965.928 1551.51 981.259 1551.51 1004.24C1551.51 1026.79 1553.26 1042.04 1556.76 1049.98C1560.34 1057.92 1566.05 1061.89 1573.89 1061.89C1581.64 1061.89 1587.31 1058.08 1590.9 1050.48C1594.56 1042.88 1596.4 1027.46 1596.4 1004.24Z" fill="#292929"/> </svg>
+      </div>
+
+      <div>
+        <div class="brand-title">Могу Чисто</div>
+        <div class="brand-sub">Клининг по СПб — профессиональные клинеры</div>
+      </div>
+    </div>
+
+    <h1 id="site-title">Скоро запуск — Ноябрь 2025</h1>
+
+    <p class="lead">
+      Работаем с проверенными клинерами. Уборка за 1 день. Оплата — после уборки. Выезжаем в любой район города.
+    </p>
+
+    <div class="cta-row" role="group" aria-label="Действия">
+      <a class="btn primary" href="mailto:info@mail.ru?subject=Заявка%20на%20уборку" title="Оставить заявку">
+        Оставить заявку
+      </a>
+      <a class="btn" href="tel:+79219255225" title="Позвонить">
+        Позвонить: +7 (921) 925-52-25
+      </a>
+    </div>
+
+    <div class="info" aria-labelledby="types-title">
+      <h3 id="types-title">Типы уборки</h3>
+      <div class="chips" role="list" aria-label="Типы уборки">
+        <span class="chip" role="listitem">Экспресс</span>
+        <span class="chip" role="listitem">Комфорт</span>
+        <span class="chip" role="listitem">Элит</span>
+        <span class="chip" role="listitem">После ремонта</span>
+      </div>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <p class="muted" style="margin:0">Оплата после выполнения работы. Гарантия качества.</p>
+      <p class="muted" style="margin:10px 0 0 0">Дополнительные услуги — перечислены справа.</p>
+    </div>
+
+    <div class="small" style="margin-top:18px">
+      <div class="muted">Запуск — Ноябрь 2025</div>
+      <div style="margin-top:8px">Почта: <a href="mailto:info@mail.ru">info@mail.ru</a></div>
+    </div>
+  </section>
+
+  <!-- Right side: список доп. услуг -->
+  <aside class="side" aria-label="Дополнительные услуги и контакты">
+    <div class="panel" aria-labelledby="extras-title">
+      <h3 id="extras-title">Дополнительные услуги</h3>
+
+      <ul class="services-list" aria-live="polite">
+        <li>
+          <!-- icon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="#d1ece3" stroke-width="2" />
+            <path d="M8.5 11.5l1.8 1.8 4-4" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="t">Мойка окон</div>
+            <div class="d">Снаружи и внутри (по согласованию)</div>
+          </div>
+        </li>
+
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="#d1ece3" stroke-width="2" />
+            <path d="M8.5 11.5l1.8 1.8 4-4" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="t">Чистка бытовой техники</div>
+            <div class="d">Духовка, СВЧ, холодильник, плита — снаружи и внутри</div>
+          </div>
+        </li>
+
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="#d1ece3" stroke-width="2" />
+            <path d="M8.5 11.5l1.8 1.8 4-4" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="t">Глажка белья</div>
+            <div class="d">Сортировка, глажка и аккуратная упаковка</div>
+          </div>
+        </li>
+
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="#d1ece3" stroke-width="2" />
+            <path d="M8.5 11.5l1.8 1.8 4-4" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="t">Чистка ковров и мебели</div>
+            <div class="d">Выведение пятен, сухая и влажная чистка</div>
+          </div>
+        </li>
+
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" stroke="#d1ece3" stroke-width="2" />
+            <path d="M8.5 11.5l1.8 1.8 4-4" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="t">Мытьё фасадов и плитки</div>
+            <div class="d">Глубокая уборка кухонных поверхностей</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="panel" aria-labelledby="contact-title">
+      <h3 id="contact-title">Контакты</h3>
+      <p class="muted" style="margin:6px 0 12px 0">Клининг по СПб — проверенные специалисты</p>
+      <div style="font-weight:700;font-size:16px">+7 (921) 925-52-25</div>
+      <div style="margin-top:8px"><strong>Оплата:</strong> после уборки</div>
+      <div style="margin-top:8px">Почта: <a href="mailto:info@mail.ru">info@mail.ru</a></div>
+    </div>
+  </aside>
+
+</main>
+</body>
 </html>
