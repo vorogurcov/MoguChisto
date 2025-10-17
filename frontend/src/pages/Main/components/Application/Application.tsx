@@ -39,23 +39,23 @@ export default function Application() {
 					<div className="nameBrend">
 						<NameBrend />
 					</div>
-					<div>
-						<div>
-							<TextInput title="Жил. площадь" placeholder="20м²" />
-						</div>
-						<div>
-							<Selection
-								name="typeCleaning"
-								title="Тип уборки"
-								options={typesCleaning}
-							/>
-						</div>
-						<div>
-							<TextInput
-								title="Номер телефона"
-								placeholder="+7 (999) 999-99-99"
-							/>
-						</div>
+					<div className="applicationParts">
+						<TextInput
+							title="Жил. площадь"
+							placeholder="20м²"
+							classNameContainer="applicationPart"
+						/>
+						<Selection
+							name="typeCleaning"
+							title="Тип уборки"
+							options={typesCleaning}
+							classNameContainer="applicationPart"
+						/>
+						<TextInput
+							title="Номер телефона"
+							placeholder="+7 (999) 999-99-99"
+							classNameContainer="applicationPart"
+						/>
 					</div>
 					<div>8 500 ₽</div>
 					<div>

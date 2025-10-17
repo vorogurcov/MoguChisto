@@ -1,30 +1,31 @@
 import classNames from "classnames";
 import "../common.scss";
+import "./css.scss";
 import Select, { Props } from "react-select";
 
-type SelectionProps = Props & { title: string };
+type SelectionProps = Props & { title: string; classNameContainer?: string };
 
 export default function Selection({ title, ...props }: SelectionProps) {
 	return (
-		<div>
-			{title}
+		<div className={classNames(props.classNameContainer, "containerRectangle")}>
+			<span className="title">{title}</span>
 			<Select
 				unstyled
-				className="selection-container"
 				classNames={{
-					control: (state) =>
-						classNames("rectangle", {
-							"rectangle--focused": state.isFocused,
-						}),
+					control: () => "rectangle",
 					menu: () => "custom-menu",
+					menuList: () => "menu-list",
+					input: () => "selectInput",
+					container: () => "containerSelect",
 					option: (state) =>
-						classNames("custom-option", {
-							"custom-option--selected": state.isSelected,
+						classNames("option", {
+							"option-selected": state.isSelected,
 						}),
 					dropdownIndicator: () => "custom-dropdown-indicator",
 					indicatorSeparator: () => "custom-indicator-separator",
 					singleValue: () => "custom-single-value",
 					placeholder: () => "custom-placeholder",
+					// option: () => "option",
 				}}
 				{...props}
 			/>

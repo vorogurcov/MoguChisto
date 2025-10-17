@@ -1,6 +1,7 @@
 @import "@colors";
 
-.rectangle {
+.rectangle,
+.containerSelect {
 	background-color: white;
 	border: 1px solid $light-gray;
 	color: black;
@@ -12,4 +13,16 @@
 	width: 316px;
 	border-radius: 6px;
 	text-align: center;
+	outline: none;
+}
+
+.title {
+	color: #3e3e3e;
+	font-size: 15px;
+}
+
+.containerRectangle {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
