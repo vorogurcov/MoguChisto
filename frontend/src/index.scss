@@ -1,0 +1,19 @@
+body {
+	margin: 0;
+	font-family: "PT Root UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+button:hover,
+a:hover {
+	cursor: pointer;
+}
+
+.page-item {
+	padding: 0px 5% 0px 5%;
+}

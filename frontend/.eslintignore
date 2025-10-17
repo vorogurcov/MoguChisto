@@ -1,0 +1,3 @@
+src/utils/gql-types.ts
+src/utils/kdocClientTypes.ts
+web_src/app/gql-queries.ts

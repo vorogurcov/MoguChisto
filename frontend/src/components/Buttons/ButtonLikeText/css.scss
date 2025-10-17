@@ -1,0 +1,11 @@
+@import "@colors";
+
+.likeText {
+	background: none;
+	border: none;
+	height: 18px;
+	color: #939393;
+	&:hover {
+		color: $black;
+	}
+}

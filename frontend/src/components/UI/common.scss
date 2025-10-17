@@ -1,0 +1,15 @@
+@import "@colors";
+
+.rectangle {
+	background-color: white;
+	border: 1px solid $light-gray;
+	color: black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 12px 0px 12px 0px;
+	height: 43px;
+	width: 316px;
+	border-radius: 6px;
+	text-align: center;
+}
