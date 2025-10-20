@@ -1,4 +1,5 @@
 import { FC, SVGProps } from "react";
+import "./css.scss";
 
 export const Logo: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -69,6 +70,22 @@ export const Telegram: FC<SVGProps<SVGSVGElement>> = (props) => (
 		<path
 			d="M10.7086 13.5905L10.5101 16.3825C10.7941 16.3825 10.9171 16.2605 11.0646 16.114L12.3961 14.8415L15.1551 16.862C15.6611 17.144 16.0176 16.9955 16.1541 16.3965L17.9651 7.9105L17.9656 7.91C18.1261 7.162 17.6951 6.8695 17.2021 7.053L6.55709 11.1285C5.83059 11.4105 5.84159 11.8155 6.43359 11.999L9.15509 12.8455L15.4766 8.89C15.7741 8.693 16.0446 8.802 15.8221 8.999L10.7086 13.5905Z"
 			fill="white"
+		/>
+	</svg>
+);
+
+export const FooterSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
+	<svg
+		height="81"
+		viewBox="0 0 1440 81"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		className="footerLine applicationFooter"
+		{...props}
+	>
+		<path
+			d="M0 23.1526C562.181 43.5552 868.021 -37.7664 1440 23.1526V81H0V23.1526Z"
+			fill="#F9F9F9"
 		/>
 	</svg>
 );

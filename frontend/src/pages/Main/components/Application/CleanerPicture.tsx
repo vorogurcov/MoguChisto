@@ -2,8 +2,6 @@ import { FC, SVGProps } from "react";
 
 const CleanerPicture: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
-		// width="603"
-		// height="654"
 		viewBox="0 0 603 654"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"

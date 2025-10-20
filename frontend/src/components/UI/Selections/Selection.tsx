@@ -19,14 +19,14 @@ export default function Selection({ title, ...props }: SelectionProps) {
 					container: () => "containerSelect",
 					option: (state) =>
 						classNames("option", {
-							"option-selected": state.isSelected,
+							"option--selected": state.isSelected,
+							"option--focused": state.isFocused,
 						}),
 					dropdownIndicator: () => "custom-dropdown-indicator",
 					indicatorSeparator: () => "custom-indicator-separator",
 					singleValue: () => "custom-single-value",
-					placeholder: () => "custom-placeholder",
-					// option: () => "option",
 				}}
+				isSearchable={false}
 				{...props}
 			/>
 		</div>

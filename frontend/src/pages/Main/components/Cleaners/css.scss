@@ -1,0 +1,54 @@
+@import "@colors";
+
+.cleaners {
+	background-color: $page-gray;
+	width: 100%;
+	padding-top: 100px;
+	padding-bottom: 100px;
+	padding-right: 0px;
+	.info {
+		font-size: 64px;
+		display: flex;
+		justify-content: space-between;
+		padding-right: 100px;
+		span {
+			max-width: 65%;
+		}
+		margin-bottom: 30px;
+	}
+	.cardCleaner {
+		min-width: 280px;
+		height: 420px;
+		margin-right: 10px;
+		padding: 15px;
+		position: relative;
+		background-color: white;
+		line-height: 1.5;
+	}
+	.name {
+		font-size: 24px;
+	}
+	.descriptionCleanerCard {
+		font-size: 15px;
+		color: $dark-gray;
+	}
+	.attr {
+		max-width: 50%;
+	}
+	.rate {
+		display: flex;
+		align-items: center;
+		svg {
+			margin-right: 5px;
+		}
+		font-size: 15px;
+	}
+	.img {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		img {
+			width: 190px;
+		}
+	}
+}

@@ -1,26 +1,11 @@
-import { FC, SVGProps } from "react";
+import { useState } from "react";
 import CleanerPicture from "./CleanerPicture";
 import NameBrend from "./NameBrend";
 import TextInput from "../../../../components/UI/Inputs/TextInput";
 import Selection from "../../../../components/UI/Selections/Selection";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import "./css.scss";
-
-const FooterSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
-	<svg
-		height="81"
-		viewBox="0 0 1440 81"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		className="footerLine"
-		{...props}
-	>
-		<path
-			d="M0 23.1526C562.181 43.5552 868.021 -37.7664 1440 23.1526V81H0V23.1526Z"
-			fill="#F9F9F9"
-		/>
-	</svg>
-);
+import { FooterSVG } from "../../../../public/svg";
 
 type CleaningType = "exrpess" | "comfort" | "elite" | "after fix";
 
@@ -30,8 +15,10 @@ const typesCleaning: { type: CleaningType; label: string }[] = [
 	{ type: "elite", label: "Элит" },
 	{ type: "after fix", label: "После ремонта" },
 ];
+type CleaningOption = (typeof typesCleaning)[0];
 
 export default function Application() {
+	const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
 	return (
 		<div className="applicationContainer page-item">
 			<main className="application">
@@ -50,6 +37,8 @@ export default function Application() {
 							title="Тип уборки"
 							options={typesCleaning}
 							classNameContainer="applicationPart"
+							value={value}
+							onChange={(newValue) => setValue(newValue as CleaningOption)}
 						/>
 						<TextInput
 							title="Номер телефона"
@@ -57,10 +46,10 @@ export default function Application() {
 							classNameContainer="applicationPart"
 						/>
 					</div>
-					<div>8 500 ₽</div>
-					<div>
-						<MainButton>Отправить заявку</MainButton>
-						<MainButton>Узнать детали</MainButton>
+					<div className="price">8 500 ₽</div>
+					<div className="buttonsApplication">
+						<MainButton className="send">Отправить заявку</MainButton>
+						<MainButton className="more">Узнать детали</MainButton>
 					</div>
 				</div>
 				<div className="cleanerContainer">
@@ -68,7 +57,7 @@ export default function Application() {
 				</div>
 			</main>
 			<footer>
-				<FooterSVG className="applicationFooter" />
+				<FooterSVG />
 			</footer>
 		</div>
 	);
