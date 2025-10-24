@@ -1,0 +1,68 @@
+@import "@colors";
+
+.applicatioInfo {
+	padding-top: 100px;
+	padding-bottom: 200px;
+	background-color: white;
+	.titles {
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 60px;
+		border-bottom: 1px solid #d9d9d9;
+	}
+	.title {
+		width: 45%;
+		span {
+			font-size: 15px;
+			font-weight: 500;
+		}
+		h1 {
+			font-size: 50px;
+			margin: 0px;
+		}
+	}
+	.widgets {
+		width: 50%;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(100px, 1fr));
+		grid-template-rows: repeat(2, 50%);
+		gap: 10px;
+	}
+	.longerWidget-0 {
+		grid-column-start: 1;
+		grid-column-end: span 2;
+		display: grid;
+	}
+	.longerWidget-3 {
+		grid-column-start: 2;
+		grid-column-end: span 2;
+		display: grid;
+	}
+	.widget {
+		padding: 16px;
+		background-color: $page-gray;
+		display: grid;
+	}
+	.widgetContent {
+		margin-top: auto;
+		display: flex;
+		justify-content: space-between;
+		div {
+			width: 70%;
+			font-size: 15px;
+			font-weight: 700;
+			margin-top: auto;
+			display: flex;
+		}
+		svg {
+			margin-top: auto;
+			height: 15%;
+			aspect-ratio: 1/1;
+		}
+	}
+	.button {
+		background-color: $blue;
+		color: white;
+		margin-top: 50px;
+	}
+}

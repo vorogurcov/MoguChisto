@@ -1,6 +1,6 @@
-import { FooterSVG } from "../../../../public/svg";
+import { FooterSVG, StarSVG } from "../../../../public/svg";
 import CardsRusult from "./CardsRusult";
-import { StarSVG, TitleSVG } from "./SVG";
+import { TitleSVG } from "./SVG";
 
 import "./css.scss";
 

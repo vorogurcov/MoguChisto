@@ -2,6 +2,7 @@ import { FC, SVGProps } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import cleanerImg from "../../../../public/imgs/cleaners/cleaner.png";
 import "./css.scss";
+import Info from "../Title";
 
 const NumberCleanersSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -125,12 +126,12 @@ function OneCard({ name, rate, description, img }: CardT) {
 export default function Cleaners() {
 	return (
 		<div className="cleaners page-item">
-			<div className="info">
+			<Info>
 				<span>
 					<b>Мы тщательно отбираем и обучаем каждого клинера</b>
 				</span>
 				<NumberCleanersSVG />
-			</div>
+			</Info>
 			<ScrollCards>
 				{cards.map((card, index) => (
 					<OneCard key={index} {...card} />
