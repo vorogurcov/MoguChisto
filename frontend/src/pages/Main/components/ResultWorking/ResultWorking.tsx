@@ -1,3 +1,4 @@
+import PageItem from "../../../../components/PageItem";
 import { FooterSVG, StarSVG } from "../../../../public/svg";
 import CardsRusult from "./CardsRusult";
 import { TitleSVG } from "./SVG";
@@ -6,7 +7,7 @@ import "./css.scss";
 
 export default function ResultWorking() {
 	return (
-		<div className="resultWrapper page-item">
+		<PageItem className="resultWrapper">
 			<div className="title">
 				<TitleSVG />
 			</div>
@@ -21,6 +22,6 @@ export default function ResultWorking() {
 			<footer>
 				<FooterSVG />
 			</footer>
-		</div>
+		</PageItem>
 	);
 }

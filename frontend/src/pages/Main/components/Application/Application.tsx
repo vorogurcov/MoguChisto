@@ -1,11 +1,11 @@
 import { useState } from "react";
 import CleanerPicture from "./CleanerPicture";
-import NameBrend from "./NameBrend";
 import TextInput from "../../../../components/UI/Inputs/TextInput";
 import Selection from "../../../../components/UI/Selections/Selection";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import "./css.scss";
-import { FooterSVG } from "../../../../public/svg";
+import { FooterSVG, NameBrend } from "../../../../public/svg";
+import PageItem from "../../../../components/PageItem";
 
 type CleaningType = "exrpess" | "comfort" | "elite" | "after fix";
 
@@ -20,7 +20,7 @@ type CleaningOption = (typeof typesCleaning)[0];
 export default function Application() {
 	const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
 	return (
-		<div className="applicationContainer page-item">
+		<PageItem className="applicationContainer">
 			<main className="application">
 				<div className="leftBlockApplication">
 					<div className="nameBrend">
@@ -59,6 +59,6 @@ export default function Application() {
 			<footer>
 				<FooterSVG />
 			</footer>
-		</div>
+		</PageItem>
 	);
 }

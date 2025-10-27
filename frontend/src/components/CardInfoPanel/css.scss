@@ -1,0 +1,10 @@
+.CardInfoPanel {
+	position: absolute;
+	width: 100%;
+	overflow: hidden;
+	top: 6px;
+	left: 6px;
+	z-index: 1;
+	display: inline-block;
+	display: flex;
+}

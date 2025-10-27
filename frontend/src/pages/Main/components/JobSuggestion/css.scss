@@ -1,0 +1,57 @@
+@import "@colors";
+
+.JobSuggestion {
+	background-color: $page-gray;
+	position: relative;
+	padding-top: 50px;
+	padding-bottom: 100px;
+	.titleParts {
+		font-size: 32px;
+		margin-bottom: 25px;
+	}
+	.svg {
+		margin-right: 10px;
+	}
+	.part {
+		font-size: 15px;
+		font-weight: 500;
+	}
+	.partContainer {
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+	}
+	.buttons {
+		display: flex;
+		margin-top: 40px;
+		button {
+			margin-right: 20px;
+			color: $font-gray;
+			&:hover {
+				color: $black;
+			}
+		}
+	}
+	.writeButton {
+		margin-top: 40px;
+		background-color: #56c745;
+		color: white;
+		font-weight: 500;
+	}
+	.cleanerSvg {
+		position: absolute;
+		right: 80px;
+		top: 80px;
+	}
+	.whatsapp {
+		margin-left: 10px;
+		height: 18px;
+	}
+	.whatsAppFill {
+		fill: white;
+	}
+	.footerJob {
+		z-index: 1;
+		transform: scaleX(-1);
+	}
+}

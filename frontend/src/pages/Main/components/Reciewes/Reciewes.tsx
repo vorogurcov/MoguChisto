@@ -1,11 +1,12 @@
-import { FC, SVGProps, useState } from "react";
+import { useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import Info from "../Title";
 import photo from "./photo.jpg";
 import { GoogleSVG, YandexSVG } from "./svg";
 import "./css.scss";
-import { RateStarSVG, StarSVG } from "../../../../public/svg";
+import { RateStarSVG } from "../../../../public/svg";
 import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+import PageItem from "../../../../components/PageItem";
 
 type RecieweT = {
 	photo?: string;
@@ -97,10 +98,12 @@ function OneReciewe({ photo, text, name }: RecieweT) {
 
 export default function Reciewes() {
 	return (
-		<div className="reciewes page-item">
+		<PageItem className="reciewes">
 			<Info>
-				<span className="rateReciewes">
-					Честная оценка <span className="numberRate">4.9</span>
+				<span>
+					<b>
+						Честная оценка <span className="numberRate">4.9</span>
+					</b>
 				</span>
 				<div className="maps">
 					<div>
@@ -120,6 +123,6 @@ export default function Reciewes() {
 					<OneReciewe key={index} {...card} />
 				))}
 			</ScrollCards>
-		</div>
+		</PageItem>
 	);
 }

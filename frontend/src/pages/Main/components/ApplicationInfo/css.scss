@@ -3,7 +3,7 @@
 .applicatioInfo {
 	padding-top: 100px;
 	padding-bottom: 200px;
-	background-color: white;
+	position: relative;
 	.titles {
 		display: flex;
 		justify-content: space-between;
@@ -19,6 +19,7 @@
 		h1 {
 			font-size: 50px;
 			margin: 0px;
+			margin-bottom: 20px;
 		}
 	}
 	.widgets {
@@ -64,5 +65,51 @@
 		background-color: $blue;
 		color: white;
 		margin-top: 50px;
+	}
+	.tarifs {
+		width: 100%;
+		padding-top: 60px;
+	}
+	.oneTarifButton {
+		height: 42px;
+		border: 1px solid #d9d9d9;
+		background-color: white;
+		margin-right: 10px;
+	}
+	.active {
+		border: 1px solid black;
+	}
+	.tarifButtons {
+		display: flex;
+		margin-bottom: 20px;
+	}
+	.tarifCards {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(250px, 1fr));
+		gap: 10px;
+	}
+	.svg {
+		height: 100%;
+	}
+	.OneTarif {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #1b3c74;
+		aspect-ratio: 4/3;
+	}
+	.square {
+		color: white;
+		font-size: 24px;
+		font-weight: 500;
+		padding-bottom: 20px;
+		border-bottom: 1px solid white;
+	}
+	.cloud {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		width: 50%;
 	}
 }

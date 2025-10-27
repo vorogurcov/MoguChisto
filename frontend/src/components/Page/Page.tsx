@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import NavigatePanel from "../NavigatePanel/NavigatePanel";
 import "./css.scss";
+import Footer from "./Footer/Footer";
 
 export default function Page({ children }: { children: ReactNode }) {
 	return (
@@ -9,7 +10,7 @@ export default function Page({ children }: { children: ReactNode }) {
 				<NavigatePanel />
 			</header>
 			<main className="page-content">{children}</main>
-			<footer></footer>
+			<Footer />
 		</>
 	);
 }

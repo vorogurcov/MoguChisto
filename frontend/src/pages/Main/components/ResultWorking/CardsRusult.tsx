@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { MiniCleanerSVG } from "./SVG";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import bef from "../../../../public/imgs/results/bef.jpg";
 import aft from "../../../../public/imgs/results/aft.png";
+import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
+import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
+import { MiniCleanerSVG } from "../../../../public/svg";
 
 type ImgsResultT = {
 	before: string;
@@ -128,16 +130,16 @@ function CardResult({
 }: CardResultT) {
 	return (
 		<div className="card">
-			<div className="info">
-				<div className="item priceCard">{price}₽</div>
-				<div className="item">
+			<CardInfoPanel>
+				<CardItemInfo className="item priceCard">{price}₽</CardItemInfo>
+				<CardItemInfo>
 					<MiniCleanerSVG className="svg" />
 					{countCleaner}
-				</div>
-				<div className="item">{time} часов</div>
-				<div className="item">{square}м²</div>
-				<div className="item">{services}</div>
-			</div>
+				</CardItemInfo>
+				<CardItemInfo>{time} часов</CardItemInfo>
+				<CardItemInfo>{square}м²</CardItemInfo>
+				<CardItemInfo>{services}</CardItemInfo>
+			</CardInfoPanel>
 			<ImgsResult imgs={imgs} />
 			<p className="title">
 				<b>{title}</b>

@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import Razdel, { AboutAttribute, RazdelT } from "./Razdel";
 import "./css.scss";
 import { BathroomSVG, KitchenSVG, TotalSVG } from "./svg";
+import PageItem from "../../../../components/PageItem";
 
 const razdels: Record<RazdelT, AboutAttribute[]> = {
 	kitchen: [
@@ -61,7 +62,7 @@ const DifficueltShadowsWrapper = ({ children }: { children: ReactNode }) => {
 export default function Cleaning() {
 	const [razdel, setRazdel] = useState<RazdelT>("kitchen");
 	return (
-		<div className="page-item razdel">
+		<PageItem className="razdel">
 			<DifficueltShadowsWrapper>
 				<div className="contentRazdel">
 					<div className="panelRazdel">
@@ -74,6 +75,6 @@ export default function Cleaning() {
 					<Razdel attributes={razdels[razdel]} razdel={razdel} />
 				</div>
 			</DifficueltShadowsWrapper>
-		</div>
+		</PageItem>
 	);
 }

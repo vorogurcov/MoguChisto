@@ -8,6 +8,7 @@ export const YandexSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 		xlinkHref="http://www.w3.org/1999/xlink"
+		{...props}
 	>
 		<rect y="0.293213" width="42" height="42" fill="url(#pattern0_13_403)" />
 		<defs>
@@ -38,6 +39,7 @@ export const GoogleSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 		xlinkHref="http://www.w3.org/1999/xlink"
+		{...props}
 	>
 		<rect y="0.293213" width="42" height="42" fill="url(#pattern0_13_395)" />
 		<defs>
