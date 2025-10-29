@@ -1,6 +1,7 @@
 @import "@colors";
 
 .JobSuggestion {
+	overflow: hidden;
 	background-color: $page-gray;
 	position: relative;
 	padding-top: 50px;
@@ -27,8 +28,10 @@
 		button {
 			margin-right: 20px;
 			color: $font-gray;
+			border-bottom: 1px solid $font-gray;
 			&:hover {
 				color: $black;
+				border-bottom: 1px solid $black;
 			}
 		}
 	}
@@ -37,6 +40,8 @@
 		background-color: #56c745;
 		color: white;
 		font-weight: 500;
+		position: relative;
+		z-index: 2;
 	}
 	.cleanerSvg {
 		position: absolute;
