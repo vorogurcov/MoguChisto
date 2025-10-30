@@ -1,0 +1,91 @@
+@import "@colors";
+
+.razdel {
+	padding-top: 70px;
+	padding-bottom: 70px;
+	width: 100%;
+	background-color: $page-gray;
+	.contentRazdel,
+	.firstShadow,
+	.secondShadow {
+		background-color: white;
+		width: 100%;
+		padding: 40px 40px 40px 40px;
+		border-radius: 20px;
+		box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.02);
+		display: flex;
+	}
+	.panelRazdel {
+		width: 48px;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		.buttonsRazdel {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			height: 180px;
+			width: 100%;
+			padding: 5px 0px 5px 0px;
+		}
+	}
+	.tableWrapper {
+		display: grid;
+		grid-template-columns: minmax(200px, 50%) repeat(3, minmax(100px, 1fr));
+		gap: 20px;
+		align-items: center;
+		justify-items: center;
+		.attrName {
+			justify-self: start;
+		}
+	}
+	.tableRazdel {
+		width: calc(100% - 46px);
+		height: 100%;
+		padding-left: 40px;
+		.nameRazdel {
+			font-size: 45px;
+			color: $black;
+			font-weight: bold;
+		}
+		.descriptionRazdel {
+			font-weight: 500;
+			font-size: 18px;
+			color: $font-gray;
+			padding-bottom: 20px;
+		}
+		.attrName {
+			width: 50%;
+			min-width: 100px;
+			font-size: 14px;
+			font-weight: 500;
+			color: #3e3e3e;
+		}
+		.oneRazdel {
+			font-size: 14px;
+			font-weight: 500;
+			color: #3e3e3e;
+		}
+		.borderRowRazdel {
+			border-bottom: 1px solid #d9d9d9;
+			grid-column: span 4;
+			width: 100%;
+			gap: 0px;
+		}
+	}
+	.firstShadow {
+		background-color: rgb(255, 255, 255, 0.25);
+		padding: 8px 0px 0px 0px;
+	}
+	.secondShadow {
+		background-color: rgb(255, 255, 255, 0.75);
+		padding: 8px 0px 0px 0px;
+	}
+	.sendApplication {
+		background-color: $blue;
+		color: white;
+		margin-top: 40px;
+		height: 54px;
+	}
+}

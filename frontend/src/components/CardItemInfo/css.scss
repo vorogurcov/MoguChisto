@@ -1,0 +1,16 @@
+@import "@colors";
+
+.CardItemInfo {
+	color: $black;
+	background-color: white;
+	padding: 6px 10px 6px 10px;
+	margin-right: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 12px;
+	font-weight: 500;
+	svg {
+		margin-right: 6px;
+	}
+}

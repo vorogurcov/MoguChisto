@@ -1,0 +1,24 @@
+.scrollContainer {
+	width: 100%;
+	.buttons {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+		padding-right: 100px;
+		margin-top: 30px;
+		svg {
+			margin-left: 10px;
+		}
+	}
+	.children {
+		width: 100%;
+		overflow-x: auto;
+		overflow-y: hidden;
+		display: flex;
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE and Edge */
+		&::-webkit-scrollbar {
+			display: none; /* Chrome, Safari, Opera */
+		}
+	}
+}

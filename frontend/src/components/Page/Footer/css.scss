@@ -1,0 +1,100 @@
+@import "@colors";
+
+.footerPage {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background-color: $black;
+	color: white;
+	.footerTools {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.toolFooter,
+	.settingsFooter {
+		color: $font-gray;
+		&:hover {
+			color: white;
+		}
+		margin-right: 20px;
+		font-size: 16px;
+		margin-top: 10px;
+	}
+	.settingsFooter {
+		border-bottom: 1px solid $font-gray;
+		font-size: 13px;
+	}
+	svg {
+		margin-right: 10px;
+	}
+	.contactsFooter {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		align-items: center;
+		padding-top: 30px;
+		padding-bottom: 50px;
+	}
+	.contactsNumber {
+		font-size: 14px;
+		width: 90%;
+		min-width: 300px;
+		display: flex;
+		flex-wrap: wrap;
+		svg {
+			height: 18px;
+		}
+		span {
+			display: flex;
+			align-items: center;
+			margin-right: 20px;
+			margin-top: 7px;
+			span {
+				margin-top: 0px;
+			}
+		}
+	}
+	.everyDay {
+		color: $font-gray;
+		margin-right: 5px;
+	}
+	.messangers {
+		margin-top: 10px;
+	}
+	footer {
+		font-size: 13px;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		align-items: center;
+		margin-top: 20px;
+		p {
+			padding-top: 10px;
+		}
+	}
+	.brendContainer {
+		min-width: 500px;
+	}
+	.footerBrend {
+		border-top: 1px solid #3e3e3e;
+		padding-top: 24px;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		font-size: 16px;
+		p {
+			margin: 0px;
+		}
+		.footerName {
+			height: 60px;
+			margin-bottom: 20px;
+		}
+		.sendFooter {
+			margin-top: auto;
+			button {
+				background-color: white;
+				margin-top: 20px;
+			}
+		}
+	}
+}

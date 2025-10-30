@@ -1,0 +1,16 @@
+header {
+	position: fixed;
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.03);
+	padding: 0px 5% 0px 5%;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1000;
+	background-color: white;
+}
+
+.page-content {
+	width: 100%;
+	margin-top: 70px;
+	position: relative;
+}
