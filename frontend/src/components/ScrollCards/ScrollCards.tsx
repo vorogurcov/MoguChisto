@@ -9,7 +9,9 @@ type Props = {
 export default function ScrollCards({ children }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 
-	const getAmount = (items: HTMLCollection) => {
+	const getAmount = (containerRef: RefObject<HTMLDivElement>) => {
+		const container = containerRef.current;
+		const items = container.children;
 		const firstItem = items[0] as HTMLElement;
 		const itemWidth = firstItem.offsetWidth;
 		const viewportWidth = window.innerWidth;
@@ -24,22 +26,27 @@ export default function ScrollCards({ children }: Props) {
 		} else {
 			scrollCount = 3; // узкая карточка - скроллим на 3
 		}
+		const gap = parseInt(getComputedStyle(container).gap) || 0;
+		const scrollAmount = (itemWidth + gap) * scrollCount;
+		return scrollAmount;
 	};
 
 	const scrollRight = () => {
 		if (containerRef.current) {
 			const container = containerRef.current;
-			const items = container.children;
-
-			if (items.length === 0) return;
-
-			const scrollCount;
-
-			const gap = parseInt(getComputedStyle(container).gap) || 0;
-			const scrollAmount = (itemWidth + gap) * scrollCount;
-
+			const scrollAmount = getAmount(containerRef as RefObject<HTMLDivElement>);
 			container.scrollBy({
 				left: scrollAmount,
+				behavior: "smooth",
+			});
+		}
+	};
+	const scrollLeft = () => {
+		if (containerRef.current) {
+			const container = containerRef.current;
+			const scrollAmount = getAmount(containerRef as RefObject<HTMLDivElement>);
+			container.scrollBy({
+				left: -scrollAmount,
 				behavior: "smooth",
 			});
 		}
@@ -50,8 +57,8 @@ export default function ScrollCards({ children }: Props) {
 				{children}
 			</div>
 			<div className="buttons">
-				<LeftSVG />
-				<RightSVG />
+				<LeftSVG onClick={scrollLeft} />
+				<RightSVG onClick={scrollRight} />
 			</div>
 		</div>
 	);

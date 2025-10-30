@@ -1,10 +1,13 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Logo, Phone, Telegram, WhatsApp } from "../../public/svg";
 import ButtonLikeText from "../Buttons/ButtonLikeText/ButtonLikeText";
 import MainButton from "../Buttons/MainButton/MainButton";
 import "./css.scss";
+import { useContext } from "react";
+import { useActiveSectionContext } from "../../hooks/ActiveSectionContext";
 
 export enum PagePart {
+	top,
 	service,
 	about,
 	cleaners,
@@ -13,8 +16,8 @@ export enum PagePart {
 	contacts,
 }
 
-const ButtonsPanel = ({ type }: { type: PagePart | undefined }) => {
-	const navigate = useNavigate();
+const ButtonsPanel = () => {
+	const contextSection = useActiveSectionContext();
 	const buttons = [
 		{ name: "Услуги", type: PagePart.service },
 		{ name: "О нас", type: PagePart.about },
@@ -28,8 +31,13 @@ const ButtonsPanel = ({ type }: { type: PagePart | undefined }) => {
 			{buttons.map((button) => (
 				<ButtonLikeText
 					key={button.name}
-					className={button.type === type ? "active" : undefined}
-					onClick={() => navigate(`main?type=${button.type}`)}
+					className={
+						button.type == contextSection?.activeSection ? "active" : undefined
+					}
+					onClick={() => {
+						contextSection?.setActiveSection(button.type);
+						contextSection?.setShouldSmooth(true);
+					}}
 				>
 					{button.name}
 				</ButtonLikeText>
@@ -39,13 +47,12 @@ const ButtonsPanel = ({ type }: { type: PagePart | undefined }) => {
 };
 
 export default function NavigatePanel() {
-	const { type } = useParams();
 	return (
 		<div className="panel">
 			<div>
-				<Logo width={101} height={24} />
+				<Logo width={101} height={24} className="logoNavigate" />
 			</div>
-			<ButtonsPanel type={type as PagePart | undefined} />
+			<ButtonsPanel />
 			<div className="tools">
 				<div className="number">
 					<Phone height={16} width={16} /> +7 (923) 123-23-35

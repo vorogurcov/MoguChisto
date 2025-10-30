@@ -1,0 +1,18 @@
+.infoHover {
+	position: relative;
+	svg {
+		margin-right: 10px;
+	}
+	.hoverPanel {
+		padding: 10px;
+		border-radius: 4px;
+		background-color: $dark-gray;
+		position: absolute;
+		right: 0px;
+		bottom: 0px;
+		gap: 10px;
+		font-size: 13px;
+		color: white;
+		font-weight: 500;
+	}
+}

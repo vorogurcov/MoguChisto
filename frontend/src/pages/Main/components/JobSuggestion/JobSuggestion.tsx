@@ -1,4 +1,4 @@
-import { FC, SVGProps } from "react";
+import { FC, forwardRef, SVGProps } from "react";
 import PageItem from "../../../../components/PageItem";
 import Info from "../Title";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
@@ -53,11 +53,11 @@ const parts = [
 	"На первых уборках поможет наставник",
 ];
 
-export default function JobSuggestion() {
+const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="JobSuggestion">
 			<Info>
-				<span>
+				<span ref={ref}>
 					<b>Всегда открыты к сотрудничеству</b>
 				</span>
 			</Info>
@@ -81,4 +81,6 @@ export default function JobSuggestion() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+JobSuggestion.displayName = "JobSuggestion";
+export default JobSuggestion;

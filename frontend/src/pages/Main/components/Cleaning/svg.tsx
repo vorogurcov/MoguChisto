@@ -1,5 +1,7 @@
 import { FC, SVGProps } from "react";
 
+type PropsSVG = FC<SVGProps<SVGSVGElement> & { active?: boolean }>;
+
 export const YesSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
 		width="24"
@@ -43,97 +45,97 @@ export const NoSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	</svg>
 );
 
-export const TotalSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
-	<div>
-		<svg
-			width="48"
-			height="47"
-			viewBox="0 0 48 47"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			{...props}
-		>
-			<rect x="1" y="0.5" width="46" height="46" rx="23" stroke="#D9D9D9" />
+const WrapperRazdels: PropsSVG = ({ active, children, ...props }) => {
+	const border = active ? "#292929" : "#D9D9D9";
+	const backGround = active ? "#292929" : "white";
+	const color = active ? "white" : "#939393";
+	return (
+		<div>
+			<svg
+				width="48"
+				height="47"
+				viewBox="0 0 48 47"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				{...props}
+			>
+				<rect x="1" y="0.5" width="46" height="46" rx="23" stroke={border} />
+				<rect x="3" y="2.5" width="42" height="42" rx="21" fill={backGround} />
+				<path
+					d="M16.5 23.5H31.5"
+					stroke={color}
+					strokeWidth="1.6"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				/>
+				{children}
+			</svg>
+		</div>
+	);
+};
+
+export const TotalSVG: PropsSVG = ({ active, ...props }) => {
+	const color = active ? "white" : "#939393";
+	return (
+		<WrapperRazdels {...props} active={active}>
 			<path
 				d="M23.2627 16.6105C23.2949 16.4384 23.3862 16.283 23.5208 16.1712C23.6555 16.0594 23.825 15.9982 24 15.9982C24.175 15.9982 24.3445 16.0594 24.4792 16.1712C24.6138 16.283 24.7051 16.4384 24.7372 16.6105L25.5255 20.779C25.5815 21.0753 25.7255 21.3479 25.9388 21.5612C26.152 21.7745 26.4246 21.9185 26.721 21.9745L30.8895 22.7627C31.0615 22.7949 31.2169 22.8861 31.3288 23.0208C31.4406 23.1554 31.5018 23.3249 31.5018 23.5C31.5018 23.675 31.4406 23.8445 31.3288 23.9791C31.2169 24.1138 31.0615 24.2051 30.8895 24.2372L26.721 25.0255C26.4246 25.0814 26.152 25.2255 25.9388 25.4387C25.7255 25.652 25.5815 25.9246 25.5255 26.221L24.7372 30.3895C24.7051 30.5615 24.6138 30.7169 24.4792 30.8287C24.3445 30.9405 24.175 31.0018 24 31.0018C23.825 31.0018 23.6555 30.9405 23.5208 30.8287C23.3862 30.7169 23.2949 30.5615 23.2627 30.3895L22.4745 26.221C22.4185 25.9246 22.2745 25.652 22.0612 25.4387C21.848 25.2255 21.5754 25.0814 21.279 25.0255L17.1105 24.2372C16.9384 24.2051 16.7831 24.1138 16.6712 23.9791C16.5594 23.8445 16.4982 23.675 16.4982 23.5C16.4982 23.3249 16.5594 23.1554 16.6712 23.0208C16.7831 22.8861 16.9384 22.7949 17.1105 22.7627L21.279 21.9745C21.5754 21.9185 21.848 21.7745 22.0612 21.5612C22.2745 21.3479 22.4185 21.0753 22.4745 20.779L23.2627 16.6105Z"
-				stroke="#939393"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
-		</svg>
-	</div>
-);
+		</WrapperRazdels>
+	);
+};
 
-export const BathroomSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
-	<div>
-		<svg
-			width="48"
-			height="47"
-			viewBox="0 0 48 47"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			{...props}
-		>
-			<rect x="1" y="0.5" width="46" height="46" rx="23" stroke="#D9D9D9" />
+export const BathroomSVG: PropsSVG = ({ active, ...props }) => {
+	const color = active ? "white" : "#939393";
+	return (
+		<WrapperRazdels {...props} active={active}>
 			<path
 				d="M20.25 23.5H30C30.1989 23.5 30.3897 23.579 30.5303 23.7197C30.671 23.8603 30.75 24.0511 30.75 24.25C30.75 25.2446 30.3549 26.1984 29.6516 26.9017C28.9484 27.6049 27.9946 28 27 28H26.5515C26.4846 28 26.4188 28.0179 26.3612 28.0519C26.3035 28.0859 26.256 28.1347 26.2235 28.1932C26.1911 28.2518 26.1749 28.3179 26.1766 28.3848C26.1784 28.4518 26.198 28.517 26.2335 28.5737L27.3915 30.4263C27.427 30.483 27.4466 30.5482 27.4484 30.6152C27.4501 30.6821 27.4339 30.7482 27.4015 30.8068C27.369 30.8653 27.3215 30.9141 27.2638 30.9481C27.2062 30.9821 27.1404 31 27.0735 31H19.0515C18.9846 31 18.9188 30.9821 18.8612 30.9481C18.8035 30.9141 18.756 30.8653 18.7235 30.8068C18.6911 30.7482 18.6749 30.6821 18.6766 30.6152C18.6784 30.5482 18.698 30.483 18.7335 30.4263L20.25 28"
-				stroke="#939393"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
 			<path
 				d="M21 28C20.0054 28 19.0516 27.6049 18.3483 26.9017C17.6451 26.1984 17.25 25.2446 17.25 24.25V17.5C17.25 17.1022 17.408 16.7206 17.6893 16.4393C17.9706 16.158 18.3522 16 18.75 16H24.75C25.1478 16 25.5294 16.158 25.8107 16.4393C26.092 16.7206 26.25 17.1022 26.25 17.5V23.5"
-				stroke="#939393"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
-		</svg>
-	</div>
-);
+		</WrapperRazdels>
+	);
+};
 
-export const KitchenSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
-	<div>
-		<svg
-			width="48"
-			height="47"
-			viewBox="0 0 48 47"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			{...props}
-		>
-			<rect x="1" y="0.5" width="46" height="46" rx="23" stroke="#292929" />
-			<rect x="3" y="2.5" width="42" height="42" rx="21" fill="#292929" />
-			<path
-				d="M16.5 23.5H31.5"
-				stroke="white"
-				strokeWidth="1.6"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
+export const KitchenSVG: PropsSVG = ({ active, ...props }) => {
+	const color = active ? "white" : "#939393";
+	return (
+		<WrapperRazdels {...props} active={active}>
 			<path
 				d="M30 23.5V29.5C30 29.8978 29.842 30.2794 29.5607 30.5607C29.2794 30.842 28.8978 31 28.5 31H19.5C19.1022 31 18.7206 30.842 18.4393 30.5607C18.158 30.2794 18 29.8978 18 29.5V23.5"
-				stroke="white"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
 			<path
 				d="M18 20.5L30 17.5"
-				stroke="white"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
 			<path
 				d="M21.645 19.585L21.3075 18.2275C21.2591 18.0365 21.2489 17.8377 21.2774 17.6427C21.3059 17.4477 21.3726 17.2602 21.4736 17.0909C21.5745 16.9216 21.7079 16.774 21.866 16.6563C22.0241 16.5386 22.2039 16.4532 22.395 16.405L23.85 16.045C24.0416 15.9968 24.2408 15.9869 24.4362 16.0159C24.6316 16.0448 24.8194 16.1121 24.9888 16.2139C25.1581 16.3156 25.3057 16.4498 25.423 16.6087C25.5404 16.7677 25.6251 16.9482 25.6725 17.14L26.01 18.49"
-				stroke="white"
+				stroke={color}
 				strokeWidth="1.6"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
-		</svg>
-	</div>
-);
+		</WrapperRazdels>
+	);
+};

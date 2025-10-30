@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import PageItem from "../../../../components/PageItem";
 import { FooterSVG, StarSVG } from "../../../../public/svg";
 import CardsRusult from "./CardsRusult";
@@ -5,7 +6,7 @@ import { TitleSVG } from "./SVG";
 
 import "./css.scss";
 
-export default function ResultWorking() {
+const ResultWorking = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="resultWrapper">
 			<div className="title">
@@ -24,4 +25,6 @@ export default function ResultWorking() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+ResultWorking.displayName = "ResultWorking";
+export default ResultWorking;

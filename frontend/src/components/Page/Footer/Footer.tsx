@@ -1,4 +1,4 @@
-import { FC, SVGProps } from "react";
+import { FC, forwardRef, SVGProps } from "react";
 import { Logo, NameBrend } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
@@ -148,10 +148,10 @@ const SquareWhatsApp: FC<SVGProps<SVGSVGElement>> = (props) => (
 	</svg>
 );
 
-export default function Footer() {
+const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="footerPage">
-			<div className="footerTools">
+			<div ref={ref} className="footerTools">
 				{tools.map((tool) => (
 					<ButtonLikeText key={tool} className="toolFooter">
 						{tool}
@@ -201,4 +201,6 @@ export default function Footer() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+Footer.displayName = "Footer";
+export default Footer;

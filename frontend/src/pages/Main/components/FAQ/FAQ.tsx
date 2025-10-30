@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 import PageItem from "../../../../components/PageItem";
 import Info from "../Title";
 import classNames from "classnames";
@@ -104,11 +104,11 @@ function Question({ question, answer }: QuestionT) {
 	);
 }
 
-export default function FAQ() {
+const FAQ = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="faq">
 			<Info>
-				<b>Часто задаваемые вопросы</b>
+				<b ref={ref}>Часто задаваемые вопросы</b>
 			</Info>
 			<div className="ansWrapper">
 				{questions.map((q, index) => (
@@ -117,4 +117,6 @@ export default function FAQ() {
 			</div>
 		</PageItem>
 	);
-}
+});
+FAQ.displayName = "FAQ";
+export default FAQ;

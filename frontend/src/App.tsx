@@ -1,14 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.scss";
 import Main from "./pages/Main/Main";
+import { ActiveSectionProvider } from "./hooks/ActiveSectionContext";
 
 function App() {
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/*" element={<Main />} />
-			</Routes>
-		</BrowserRouter>
+		<ActiveSectionProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<Main />} />
+				</Routes>
+			</BrowserRouter>
+		</ActiveSectionProvider>
 	);
 }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import CleanerPicture from "./CleanerPicture";
 import TextInput from "../../../../components/UI/Inputs/TextInput";
 import Selection from "../../../../components/UI/Selections/Selection";
@@ -17,11 +17,11 @@ const typesCleaning: { type: CleaningType; label: string }[] = [
 ];
 type CleaningOption = (typeof typesCleaning)[0];
 
-export default function Application() {
+const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
 	return (
 		<PageItem className="applicationContainer">
-			<main className="application">
+			<main ref={ref} className="application">
 				<div className="leftBlockApplication">
 					<div className="nameBrend">
 						<NameBrend />
@@ -30,7 +30,7 @@ export default function Application() {
 						<TextInput
 							title="Жил. площадь"
 							placeholder="20м²"
-							classNameContainer="applicationPart"
+							classnamecontainer="applicationPart"
 						/>
 						<Selection
 							name="typeCleaning"
@@ -43,7 +43,7 @@ export default function Application() {
 						<TextInput
 							title="Номер телефона"
 							placeholder="+7 (999) 999-99-99"
-							classNameContainer="applicationPart"
+							classnamecontainer="applicationPart"
 						/>
 					</div>
 					<div className="price">8 500 ₽</div>
@@ -61,4 +61,6 @@ export default function Application() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+Application.displayName = "Application";
+export default Application;
