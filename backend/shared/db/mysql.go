@@ -11,10 +11,7 @@ import (
 )
 
 const (
-	UsersCollection         = "users"
-	OrdersCollection        = "orders"
-	NotificationsCollection = "notifications"
-	DBProvider              = "mysql"
+	DBProvider = "mysql"
 )
 
 type MySQLConfig struct {

@@ -13,11 +13,11 @@ type CreateUserDto struct {
 }
 
 type GetUserProfileDto struct {
-	UserId string `json:"user_id"`
+	UserID string `json:"user_id"`
 }
 
 type ChangeUserNotificationSettingsDto struct {
-	UserId  string `json:"user_id"`
+	UserID  string `json:"user_id"`
 	BySms   bool   `json:"by_sms"`
 	ByEmail bool   `json:"by_email"`
 }
