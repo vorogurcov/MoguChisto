@@ -1,4 +1,5 @@
-import { FC, SVGProps, useRef, useState } from "react";
+import { FC, SVGProps, useState } from "react";
+import "./css.scss";
 
 const InfoSVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -57,10 +58,12 @@ export default function InfoHover({ infoStrings }: { infoStrings: string[] }) {
 				onMouseLeave={handleMouseLeave}
 			/>
 			{isOpen && (
-				<div className="hoverPanel">
-					{infoStrings.map((str, index) => (
-						<p key={index}>{str}</p>
-					))}
+				<div className="hoverContainer">
+					<div className="hoverPanel">
+						{infoStrings.map((str, index) => (
+							<p key={index}>{str}</p>
+						))}
+					</div>
 				</div>
 			)}
 		</div>

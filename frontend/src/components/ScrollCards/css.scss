@@ -21,6 +21,8 @@
 		display: flex;
 		scrollbar-width: none; /* Firefox */
 		-ms-overflow-style: none; /* IE and Edge */
+		scroll-behavior: smooth; // важно для плавного скролла
+		-webkit-overflow-scrolling: touch; // для iOS
 		&::-webkit-scrollbar {
 			display: none; /* Chrome, Safari, Opera */
 		}

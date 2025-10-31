@@ -9,7 +9,7 @@ import "./css.scss";
 const ResultWorking = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="resultWrapper">
-			<div className="title">
+			<div ref={ref} className="title">
 				<TitleSVG />
 			</div>
 			<div className="description">

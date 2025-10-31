@@ -1,10 +1,4 @@
-import {
-	RefObject,
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-} from "react";
+import { RefObject, useRef } from "react";
 import Page from "../../components/Page/Page";
 import Application from "./components/Application/Application";
 import ApplicationInfo from "./components/ApplicationInfo/ApplicationInfo";
@@ -40,14 +34,14 @@ export default function Main() {
 		[PagePart.service]: applicationInfoRef,
 	};
 
-	useSectionScroll(navigation);
-	useSectionObserver(navigation);
+	// useSectionScroll(navigation);
+	// useSectionObserver(navigation);
 
 	return (
 		<Page>
 			<Application ref={applicationRef} />
 			<Cleaning ref={applicationInfoRef} />
-			<ResultWorking ref={resultWorkingRef} />
+			<ResultWorking />
 			<Cleaners ref={cleanersRef} />
 			<Reciewes ref={reciewesRef} />
 			<ApplicationInfo ref={applicationInfoRef} />

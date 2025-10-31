@@ -35,6 +35,7 @@ export default function ScrollCards({ children }: Props) {
 		if (containerRef.current) {
 			const container = containerRef.current;
 			const scrollAmount = getAmount(containerRef as RefObject<HTMLDivElement>);
+			console.log("scrollBehavior" in document.documentElement.style);
 			container.scrollBy({
 				left: scrollAmount,
 				behavior: "smooth",
