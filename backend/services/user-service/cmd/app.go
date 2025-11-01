@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"database/sql"
+	session_service "main/services/session-service"
 	http2 "main/services/user-service/internal/infrastructure/http"
 	"main/services/user-service/internal/infrastructure/repository"
 	"main/services/user-service/internal/service"
@@ -10,15 +11,19 @@ import (
 
 func NewHandler(db *sql.DB) http.Handler {
 	userRepo := repository.NewMySqlUserRepository(db)
-
+	sessionSvc := session_service.SessionService{MySqlDb: db}
 	userSvc := &service.UserService{
 		UserRepo: userRepo,
 	}
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/signup", http2.NewSignUpHandler(userSvc))
-	mux.HandleFunc("/profile", http2.NewGetUserProfileHandler(userSvc))
-
+	mux.HandleFunc("/signup", http2.NewSignUpHandler(userSvc, &sessionSvc))
+	mux.HandleFunc("/profile", func(w http.ResponseWriter, r *http.Request) {
+		sessionSvc.GetAuthMiddleware(http2.NewGetUserProfileHandler(userSvc)).ServeHTTP(w, r)
+	})
+	mux.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+		sessionSvc.GetAuthMiddleware(http2.NewLogoutHandler(userSvc, &sessionSvc)).ServeHTTP(w, r)
+	})
 	return mux
 }

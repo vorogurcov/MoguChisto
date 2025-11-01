@@ -9,7 +9,8 @@ type ChangeUserProfileDto struct {
 }
 
 type CreateUserDto struct {
-	PhoneNumber string `json:"phone_number"`
+	PhoneNumber      string `json:"phone_number"`
+	VerificationCode string `json:"verification_code"`
 }
 
 type GetUserProfileDto struct {

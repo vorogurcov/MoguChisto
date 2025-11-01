@@ -3,21 +3,26 @@ package domain
 import (
 	"context"
 	"main/services/user-service/internal/dto"
+	"time"
 )
 
 type UserModel struct {
-	UserID       string `json:"user_id"`
-	LastName     string `json:"last_name"`
-	FirstName    string `json:"first_name"`
-	BirthdayDate string `json:"birthday_date"`
-	PhoneNumber  string `json:"phone_number"`
-	Email        string `json:"email"`
+	UserID       string     `json:"user_id"`
+	LastName     *string    `json:"last_name,omitempty"`
+	FirstName    *string    `json:"first_name,omitempty"`
+	BirthdayDate *time.Time `json:"birthday_date,omitempty"`
+	PhoneNumber  *string    `json:"phone_number,omitempty"`
+	Email        *string    `json:"email,omitempty"`
 }
 
 type NotificationsModel struct {
 	UserID  string `json:"user_id"`
 	BySms   bool   `json:"by_sms"`
 	ByEmail bool   `json:"by_email"`
+}
+
+type SignupAnswer struct {
+	IsVerificationRequired bool `json:"is_verification_required"`
 }
 
 type UserRepository interface {
