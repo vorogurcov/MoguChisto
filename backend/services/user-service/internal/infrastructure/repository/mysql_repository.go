@@ -6,15 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"main/services/user-service/internal/domain"
+	"main/services/user-service/internal/dto"
+	"strings"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
-)
-
-var (
-	ErrNotFound   = errors.New("not found")
-	ErrConflict   = errors.New("conflict")
-	ErrForeignKey = errors.New("foreign key violation")
 )
 
 type mySqlUserRepository struct {
@@ -26,11 +22,25 @@ func NewMySqlUserRepository(db *sql.DB) *mySqlUserRepository {
 }
 
 func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string) (*domain.UserModel, error) {
-	insertQuery := "INSERT INTO users (user_id, phone_number) VALUES (?, ?)"
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("begin tx: %w", err)
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
 	id := uuid.NewString()
 
-	_, err := r.db.ExecContext(ctx, insertQuery, id, phoneNumber)
+	insertUserQuery := "INSERT INTO users (user_id, phone_number) VALUES (?, ?)"
+	_, err = tx.ExecContext(ctx, insertUserQuery, id, phoneNumber)
 	if err != nil {
+		tx.Rollback()
+
+		// Проверяем на дубликат
 		var myErr *mysql.MySQLError
 		if errors.As(err, &myErr) && myErr.Number == 1062 {
 			selectQuery := "SELECT user_id, phone_number FROM users WHERE phone_number = ? LIMIT 1"
@@ -44,20 +54,32 @@ func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string
 				return nil, fmt.Errorf("select existing user after duplicate: %w", scanErr)
 			}
 
-			user := &domain.UserModel{
+			return &domain.UserModel{
 				UserID:      existingID,
 				PhoneNumber: &existingPhone,
-			}
-			return user, nil
+			}, nil
 		}
 
 		return nil, fmt.Errorf("insert user: %w", err)
+	}
+
+	// Создаём запись в notifications
+	insertNotifQuery := "INSERT INTO notifications (user_id, by_sms, by_email) VALUES (?, ?, ?)"
+	_, err = tx.ExecContext(ctx, insertNotifQuery, id, true, false)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("insert notifications for new user: %w", err)
+	}
+
+	if err = tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit tx: %w", err)
 	}
 
 	user := &domain.UserModel{
 		UserID:      id,
 		PhoneNumber: &phoneNumber,
 	}
+
 	return user, nil
 }
 
@@ -113,9 +135,107 @@ func (r *mySqlUserRepository) GetUserByID(ctx context.Context, userID string) (*
 	return &user, nil
 }
 
-//func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string) (*domain.UserModel, error) {
-//
-//}
-//func (r *mySqlUserRepository) UpdateUserNotifications(ctx context.Context, userID string) (*domain.NotificationsModel, error) {
-//
-//}
+func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string, changeUserProfileDto dto.ChangeUserProfileDto) (*domain.UserModel, error) {
+	query := "UPDATE users SET "
+	args := make([]interface{}, 0)
+	setClauses := make([]string, 0)
+
+	if changeUserProfileDto.FirstName != nil {
+		setClauses = append(setClauses, "first_name = ?")
+		args = append(args, *changeUserProfileDto.FirstName)
+	}
+	if changeUserProfileDto.LastName != nil {
+		setClauses = append(setClauses, "last_name = ?")
+		args = append(args, *changeUserProfileDto.LastName)
+	}
+	if changeUserProfileDto.Email != nil {
+		setClauses = append(setClauses, "email = ?")
+		args = append(args, *changeUserProfileDto.Email)
+	}
+	if changeUserProfileDto.PhoneNumber != nil {
+		setClauses = append(setClauses, "phone_number = ?")
+		args = append(args, *changeUserProfileDto.PhoneNumber)
+	}
+	if changeUserProfileDto.BirthdayDate != nil {
+		setClauses = append(setClauses, "birthday_date = ?")
+		args = append(args, *changeUserProfileDto.BirthdayDate)
+	}
+
+	if len(setClauses) == 0 {
+		return nil, fmt.Errorf("no fields to update")
+	}
+
+	query += strings.Join(setClauses, ", ")
+	query += " WHERE user_id = ?"
+	args = append(args, userID)
+
+	result, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("update user: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return r.GetUserByID(ctx, userID)
+}
+func (r *mySqlUserRepository) GetUserNotifications(ctx context.Context, userID string) (*domain.NotificationsModel, error) {
+	const query = "SELECT user_id, by_sms, by_email FROM notifications WHERE user_id = ?"
+
+	var notif domain.NotificationsModel
+	row := r.db.QueryRowContext(ctx, query, userID)
+	if err := row.Scan(&notif.UserID, &notif.BySms, &notif.ByEmail); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("notifications not found for user_id %s: %w", userID, err)
+		}
+		return nil, fmt.Errorf("select notifications: %w", err)
+	}
+
+	return &notif, nil
+}
+
+func (r *mySqlUserRepository) UpdateUserNotifications(ctx context.Context, userID string, settingsDto dto.ChangeUserNotificationSettingsDto) (*domain.NotificationsModel, error) {
+	setClauses := make([]string, 0)
+	args := make([]interface{}, 0)
+
+	if settingsDto.BySms != nil {
+		setClauses = append(setClauses, "by_sms = ?")
+		args = append(args, *settingsDto.BySms)
+	}
+	if settingsDto.ByEmail != nil {
+		setClauses = append(setClauses, "by_email = ?")
+		args = append(args, *settingsDto.ByEmail)
+	}
+
+	if len(setClauses) == 0 {
+		return nil, fmt.Errorf("no fields to update")
+	}
+
+	query := "UPDATE notifications SET " + strings.Join(setClauses, ", ") + " WHERE user_id = ?"
+	args = append(args, userID)
+
+	res, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("update notifications: %w", err)
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("rows affected: %w", err)
+	}
+	if rows == 0 {
+		return nil, fmt.Errorf("notifications not found for user_id %s", userID)
+	}
+
+	notif, err := r.GetUserNotifications(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get after update: %w", err)
+	}
+
+	return notif, nil
+}

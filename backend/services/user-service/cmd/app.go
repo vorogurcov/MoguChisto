@@ -20,10 +20,13 @@ func NewHandler(db *sql.DB) http.Handler {
 
 	mux.HandleFunc("/signup", http2.NewSignUpHandler(userSvc, &sessionSvc))
 	mux.HandleFunc("/profile", func(w http.ResponseWriter, r *http.Request) {
-		sessionSvc.GetAuthMiddleware(http2.NewGetUserProfileHandler(userSvc)).ServeHTTP(w, r)
+		sessionSvc.GetAuthMiddleware(http2.NewProfileHandler(userSvc, &sessionSvc)).ServeHTTP(w, r)
 	})
 	mux.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
-		sessionSvc.GetAuthMiddleware(http2.NewLogoutHandler(userSvc, &sessionSvc)).ServeHTTP(w, r)
+		sessionSvc.GetAuthMiddleware(http2.NewLogoutHandler(&sessionSvc)).ServeHTTP(w, r)
+	})
+	mux.HandleFunc("/notifications", func(w http.ResponseWriter, r *http.Request) {
+		sessionSvc.GetAuthMiddleware(http2.NewProfileNotificationsHandler(userSvc)).ServeHTTP(w, r)
 	})
 	return mux
 }

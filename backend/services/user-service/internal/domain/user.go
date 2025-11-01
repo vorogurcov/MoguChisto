@@ -28,13 +28,15 @@ type SignupAnswer struct {
 type UserRepository interface {
 	CreateUser(ctx context.Context, phoneNumber string) (*UserModel, error)
 	GetUserByID(ctx context.Context, userID string) (*UserModel, error)
-	//UpdateUserByID(ctx context.Context, userID string) (*UserModel, error)
-	//UpdateUserNotifications(ctx context.Context, userID string) (*NotificationsModel, error)
+	UpdateUserByID(ctx context.Context, userID string, changeUserProfileDto dto.ChangeUserProfileDto) (*UserModel, error)
+	UpdateUserNotifications(ctx context.Context, userID string, settingsDto dto.ChangeUserNotificationSettingsDto) (*NotificationsModel, error)
+	GetUserNotifications(ctx context.Context, userId string) (*NotificationsModel, error)
 }
 
 type UserService interface {
 	SignUp(ctx context.Context, createUserDto dto.CreateUserDto) (*UserModel, error)
-	//ChangeUserProfile(ctx context.Context, changeUserProfileDto dto.ChangeUserProfileDto) (*UserModel, error)
-	GetUserProfile(ctx context.Context, getUserProfileDto dto.GetUserProfileDto) (*UserModel, error)
-	//ChangeUserNotificationsSettings(ctx context.Context, changeUserNotificationsSettingsDto dto.ChangeUserNotificationSettingsDto) (*NotificationsModel, error)
+	ChangeUserProfile(ctx context.Context, userID string, changeUserProfileDto dto.ChangeUserProfileDto) (*UserModel, error)
+	GetUserProfile(ctx context.Context) (*UserModel, error)
+	ChangeUserNotificationsSettings(ctx context.Context, changeUserNotificationsSettingsDto dto.ChangeUserNotificationSettingsDto) (*NotificationsModel, error)
+	GetUserNotificationsSettings(ctx context.Context) (*NotificationsModel, error)
 }
