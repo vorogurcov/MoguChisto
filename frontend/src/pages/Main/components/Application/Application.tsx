@@ -8,7 +8,7 @@ import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import "./css.scss";
 import { FooterSVG, NameBrend } from "../../../../public/svg";
 import PageItem from "../../../../components/PageItem";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, Resolver, useForm, useWatch } from "react-hook-form";
 import calculatorPrice from "../../../../helpers/calculatorPrice";
 
 export type CleaningType = "exrpess" | "comfort" | "elite";
@@ -38,26 +38,15 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	// const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
 	const squareRef = useRef<HTMLInputElement>(null);
 
-	const { register, watch, ...form } = useForm<FormT>({
-		defaultValues: { typeCleaning: "exrpess" },
+	const { register, watch, control, ...form } = useForm<FormT>({
+		defaultValues: { square: 0, typeCleaning: "exrpess", phone: "" },
 		mode: "onBlur",
-		resolver: async (values) => {
-			return {
-				values: isValidNumber(values.phone) ? values : {},
-				errors: !isValidNumber(values.phone)
-					? {
-							phone: {
-								type: "invalid",
-								message: "Некорректный номер телефона",
-							},
-						}
-					: {},
-			};
-		},
 	});
 	const { isSubmitting, isValid, errors } = form.formState;
 	const formValues = watch();
 	console.log("formValues", formValues);
+	const val = watch("square");
+	console.log("val", val);
 
 	const onSubmit = (data: FormT) => {
 		console.log("data", data);
@@ -74,13 +63,16 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 		<PageItem className="applicationContainer">
 			<main ref={ref} className="application">
 				<div className="leftBlockApplication">
-					<form onSubmit={(event) => form.handleSubmit(onSubmit)(event)}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<div className="nameBrend">
 							<NameBrend />
 						</div>
 						<div className="applicationParts">
-							<TextInput
-								{...register("square", { required: true })}
+							{/* <TextInput
+								{...register("square", {
+									required: "Площадь обязательна",
+									valueAsNumber: true,
+								})}
 								name="square"
 								type="number"
 								min={1}
@@ -89,19 +81,29 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								classnamecontainer="applicationPart"
 								prompts={prompts}
 								error={errors.square?.message}
-							/>
-							{/* <Selection
-								{...register("typeCleaning", { required: true })}
-								name="typeCleaning"
-								title="Тип уборки"
-								options={typesCleaning}
-								classNameContainer="applicationPart"
-								// value={value}
-								// onChange={(newValue) => setValue(newValue as CleaningOption)}
-								error={errors.typeCleaning?.message}
 							/> */}
+							<input type="text" {...register("square")} />
+							<Controller
+								name="typeCleaning"
+								control={control}
+								rules={{ required: "Тип уборки обязателен" }}
+								render={({ field }) => (
+									<Selection
+										{...field}
+										name="typeCleaning"
+										title="Тип уборки"
+										options={typesCleaning}
+										classNameContainer="applicationPart"
+										error={errors.typeCleaning?.message}
+									/>
+								)}
+							/>
 							<TextInput
-								{...register("phone", { required: true })}
+								{...register("phone", {
+									required: "Телефон обязателен",
+									validate: (value) =>
+										isValidNumber(value) || "Некорректный номер телефона",
+								})}
 								type="phone"
 								name="phone"
 								title="Номер телефона"

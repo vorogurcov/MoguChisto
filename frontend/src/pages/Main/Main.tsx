@@ -34,8 +34,8 @@ export default function Main() {
 		[PagePart.service]: applicationInfoRef,
 	};
 
-	// useSectionScroll(navigation);
-	// useSectionObserver(navigation);
+	useSectionScroll(navigation);
+	useSectionObserver(navigation);
 
 	return (
 		<Page>
