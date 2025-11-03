@@ -70,6 +70,12 @@ func NewMySQLDatabase() (*sql.DB, error) {
 			return
 		}
 
+        // Run migrations automatically after successful connection
+        if migErr := RunMigrations(db, "tools/migrations"); migErr != nil {
+            err = fmt.Errorf("run migrations: %w", migErr)
+            return
+        }
+
 		log.Printf("Successfully connected to MySQL at %s:%s/%s",
 			newMySQLDefaultConfig().Host,
 			newMySQLDefaultConfig().Port,
