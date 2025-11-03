@@ -30,7 +30,13 @@ func RunMigrations(database *sql.DB, migrationsDir string) error {
         return fmt.Errorf("read migration files: %w", err)
     }
 
+    isDocker := os.Getenv("DOCKER_ENV") == "true"
+
     for _, f := range files {
+        // Пропускаем демо-миграции, если не docker-окружение
+        if strings.Contains(strings.ToLower(f), "demo") && !isDocker {
+            continue
+        }
         applied, err := isApplied(database, f)
         if err != nil {
             return fmt.Errorf("check applied %s: %w", f, err)
