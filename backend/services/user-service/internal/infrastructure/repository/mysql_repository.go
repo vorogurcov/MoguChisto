@@ -229,7 +229,11 @@ func (r *mySqlUserRepository) UpdateUserNotifications(ctx context.Context, userI
 		return nil, fmt.Errorf("rows affected: %w", err)
 	}
 	if rows == 0 {
-		return nil, fmt.Errorf("notifications not found for user_id %s", userID)
+		notif, getErr := r.GetUserNotifications(ctx, userID)
+		if getErr != nil {
+			return nil, fmt.Errorf("notifications not found for user_id %s", userID)
+		}
+		return notif, nil
 	}
 
 	notif, err := r.GetUserNotifications(ctx, userID)
