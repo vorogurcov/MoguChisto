@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/joho/godotenv"
 	"log"
 	user "main/services/user-service/cmd"
 	db2 "main/shared/db"
@@ -11,12 +10,22 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 func main() {
 	if err := godotenv.Load("./cmd/.env"); err != nil {
 		log.Println("No .env file found, using system env")
 	}
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	})
 
 	db, err := db2.NewMySQLDatabase()
 
@@ -35,9 +44,11 @@ func main() {
 		httpAddr = ":8080"
 	}
 
+	handler := c.Handler(mux)
+
 	server := &http.Server{
 		Addr:    httpAddr,
-		Handler: mux,
+		Handler: handler,
 	}
 
 	serverErrors := make(chan error, 1)

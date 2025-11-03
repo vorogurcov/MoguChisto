@@ -23,12 +23,17 @@ type MySQLConfig struct {
 }
 
 func newMySQLDefaultConfig() *MySQLConfig {
+	host := os.Getenv("MY_SQL_HOST")
+	if os.Getenv("DOCKER_ENV") == "true" {
+		host = "mysql"
+	}
+
 	return &MySQLConfig{
-		User:   os.Getenv("MY_SQL_USER"),
-		Passwd: os.Getenv("MY_SQL_PASSWD"),
-		Host:   os.Getenv("MY_SQL_HOST"),
+		User:   os.Getenv("MYSQL_USER"),
+		Passwd: os.Getenv("MYSQL_PASSWORD"),
+		Host:   host,
 		Port:   os.Getenv("MY_SQL_PORT"),
-		DBName: os.Getenv("MY_SQL_DBNAME"),
+		DBName: os.Getenv("MYSQL_DATABASE"),
 	}
 }
 
