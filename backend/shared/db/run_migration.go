@@ -6,6 +6,7 @@ import (
     "errors"
     "fmt"
     "io/fs"
+    "log"
     "os"
     "path/filepath"
     "sort"
@@ -25,16 +26,30 @@ func RunMigrations(database *sql.DB, migrationsDir string) error {
         return fmt.Errorf("ensure migrations table: %w", err)
     }
 
+    log.Printf("[migrations] scanning directory: %s", migrationsDir)
     files, err := readMigrationFiles(migrationsDir, ".up.sql")
     if err != nil {
         return fmt.Errorf("read migration files: %w", err)
     }
 
     isDocker := os.Getenv("DOCKER_ENV") == "true"
+    if isDocker {
+        log.Printf("[migrations] DOCKER_ENV=true → demo migrations enabled")
+    } else {
+        log.Printf("[migrations] DOCKER_ENV!=true → demo migrations will be skipped")
+    }
+
+    log.Printf("[migrations] found %d migration(s): %s", len(files), strings.Join(files, ", "))
+
+    appliedCount := 0
+    skippedCount := 0
+    executedCount := 0
 
     for _, f := range files {
         // Пропускаем демо-миграции, если не docker-окружение
         if strings.Contains(strings.ToLower(f), "demo") && !isDocker {
+            log.Printf("[migrations] skip (demo, non-docker): %s", f)
+            skippedCount++
             continue
         }
         applied, err := isApplied(database, f)
@@ -42,22 +57,34 @@ func RunMigrations(database *sql.DB, migrationsDir string) error {
             return fmt.Errorf("check applied %s: %w", f, err)
         }
         if applied {
+            log.Printf("[migrations] already applied: %s", f)
+            appliedCount++
             continue
         }
-
+        log.Printf("[migrations] start: %s", f)
+        startedAt := time.Now()
         content, err := os.ReadFile(filepath.Join(migrationsDir, f))
         if err != nil {
             return fmt.Errorf("read file %s: %w", f, err)
         }
 
         if err := execSQLStatements(database, string(content)); err != nil {
+            duration := time.Since(startedAt)
+            log.Printf("[migrations] FAILED: %s (duration=%s) error=%v", f, duration, err)
             return fmt.Errorf("execute migration %s: %w", f, err)
         }
 
         if err := markApplied(database, f); err != nil {
+            duration := time.Since(startedAt)
+            log.Printf("[migrations] FAILED (mark applied): %s (duration=%s) error=%v", f, duration, err)
             return fmt.Errorf("mark applied %s: %w", f, err)
         }
+
+        duration := time.Since(startedAt)
+        log.Printf("[migrations] SUCCESS: %s (duration=%s)", f, duration)
+        executedCount++
     }
+    log.Printf("[migrations] summary: executed=%d, already_applied=%d, skipped=%d", executedCount, appliedCount, skippedCount)
     return nil
 }
 
