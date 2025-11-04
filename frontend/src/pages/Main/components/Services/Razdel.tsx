@@ -37,8 +37,8 @@ const Razdel = forwardRef<
 	}
 >(({ attributes, razdel }, ref) => {
 	return (
-		<div ref={ref} className="tableRazdel">
-			<div>
+		<div className="tableRazdel">
+			<div ref={ref}>
 				<span className="nameRazdel">{razdelTemplates[razdel].name}</span>
 				<p className="descriptionRazdel">
 					{razdelTemplates[razdel].description}

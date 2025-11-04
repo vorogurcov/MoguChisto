@@ -46,9 +46,9 @@ export default function calculatorPrice(
 	typeCleaning: CleaningType,
 ) {
 	const type = calcData[typeCleaning];
-	return (
+	return Math.round(
 		(type.oil + type.chemistry + (type.salary + square * type.koefSquare)) *
-		type.koefMarge *
-		type.koefMarketing
+			type.koefMarge *
+			type.koefMarketing,
 	);
 }

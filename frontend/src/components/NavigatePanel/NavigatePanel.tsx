@@ -50,10 +50,21 @@ const ButtonsPanel = () => {
 
 export default function NavigatePanel() {
 	const showModal = useShowModal();
+	const navigate = useNavigate();
+	const contextSection = useActiveSectionContext();
 	return (
 		<div className="panel">
 			<div>
-				<Logo width={101} height={24} className="logoNavigate" />
+				<Logo
+					width={101}
+					height={24}
+					className="logoNavigate"
+					onClick={() => {
+						contextSection?.setActiveSection(PagePart.top);
+						contextSection?.setShouldSmooth(true);
+						navigate("/");
+					}}
+				/>
 			</div>
 			<ButtonsPanel />
 			<div className="tools">

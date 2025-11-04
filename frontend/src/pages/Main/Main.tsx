@@ -35,7 +35,7 @@ export default function Main() {
 	};
 
 	useSectionScroll(navigation);
-	useSectionObserver(navigation);
+	// useSectionObserver(navigation);
 
 	return (
 		<Page>

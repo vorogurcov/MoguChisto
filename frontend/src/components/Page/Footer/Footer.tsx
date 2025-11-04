@@ -5,6 +5,9 @@ import PageItem from "../../PageItem";
 import MainButton from "../../Buttons/MainButton/MainButton";
 import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import "./css.scss";
+import { useNavigate } from "react-router-dom";
+import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
+import { PagePart } from "../../NavigatePanel/NavigatePanel";
 
 const tools: string[] = [
 	"Услуги",
@@ -149,6 +152,8 @@ const SquareWhatsApp: FC<SVGProps<SVGSVGElement>> = (props) => (
 );
 
 const Footer = forwardRef<HTMLDivElement>((_, ref) => {
+	const navigate = useNavigate();
+	const contextSection = useActiveSectionContext();
 	return (
 		<PageItem className="footerPage">
 			<div ref={ref} className="footerTools">
@@ -182,7 +187,15 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					<p>Профессиональный клининг в санкт-петербурге</p>
 				</div>
 				<div className="sendFooter">
-					<MainButton>Оставить заявку</MainButton>
+					<MainButton
+						onClick={() => {
+							contextSection?.setActiveSection(PagePart.top);
+							contextSection?.setShouldSmooth(true);
+							navigate("/");
+						}}
+					>
+						Оставить заявку
+					</MainButton>
 				</div>
 			</div>
 			<footer>

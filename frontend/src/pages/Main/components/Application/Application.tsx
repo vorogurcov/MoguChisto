@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useRef, useState } from "react";
+import { forwardRef, memo, useMemo, useRef, useState } from "react";
 import CleanerPicture from "./CleanerPicture";
 import TextInput, {
 	isValidNumber,
@@ -22,7 +22,7 @@ type CleaningOption = (typeof typesCleaning)[0];
 
 type FormT = {
 	square: number;
-	typeCleaning: CleaningType;
+	typeCleaning: CleaningOption;
 	phone: string;
 };
 
@@ -36,10 +36,9 @@ const prompts = [
 
 const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	// const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
-	const squareRef = useRef<HTMLInputElement>(null);
 
 	const { register, watch, control, ...form } = useForm<FormT>({
-		defaultValues: { typeCleaning: "exrpess" },
+		defaultValues: { typeCleaning: typesCleaning[0] },
 		mode: "onBlur",
 	});
 	const { isSubmitting, isValid, errors } = form.formState;
@@ -51,17 +50,21 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 
 	const price = useMemo(
 		() =>
-			squareRef.current?.value
-				? calculatorPrice(Number(formValues.square), formValues.typeCleaning)
+			formValues.square && formValues.typeCleaning.type
+				? calculatorPrice(
+						Number(formValues.square),
+						formValues.typeCleaning.type,
+					)
 				: undefined,
 		[formValues.square, formValues.typeCleaning],
 	);
+
 	return (
 		<PageItem className="applicationContainer">
-			<main ref={ref} className="application">
+			<main className="application">
 				<div className="leftBlockApplication">
 					<form onSubmit={form.handleSubmit(onSubmit)}>
-						<div className="nameBrend">
+						<div ref={ref} className="nameBrend">
 							<NameBrend />
 						</div>
 						<div className="applicationParts">

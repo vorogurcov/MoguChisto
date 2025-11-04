@@ -13,7 +13,7 @@ export default function ModalHeader({
 			<p className="titleModal">
 				<b>{title}</b>
 			</p>
-			<p className="descrModal">{children}</p>
+			<div className="descrModal">{children}</div>
 		</div>
 	);
 }

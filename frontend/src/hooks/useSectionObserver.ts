@@ -51,7 +51,6 @@ export const useSectionObserver = (
 					)?.[0] as unknown as PagePart;
 
 					if (activeSection && activeSection !== context.activeSection) {
-						console.log("Setting active section from observer:", activeSection);
 						context.setActiveSection(activeSection);
 					}
 				}
