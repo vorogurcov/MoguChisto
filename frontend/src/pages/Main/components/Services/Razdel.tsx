@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import { NoSVG, YesSVG } from "./svg";
 
@@ -29,15 +29,15 @@ const AllowAnnotation = ({ hasType }: { hasType?: boolean | string }) => {
 	return hasType ? <YesSVG /> : <NoSVG />;
 };
 
-export default function Razdel({
-	attributes,
-	razdel,
-}: {
-	attributes: AboutAttribute[];
-	razdel: RazdelT;
-}) {
+const Razdel = forwardRef<
+	HTMLDivElement,
+	{
+		attributes: AboutAttribute[];
+		razdel: RazdelT;
+	}
+>(({ attributes, razdel }, ref) => {
 	return (
-		<div className="tableRazdel">
+		<div ref={ref} className="tableRazdel">
 			<div>
 				<span className="nameRazdel">{razdelTemplates[razdel].name}</span>
 				<p className="descriptionRazdel">
@@ -72,4 +72,6 @@ export default function Razdel({
 			</div>
 		</div>
 	);
-}
+});
+Razdel.displayName = "Razdel";
+export default Razdel;

@@ -39,14 +39,11 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	const squareRef = useRef<HTMLInputElement>(null);
 
 	const { register, watch, control, ...form } = useForm<FormT>({
-		defaultValues: { square: 0, typeCleaning: "exrpess", phone: "" },
+		defaultValues: { typeCleaning: "exrpess" },
 		mode: "onBlur",
 	});
 	const { isSubmitting, isValid, errors } = form.formState;
 	const formValues = watch();
-	console.log("formValues", formValues);
-	const val = watch("square");
-	console.log("val", val);
 
 	const onSubmit = (data: FormT) => {
 		console.log("data", data);
@@ -68,7 +65,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 							<NameBrend />
 						</div>
 						<div className="applicationParts">
-							{/* <TextInput
+							<TextInput
 								{...register("square", {
 									required: "Площадь обязательна",
 									valueAsNumber: true,
@@ -81,8 +78,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								classnamecontainer="applicationPart"
 								prompts={prompts}
 								error={errors.square?.message}
-							/> */}
-							<input type="text" {...register("square")} />
+							/>
 							<Controller
 								name="typeCleaning"
 								control={control}
@@ -112,7 +108,9 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								error={errors.phone?.message}
 							/>
 						</div>
-						<div className="price">{price && <span>{price} ₽</span>}</div>
+						<div className="price">
+							{price ? <span>{price} ₽</span> : <span>Давайте посчитаем!</span>}
+						</div>
 						<div className="buttonsApplication">
 							<MainButton
 								className="send"

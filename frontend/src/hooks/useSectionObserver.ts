@@ -1,5 +1,5 @@
 // hooks/useSectionObserver.ts
-import { RefObject, useContext, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { PagePart } from "../components/NavigatePanel/NavigatePanel";
 import { useActiveSectionContext } from "./ActiveSectionContext";
 
@@ -15,27 +15,39 @@ export const useSectionObserver = (
 		// Создаем Intersection Observer
 		observer.current = new IntersectionObserver(
 			(entries) => {
-				// Находим entry, которое ближе всего к центру экрана
-				let closestEntry: IntersectionObserverEntry | null = null;
-				let closestDistance = Infinity;
+				// Находим entry, которое пересекает верхнюю половину экрана
+				let activeEntry: IntersectionObserverEntry | null = null;
+				let minTopValue = Infinity;
 
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						const rect = entry.boundingClientRect;
-						const centerY = window.innerHeight / 2;
-						const distance = Math.abs(rect.top + rect.height / 2 - centerY);
+						const viewportHeight = window.innerHeight;
 
-						if (distance < closestDistance) {
-							closestDistance = distance;
-							closestEntry = entry;
+						// Элемент пересекает верхнюю половину экрана, если:
+						// - Его верхняя граница выше середины экрана ИЛИ
+						// - Его нижняя граница выше середины экрана ИЛИ
+						// - Он охватывает середину экрана
+						const intersectsTopHalf =
+							rect.top <= viewportHeight / 2 ||
+							rect.bottom <= viewportHeight / 2 ||
+							(rect.top <= viewportHeight / 2 &&
+								rect.bottom >= viewportHeight / 2);
+
+						if (intersectsTopHalf) {
+							// Выбираем элемент с наименьшим top значением (ближайший к верху)
+							if (rect.top < minTopValue) {
+								minTopValue = rect.top;
+								activeEntry = entry;
+							}
 						}
 					}
 				});
 
-				// Если нашли ближайшую секцию и она достаточно близко к центру
-				if (closestEntry && closestDistance < window.innerHeight * 0.4) {
+				// Если нашли активную секцию
+				if (activeEntry) {
 					const activeSection = Object.entries(sectionRefs).find(
-						([, ref]) => ref.current === closestEntry?.target,
+						([, ref]) => ref.current === activeEntry?.target,
 					)?.[0] as unknown as PagePart;
 
 					if (activeSection && activeSection !== context.activeSection) {
@@ -46,7 +58,7 @@ export const useSectionObserver = (
 			},
 			{
 				root: null, // viewport
-				rootMargin: "-50% 0px -50% 0px", // наблюдаем только центральную часть экрана
+				rootMargin: "0px 0px -50% 0px", // наблюдаем от верха до середины экрана
 				threshold: 0, // срабатывает при любом пересечении
 			},
 		);

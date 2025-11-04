@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, memo, useRef, useState } from "react";
 import PageItem from "../../../../components/PageItem";
 import Info from "../Title";
 import classNames from "classnames";
@@ -59,8 +59,12 @@ const questions: QuestionT[] = [
 	},
 ];
 
-function Question({ question, answer }: QuestionT) {
-	const [isOpen, setIsOpen] = useState(false);
+const Question = memo(function ({
+	question,
+	answer,
+	isOpen,
+	handleOpen,
+}: QuestionT & { isOpen: boolean; handleOpen: () => void }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const wrapperStale = useSpring({
 		from: {
@@ -90,7 +94,7 @@ function Question({ question, answer }: QuestionT) {
 		<animated.div
 			style={wrapperStale}
 			className={classNames("question", isOpen ? "open" : "")}
-			onClick={() => setIsOpen((prev) => !prev)}
+			onClick={() => handleOpen()}
 		>
 			<div className="questionText">{question}</div>
 			<animated.div
@@ -102,9 +106,11 @@ function Question({ question, answer }: QuestionT) {
 			</animated.div>
 		</animated.div>
 	);
-}
+});
+Question.displayName = "Question";
 
 const FAQ = forwardRef<HTMLDivElement>((_, ref) => {
+	const [indexOpened, setIndexOpened] = useState(-1);
 	return (
 		<PageItem className="faq">
 			<Info>
@@ -112,7 +118,14 @@ const FAQ = forwardRef<HTMLDivElement>((_, ref) => {
 			</Info>
 			<div className="ansWrapper">
 				{questions.map((q, index) => (
-					<Question key={index} {...q} />
+					<Question
+						key={index}
+						{...q}
+						isOpen={index === indexOpened}
+						handleOpen={() =>
+							setIndexOpened(index === indexOpened ? -1 : index)
+						}
+					/>
 				))}
 			</div>
 		</PageItem>

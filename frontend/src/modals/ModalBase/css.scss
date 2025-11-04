@@ -1,0 +1,53 @@
+@import "@colors";
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	max-height: 100vh;
+	main {
+		max-height: 100vh;
+		overflow: hidden;
+	}
+}
+
+.modalContent {
+	width: 450px;
+	padding: 40px;
+	background-color: white;
+	position: relative;
+}
+.childrenModal {
+	display: grid;
+	grid-template-columns: 100%;
+	gap: 40px;
+}
+
+.thinModal {
+	width: 300px;
+	border-radius: 21px;
+}
+
+.close {
+	background: none;
+	border: none;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	z-index: 1;
+}
+
+.modalContentAuto {
+	height: auto;
+	width: 300px;
+	min-height: 200px;
+	padding: 20px 10px 20px 10px;
+	border-radius: 20px;
+}

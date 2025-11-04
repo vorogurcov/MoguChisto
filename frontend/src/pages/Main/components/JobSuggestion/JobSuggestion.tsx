@@ -37,6 +37,8 @@ const SVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	</svg>
 );
 
+const Hh = () => <div className="hh">hh</div>;
+
 function Part({ children }: { children: string }) {
 	return (
 		<div className="partContainer">
@@ -71,10 +73,13 @@ const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 				<ButtonWithBottomLine>Требования</ButtonWithBottomLine>
 				<ButtonWithBottomLine>Комфортные условия</ButtonWithBottomLine>
 			</div>
-			<MainButton className="writeButton">
-				Написать в WhatsApp
-				<WhatsApp className="whatsapp" fill="white" />
-			</MainButton>
+			<div className="sourcesMess">
+				<MainButton className="writeButton">
+					Написать в WhatsApp
+					<WhatsApp className="whatsapp" fill="white" />
+				</MainButton>
+				<Hh />
+			</div>
 			<CleanerSVG className="cleanerSvg" />
 			<footer>
 				<FooterSVG fill="white" className="footerJob" />

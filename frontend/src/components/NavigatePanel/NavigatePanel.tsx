@@ -1,10 +1,10 @@
-import { useSearchParams } from "react-router-dom";
 import { Logo, Phone, Telegram, WhatsApp } from "../../public/svg";
 import ButtonLikeText from "../Buttons/ButtonLikeText/ButtonLikeText";
 import MainButton from "../Buttons/MainButton/MainButton";
 import "./css.scss";
-import { useContext } from "react";
 import { useActiveSectionContext } from "../../hooks/ActiveSectionContext";
+import { useNavigate } from "react-router-dom";
+import useShowModal from "../../hooks/useShowModal";
 
 export enum PagePart {
 	top,
@@ -20,12 +20,13 @@ const ButtonsPanel = () => {
 	const contextSection = useActiveSectionContext();
 	const buttons = [
 		{ name: "Услуги", type: PagePart.service },
-		{ name: "О нас", type: PagePart.about },
-		{ name: "Клинеры", type: PagePart.cleaners },
 		{ name: "Уборка", type: PagePart.cleaning },
+		{ name: "Клинеры", type: PagePart.cleaners },
+		{ name: "О нас", type: PagePart.about },
 		{ name: "FAQ", type: PagePart.faq },
 		{ name: "Контакты", type: PagePart.contacts },
 	];
+	const navigate = useNavigate();
 	return (
 		<div className="pages">
 			{buttons.map((button) => (
@@ -37,6 +38,7 @@ const ButtonsPanel = () => {
 					onClick={() => {
 						contextSection?.setActiveSection(button.type);
 						contextSection?.setShouldSmooth(true);
+						navigate("/");
 					}}
 				>
 					{button.name}
@@ -47,6 +49,7 @@ const ButtonsPanel = () => {
 };
 
 export default function NavigatePanel() {
+	const showModal = useShowModal();
 	return (
 		<div className="panel">
 			<div>
@@ -66,7 +69,12 @@ export default function NavigatePanel() {
 					</a>
 				</div>
 				<div>
-					<MainButton className="profile">Профиль</MainButton>
+					<MainButton
+						className="profile"
+						onClick={() => showModal("Authorization", {})}
+					>
+						Профиль
+					</MainButton>
 				</div>
 			</div>
 		</div>

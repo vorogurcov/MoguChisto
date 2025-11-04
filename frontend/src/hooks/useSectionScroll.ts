@@ -18,5 +18,5 @@ export default function useSectionScroll(
 				behavior: "smooth",
 			});
 		}
-	}, [contextSection]);
+	}, [contextSection, navigation]);
 }

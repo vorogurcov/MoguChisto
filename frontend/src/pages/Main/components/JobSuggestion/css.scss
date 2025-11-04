@@ -36,12 +36,12 @@
 		}
 	}
 	.writeButton {
-		margin-top: 40px;
 		background-color: #56c745;
 		color: white;
 		font-weight: 500;
 		position: relative;
-		z-index: 2;
+		margin-right: 20px;
+		font-size: 16px;
 	}
 	.cleanerSvg {
 		position: absolute;
@@ -58,5 +58,27 @@
 	.footerJob {
 		z-index: 1;
 		transform: scaleX(-1);
+	}
+
+	.sourcesMess {
+		display: flex;
+		margin-top: 40px;
+		z-index: 2;
+	}
+
+	.hh {
+		height: 42px;
+		aspect-ratio: 1/1;
+		background-color: #ef3124;
+		color: white;
+		font-size: 16px;
+		font-weight: 500;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 6px;
+		&:hover {
+			cursor: pointer;
+		}
 	}
 }

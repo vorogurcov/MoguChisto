@@ -83,7 +83,6 @@ function OneReciewe({ photo, text, name }: RecieweT) {
 					</div>
 
 					<div className="back">
-						<div className="avatarReciewer">avatar</div>
 						<div className="reciewerText">
 							{text.split("\n").map((paragraph, index) => (
 								<p key={index}>{paragraph}</p>

@@ -59,12 +59,12 @@ const DifficueltShadowsWrapper = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-const Cleaning = forwardRef<HTMLDivElement>((_, ref) => {
+const Services = forwardRef<HTMLDivElement>((_, ref) => {
 	const [razdel, setRazdel] = useState<RazdelT>("kitchen");
 	return (
 		<PageItem className="razdel">
 			<DifficueltShadowsWrapper>
-				<div ref={ref} className="contentRazdel">
+				<div className="contentRazdel">
 					<div className="panelRazdel">
 						<div className="buttonsRazdel">
 							<TotalSVG
@@ -84,11 +84,11 @@ const Cleaning = forwardRef<HTMLDivElement>((_, ref) => {
 							/>
 						</div>
 					</div>
-					<Razdel attributes={razdels[razdel]} razdel={razdel} />
+					<Razdel ref={ref} attributes={razdels[razdel]} razdel={razdel} />
 				</div>
 			</DifficueltShadowsWrapper>
 		</PageItem>
 	);
 });
-Cleaning.displayName = "Cleaning";
-export default Cleaning;
+Services.displayName = "Cleaning";
+export default Services;

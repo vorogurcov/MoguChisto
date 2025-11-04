@@ -43,6 +43,17 @@
 		padding: 16px;
 		background-color: $page-gray;
 		display: grid;
+		transition: all 0.5s ease;
+		&:hover {
+			transform: scale(1.03); // Увеличиваем на ~6px (3%)
+			background-color: $blue;
+
+			// Меняем цвет текста на белый для контраста
+			b,
+			div {
+				color: white;
+			}
+		}
 	}
 	.widgetContent {
 		margin-top: auto;

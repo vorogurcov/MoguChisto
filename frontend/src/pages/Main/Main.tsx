@@ -3,7 +3,7 @@ import Page from "../../components/Page/Page";
 import Application from "./components/Application/Application";
 import ApplicationInfo from "./components/ApplicationInfo/ApplicationInfo";
 import Cleaners from "./components/Cleaners/Cleaners";
-import Cleaning from "./components/Cleaning/Cleaning";
+import Services from "./components/Services/Services";
 import FAQ from "./components/FAQ/FAQ";
 import JobSuggestion from "./components/JobSuggestion/JobSuggestion";
 import Reciewes from "./components/Reciewes/Reciewes";
@@ -16,22 +16,22 @@ import { useSectionObserver } from "../../hooks/useSectionObserver";
 export default function Main() {
 	const applicationRef = useRef<HTMLDivElement>(null);
 	const cleaningRef = useRef<HTMLDivElement>(null);
-	const resultWorkingRef = useRef<HTMLDivElement>(null);
 	const cleanersRef = useRef<HTMLDivElement>(null);
 	const reciewesRef = useRef<HTMLDivElement>(null);
-	const applicationInfoRef = useRef<HTMLDivElement>(null);
+	const servicesRef = useRef<HTMLDivElement>(null);
 	const jobSuggestionRef = useRef<HTMLDivElement>(null);
 	const faqRef = useRef<HTMLDivElement>(null);
 	const aboutRef = useRef<HTMLDivElement>(null);
+	const contactsRef = useRef<HTMLDivElement>(null);
 
 	const navigation: Record<PagePart, RefObject<HTMLDivElement | null>> = {
 		[PagePart.top]: applicationRef,
-		[PagePart.about]: aboutRef,
-		[PagePart.cleaners]: cleanersRef,
+		[PagePart.service]: servicesRef,
 		[PagePart.cleaning]: cleaningRef,
-		[PagePart.contacts]: aboutRef,
+		[PagePart.cleaners]: cleanersRef,
+		[PagePart.about]: aboutRef,
 		[PagePart.faq]: faqRef,
-		[PagePart.service]: applicationInfoRef,
+		[PagePart.contacts]: contactsRef,
 	};
 
 	useSectionScroll(navigation);
@@ -40,14 +40,14 @@ export default function Main() {
 	return (
 		<Page>
 			<Application ref={applicationRef} />
-			<Cleaning ref={applicationInfoRef} />
-			<ResultWorking />
+			<Services ref={servicesRef} />
+			<ResultWorking ref={cleaningRef} />
 			<Cleaners ref={cleanersRef} />
 			<Reciewes ref={reciewesRef} />
-			<ApplicationInfo ref={applicationInfoRef} />
+			<ApplicationInfo ref={aboutRef} />
 			<JobSuggestion ref={jobSuggestionRef} />
 			<FAQ ref={faqRef} />
-			<Footer ref={aboutRef} />
+			<Footer ref={contactsRef} />
 		</Page>
 	);
 }
