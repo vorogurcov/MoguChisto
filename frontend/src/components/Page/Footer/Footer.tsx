@@ -1,10 +1,13 @@
-import { FC, SVGProps } from "react";
+import { FC, forwardRef, SVGProps } from "react";
 import { Logo, NameBrend } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
 import MainButton from "../../Buttons/MainButton/MainButton";
 import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import "./css.scss";
+import { useNavigate } from "react-router-dom";
+import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
+import { PagePart } from "../../NavigatePanel/NavigatePanel";
 
 const tools: string[] = [
 	"Услуги",
@@ -148,10 +151,12 @@ const SquareWhatsApp: FC<SVGProps<SVGSVGElement>> = (props) => (
 	</svg>
 );
 
-export default function Footer() {
+const Footer = forwardRef<HTMLDivElement>((_, ref) => {
+	const navigate = useNavigate();
+	const contextSection = useActiveSectionContext();
 	return (
 		<PageItem className="footerPage">
-			<div className="footerTools">
+			<div ref={ref} className="footerTools">
 				{tools.map((tool) => (
 					<ButtonLikeText key={tool} className="toolFooter">
 						{tool}
@@ -182,7 +187,15 @@ export default function Footer() {
 					<p>Профессиональный клининг в санкт-петербурге</p>
 				</div>
 				<div className="sendFooter">
-					<MainButton>Оставить заявку</MainButton>
+					<MainButton
+						onClick={() => {
+							contextSection?.setActiveSection(PagePart.top);
+							contextSection?.setShouldSmooth(true);
+							navigate("/");
+						}}
+					>
+						Оставить заявку
+					</MainButton>
 				</div>
 			</div>
 			<footer>
@@ -201,4 +214,6 @@ export default function Footer() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+Footer.displayName = "Footer";
+export default Footer;

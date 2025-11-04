@@ -1,0 +1,31 @@
+@import "@colors";
+
+.infoHover {
+	position: relative;
+	svg {
+		margin-right: 5px;
+	}
+	.hoverContainer {
+		position: relative;
+		line-height: 150%;
+	}
+	.hoverPanel {
+		width: max-content;
+		max-width: 150px;
+		padding: 10px;
+		border-radius: 4px;
+		background-color: $dark-gray;
+		position: absolute;
+		left: 100%;
+		bottom: 0px;
+		gap: 10px;
+		font-size: 13px;
+		color: white;
+		font-weight: 500;
+		z-index: 10;
+	}
+	p {
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+}

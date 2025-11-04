@@ -15,6 +15,9 @@
 		box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.02);
 		display: flex;
 	}
+	.nameRazdel {
+		font-weight: bold;
+	}
 	.panelRazdel {
 		width: 48px;
 		height: 100%;
@@ -87,5 +90,10 @@
 		color: white;
 		margin-top: 40px;
 		height: 54px;
+	}
+	.svgButton {
+		&:hover {
+			cursor: pointer;
+		}
 	}
 }

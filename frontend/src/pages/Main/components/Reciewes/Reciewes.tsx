@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import Info from "../Title";
 import photo from "./photo.jpg";
@@ -83,7 +83,6 @@ function OneReciewe({ photo, text, name }: RecieweT) {
 					</div>
 
 					<div className="back">
-						<div className="avatarReciewer">avatar</div>
 						<div className="reciewerText">
 							{text.split("\n").map((paragraph, index) => (
 								<p key={index}>{paragraph}</p>
@@ -96,11 +95,11 @@ function OneReciewe({ photo, text, name }: RecieweT) {
 	);
 }
 
-export default function Reciewes() {
+const Reciewes = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="reciewes">
 			<Info>
-				<span>
+				<span ref={ref}>
 					<b>
 						Честная оценка <span className="numberRate">4.9</span>
 					</b>
@@ -125,4 +124,6 @@ export default function Reciewes() {
 			</ScrollCards>
 		</PageItem>
 	);
-}
+});
+Reciewes.displayName = "Reciewes";
+export default Reciewes;

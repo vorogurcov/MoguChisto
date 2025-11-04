@@ -1,4 +1,4 @@
-import { FC, SVGProps } from "react";
+import { FC, forwardRef, SVGProps } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import cleanerImg from "../../../../public/imgs/cleaners/cleaner.png";
 import "./css.scss";
@@ -124,11 +124,11 @@ function OneCard({ name, rate, description, img }: CardT) {
 	);
 }
 
-export default function Cleaners() {
+const Cleaners = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="cleaners">
 			<Info>
-				<span>
+				<span ref={ref}>
 					<b>Мы тщательно отбираем и обучаем каждого клинера</b>
 				</span>
 				<NumberCleanersSVG />
@@ -140,4 +140,6 @@ export default function Cleaners() {
 			</ScrollCards>
 		</PageItem>
 	);
-}
+});
+Cleaners.displayName = "Cleaners";
+export default Cleaners;

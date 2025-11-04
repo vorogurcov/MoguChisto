@@ -3,7 +3,9 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import "./public/font/font.scss";
 import App from "./App";
+import ReactModal from "react-modal";
 
+ReactModal.setAppElement("#root");
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement,
 );

@@ -1,4 +1,4 @@
-import { ReactElement, SVGProps, useState } from "react";
+import { forwardRef, ReactElement, SVGProps, useState } from "react";
 import { CacheSVG, CloudSVG, PersonSVG, RaketSVG, TimeSVG } from "./SVG";
 import classNames from "classnames";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
@@ -115,10 +115,10 @@ function Tarifs() {
 	);
 }
 
-export default function ApplicationInfo() {
+const ApplicationInfo = forwardRef<HTMLDivElement>((_, ref) => {
 	return (
 		<PageItem className="applicatioInfo">
-			<div className="titles">
+			<div ref={ref} className="titles">
 				<div className="title">
 					<h1>
 						Современный или классический дизайн? Для квартиры, студии или
@@ -147,4 +147,6 @@ export default function ApplicationInfo() {
 			</footer>
 		</PageItem>
 	);
-}
+});
+ApplicationInfo.displayName = "ApplicationInfo";
+export default ApplicationInfo;

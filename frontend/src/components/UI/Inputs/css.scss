@@ -1,0 +1,14 @@
+.titleContainer {
+	display: flex;
+	align-items: center;
+	position: relative;
+	span {
+		margin-right: 10px;
+	}
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

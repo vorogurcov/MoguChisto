@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import { NoSVG, YesSVG } from "./svg";
 
@@ -13,12 +14,12 @@ export type AboutAttribute = {
 const razdelTemplates: Record<RazdelT, { name: string; description: string }> =
 	{
 		kitchen: {
-			name: "кухня",
+			name: "КУХНЯ",
 			description:
 				"Мы знаем, как сложно представить кухню только по картинке. Поэтому делаем всё, чтобы вам было удобно:",
 		},
-		bathroom: { name: "туалет", description: "Туааалеееет" },
-		total: { name: "генеральная уборка", description: "Всеееееее" },
+		bathroom: { name: "ТУАЛЕТ", description: "Туааалеееет" },
+		total: { name: "КОМНАТЫ", description: "Всеееееее" },
 	};
 
 const AllowAnnotation = ({ hasType }: { hasType?: boolean | string }) => {
@@ -28,16 +29,16 @@ const AllowAnnotation = ({ hasType }: { hasType?: boolean | string }) => {
 	return hasType ? <YesSVG /> : <NoSVG />;
 };
 
-export default function Razdel({
-	attributes,
-	razdel,
-}: {
-	attributes: AboutAttribute[];
-	razdel: RazdelT;
-}) {
+const Razdel = forwardRef<
+	HTMLDivElement,
+	{
+		attributes: AboutAttribute[];
+		razdel: RazdelT;
+	}
+>(({ attributes, razdel }, ref) => {
 	return (
 		<div className="tableRazdel">
-			<div>
+			<div ref={ref}>
 				<span className="nameRazdel">{razdelTemplates[razdel].name}</span>
 				<p className="descriptionRazdel">
 					{razdelTemplates[razdel].description}
@@ -49,7 +50,7 @@ export default function Razdel({
 				<div className="oneRazdel">Комфорт</div>
 				<div className="oneRazdel">Элит</div>
 				{attributes.map((attr, index) => (
-					<>
+					<React.Fragment key={index}>
 						<div className="attrName">{attr.attribute}</div>
 						<div className="oneRazdel">
 							<AllowAnnotation hasType={attr.hasExpress} />
@@ -63,13 +64,14 @@ export default function Razdel({
 						{index === attributes.length - 1 ? null : (
 							<div className="borderRowRazdel" />
 						)}
-					</>
+					</React.Fragment>
 				))}
 			</div>
 			<div>
 				<MainButton className="sendApplication">Оставить заявку</MainButton>
-				<p className="descriptionRazdel">Стоимость 2 000 ₽.</p>
 			</div>
 		</div>
 	);
-}
+});
+Razdel.displayName = "Razdel";
+export default Razdel;

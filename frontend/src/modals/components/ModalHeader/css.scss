@@ -1,0 +1,17 @@
+.modalHeader {
+	p {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 0px;
+	}
+	.titleModal {
+		font-size: 40px;
+		margin: 0px;
+	}
+	.descrModal {
+		margin-top: 10px;
+		font-size: 15px;
+		font-weight: 500;
+	}
+}

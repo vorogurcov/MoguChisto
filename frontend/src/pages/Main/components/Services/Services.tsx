@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { forwardRef, ReactNode, useState } from "react";
 import Razdel, { AboutAttribute, RazdelT } from "./Razdel";
 import "./css.scss";
 import { BathroomSVG, KitchenSVG, TotalSVG } from "./svg";
@@ -59,7 +59,7 @@ const DifficueltShadowsWrapper = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export default function Cleaning() {
+const Services = forwardRef<HTMLDivElement>((_, ref) => {
 	const [razdel, setRazdel] = useState<RazdelT>("kitchen");
 	return (
 		<PageItem className="razdel">
@@ -67,14 +67,28 @@ export default function Cleaning() {
 				<div className="contentRazdel">
 					<div className="panelRazdel">
 						<div className="buttonsRazdel">
-							<TotalSVG className="svgButton" />
-							<BathroomSVG className="svgButton" />
-							<KitchenSVG className="svgButton" />
+							<TotalSVG
+								className="svgButton"
+								active={razdel === "total"}
+								onClick={() => setRazdel("total")}
+							/>
+							<BathroomSVG
+								className="svgButton"
+								active={razdel === "bathroom"}
+								onClick={() => setRazdel("bathroom")}
+							/>
+							<KitchenSVG
+								className="svgButton"
+								active={razdel === "kitchen"}
+								onClick={() => setRazdel("kitchen")}
+							/>
 						</div>
 					</div>
-					<Razdel attributes={razdels[razdel]} razdel={razdel} />
+					<Razdel ref={ref} attributes={razdels[razdel]} razdel={razdel} />
 				</div>
 			</DifficueltShadowsWrapper>
 		</PageItem>
 	);
-}
+});
+Services.displayName = "Cleaning";
+export default Services;

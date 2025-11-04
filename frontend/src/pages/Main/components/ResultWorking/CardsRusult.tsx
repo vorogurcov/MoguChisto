@@ -2,6 +2,7 @@ import { useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import bef from "../../../../public/imgs/results/bef.jpg";
 import aft from "../../../../public/imgs/results/aft.png";
+import aga from "./aga.jpg";
 import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
 import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
 import { MiniCleanerSVG } from "../../../../public/svg";
@@ -28,7 +29,10 @@ const cards: CardResultT[] = [
 		time: "2,5",
 		square: 15,
 		services: "PRO средства",
-		imgs: [{ before: bef, after: aft }],
+		imgs: [
+			{ before: bef, after: aft },
+			{ before: aga, after: aga },
+		],
 		title: "Генеральная уборка кухни",
 	},
 	{
@@ -60,50 +64,13 @@ const cards: CardResultT[] = [
 	},
 ];
 
-const ButtonSvg = () => (
-	<svg
-		width="66"
-		height="66"
-		viewBox="0 0 66 66"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<rect x="0.5" y="0.787109" width="65" height="65" rx="32.5" fill="white" />
-		<g clipPath="url(#clip0_9_354)">
-			<path
-				d="M45 27.2871L43.9425 28.3446L48.1275 32.5371H39V34.0371H48.1275L43.935 38.2221L45 39.2871L51 33.2871L45 27.2871Z"
-				fill="#292929"
-			/>
-		</g>
-		<g clipPath="url(#clip1_9_354)">
-			<path
-				d="M21 27.2871L22.0575 28.3446L17.8725 32.5371H27V34.0371H17.8725L22.065 38.2221L21 39.2871L15 33.2871L21 27.2871Z"
-				fill="#292929"
-			/>
-		</g>
-		<defs>
-			<clipPath id="clip0_9_354">
-				<rect
-					width="18"
-					height="18"
-					fill="white"
-					transform="matrix(0 1 -1 0 54 24.2871)"
-				/>
-			</clipPath>
-			<clipPath id="clip1_9_354">
-				<rect
-					width="18"
-					height="18"
-					fill="white"
-					transform="matrix(0 1 1 0 12 24.2871)"
-				/>
-			</clipPath>
-		</defs>
-	</svg>
-);
-
 function ImgsResult({ imgs }: { imgs: ImgsResultT[] }) {
 	const [selected, setSelected] = useState(0);
+	const handleSelect = (index: number) => {
+		if (imgs.length > index && index != -1) {
+			setSelected(index);
+		}
+	};
 	return (
 		<div className="imgs">
 			<div className="img">
@@ -113,7 +80,37 @@ function ImgsResult({ imgs }: { imgs: ImgsResultT[] }) {
 				<img src={imgs[selected].after} alt="after" />
 			</div>
 			<div className="changePicture">
-				<ButtonSvg />
+				<button className="leftSkip" onClick={() => handleSelect(selected + 1)}>
+					<svg
+						width="12"
+						height="12"
+						viewBox="0 0 12 12"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M6 0L7.0575 1.0575L2.8725 5.25H12V6.75H2.8725L7.065 10.935L6 12L0 6L6 0Z"
+							fill="#292929"
+						/>
+					</svg>
+				</button>
+				<button
+					className="rightSkip"
+					onClick={() => handleSelect(selected - 1)}
+				>
+					<svg
+						width="12"
+						height="12"
+						viewBox="0 0 12 12"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M6 0L4.9425 1.0575L9.1275 5.25H0V6.75H9.1275L4.935 10.935L6 12L12 6L6 0Z"
+							fill="#292929"
+						/>
+					</svg>
+				</button>
 			</div>
 		</div>
 	);

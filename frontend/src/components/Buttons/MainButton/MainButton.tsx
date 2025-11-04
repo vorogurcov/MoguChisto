@@ -5,11 +5,13 @@ import "./css.scss";
 export default function MainButton({
 	children,
 	className,
+	submiting = false,
+	submitingText,
 	...props
-}: ButtonPropsType) {
+}: ButtonPropsType & { submitingText?: string; submiting?: boolean }) {
 	return (
 		<button className={classNames(className, "main")} {...props}>
-			{children}
+			{submiting && submitingText ? submitingText : children}
 		</button>
 	);
 }

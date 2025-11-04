@@ -3,9 +3,13 @@ import "../common.scss";
 import "./css.scss";
 import Select, { Props } from "react-select";
 
-type SelectionProps = Props & { title: string; classNameContainer?: string };
+type SelectionProps = Props & {
+	title: string;
+	classNameContainer?: string;
+	error?: string;
+};
 
-export default function Selection({ title, ...props }: SelectionProps) {
+export default function Selection({ title, error, ...props }: SelectionProps) {
 	return (
 		<div className={classNames(props.classNameContainer, "containerRectangle")}>
 			<span className="title">{title}</span>
@@ -29,6 +33,7 @@ export default function Selection({ title, ...props }: SelectionProps) {
 				isSearchable={false}
 				{...props}
 			/>
+			{error && <div className="errorInput">{error}</div>}
 		</div>
 	);
 }
