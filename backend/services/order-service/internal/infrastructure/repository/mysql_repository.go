@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"main/services/order-service/internall/domain"
-	"main/services/order-service/internall/dto"
+	"main/services/order-service/internal/domain"
+	"main/services/order-service/internal/dto"
 	"time"
 
 	"github.com/google/uuid"
@@ -49,13 +49,20 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			return nil, fmt.Errorf("scan order: %w", err)
 		}
 
+		var startTimeParsed time.Time
+		if startTimeStr.Valid {
+			if t, parseErr := time.Parse("15:04:05", startTimeStr.String); parseErr == nil {
+				startTimeParsed = t
+			}
+		}
+
 		order := &domain.OrderModel{
 			OrderID:   orderID,
 			UserID:    dbUserID,
 			Type:      orderType,
 			Cost:      cost,
 			Status:    status,
-			StartDate: time.Now(),
+			StartDate: startTimeParsed,
 			Cleaners:  "",
 		}
 		if cleaners.Valid {
@@ -81,7 +88,7 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 
 	var (
 		id           string
-		userID       string
+		userID       sql.NullString
 		orderType    string
 		cost         float64
 		status       string
@@ -104,9 +111,14 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		}
 	}
 
+	var userIDField string
+	if userID.Valid == false {
+		userIDField = ""
+	}
+
 	order := &domain.OrderModel{
 		OrderID:   id,
-		UserID:    userID,
+		UserID:    userIDField,
 		Type:      orderType,
 		Cost:      cost,
 		Status:    status,
@@ -121,13 +133,23 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 }
 
 func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto dto.CreateOrderDto) (*domain.OrderModel, error) {
+	var userFieldValue interface{}
+
+	if userID, ok := ctx.Value("userID").(string); ok && userID != "" {
+		userFieldValue = userID
+
+	} else {
+		userFieldValue = nil
+	}
+
 	id := uuid.NewString()
 
 	const insertQ = `
-        INSERT INTO orders (order_id, user_id, type, cost, status, start_date, cleaners)
-        VALUES (?, NULL, ?, ?, 'pending', NULL, NULL)`
+		INSERT INTO orders (order_id, user_id, type, cost, status, start_date, cleaners)
+		VALUES (?, ?, ?, ?, 'pending', ?, NULL)
+	`
 
-	if _, err := r.db.ExecContext(ctx, insertQ, id, createOrderDto.Type, createOrderDto.Cost); err != nil {
+	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, time.Now()); err != nil {
 		return nil, fmt.Errorf("insert order: %w", err)
 	}
 
@@ -135,5 +157,6 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 	if err != nil {
 		return nil, fmt.Errorf("select created order: %w", err)
 	}
+
 	return order, nil
 }

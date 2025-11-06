@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	order "main/services/order-service/cmd"
 	user "main/services/user-service/cmd"
 	db2 "main/shared/db"
 	"net/http"
@@ -37,7 +38,10 @@ func main() {
 
 	userMux := user.NewHandler(db)
 
+	orderMux := order.NewHandler(db)
+
 	mux.Handle("/user/", http.StripPrefix("/user", userMux))
+	mux.Handle("/orders/", http.StripPrefix("/orders", orderMux))
 
 	httpAddr := os.Getenv("HTTP_ADDR")
 	if httpAddr == "" {

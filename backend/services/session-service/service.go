@@ -91,3 +91,28 @@ func (ss *SessionService) GetAuthMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
+
+func (ss *SessionService) GetUserMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var userID string
+
+		c, err := r.Cookie("sessid")
+		if err == nil {
+			token := c.Value
+			hash := utils.HashToken(token)
+
+			var expiresAt time.Time
+			err = ss.MySqlDb.QueryRowContext(context.Background(),
+				`SELECT user_id, expires_at FROM sessions WHERE session_hash = ?`, hash,
+			).Scan(&userID, &expiresAt)
+
+			if err != nil || time.Now().After(expiresAt) {
+				userID = ""
+			}
+		}
+
+		// Добавляем userID (возможно пустой) в контекст
+		ctx := context.WithValue(r.Context(), "userID", userID)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
