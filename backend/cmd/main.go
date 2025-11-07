@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	amocrm_service "main/services/amocrm-service"
+	"main/services/amocrm-service/pkg/types"
 	order "main/services/order-service/cmd"
 	user "main/services/user-service/cmd"
 	db2 "main/shared/db"
@@ -42,6 +45,32 @@ func main() {
 
 	mux.Handle("/user/", http.StripPrefix("/user", userMux))
 	mux.Handle("/orders/", http.StripPrefix("/orders", orderMux))
+
+	amoSvc, err := amocrm_service.NewAmoCrmService()
+	if err != nil {
+		log.Fatalf("Ошибка создания AmoCrmService: %v", err)
+	}
+
+	// Создаем NewLeadDto с тестовыми данными
+	newLeadDto := types.NewLeadDto{
+		Name:        "Тестовая заявка",
+		Area:        50,
+		Type:        "comfort",
+		PhoneNumber: "+79991234567",
+		Cost:        2500.50,
+	}
+
+	// Создаем контекст
+	ctx := context.Background()
+
+	// Вызываем метод SendNewLead
+	result, err := amoSvc.SendNewLead(ctx, newLeadDto)
+	if err != nil {
+		log.Fatalf("Ошибка отправки лида: %v", err)
+	}
+
+	// Выводим результат
+	fmt.Printf("Лид успешно отправлен в AmoCRM. Результат: %+v\n", result)
 
 	httpAddr := os.Getenv("HTTP_ADDR")
 	if httpAddr == "" {
