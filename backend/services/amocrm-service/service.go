@@ -1,118 +1,64 @@
-package session_service
+package amocrm_service
 
 import (
+	"bytes"
 	"context"
-	"database/sql"
-	"main/services/session-service/internal/utils"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"main/services/amocrm-service/pkg/types"
 	"net/http"
-	"time"
+	"os"
 )
 
-type SessionService struct {
-	MySqlDb *sql.DB
+type AmoCrmService struct {
+	apiKey string
+	apiUrl string
 }
 
-func (ss *SessionService) CreateSessionAndSetCookie(w http.ResponseWriter, userID string, ttl time.Duration) error {
-	token, err := utils.GenerateToken()
+func NewAmoCrmService() (*AmoCrmService, error) {
+	amoCrmSubdomain := os.Getenv("AMOCRM_SUBDOMAIN")
+	if amoCrmSubdomain == "" {
+		return nil, errors.New("amocrm subdomain is not set in env")
+	}
+
+	amoCrmApiKey := os.Getenv("AMOCRM_ACCESS_KEY")
+	if amoCrmApiKey == "" {
+		return nil, errors.New("amocrm api key is not set in env")
+	}
+	return &AmoCrmService{
+		apiKey: amoCrmApiKey,
+		apiUrl: fmt.Sprintf("https://%v.amocrm.ru/api/v4/", amoCrmSubdomain),
+	}, nil
+}
+
+func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (interface{}, error) {
+	body, err := json.Marshal([]types.NewLeadDto{newLeadDto})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	hash := utils.HashToken(token)
 
-	now := time.Now().UTC()
-	expires := now.Add(ttl)
+	req, err := http.NewRequest("POST", amoSvc.apiUrl+"leads", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", amoSvc.apiKey))
+	req.Header.Set("Accept", "application/json")
 
-	_, err = ss.MySqlDb.Exec(
-		`INSERT INTO sessions (session_hash, user_id, issued_at, expires_at)
-         VALUES (?, ?, ?, ?)`,
-		hash, userID, now, expires,
-	)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		panic(err)
+	}
+	defer resp.Body.Close()
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
 	}
 
-	c := &http.Cookie{
-		Name:     "sessid",
-		Value:    token,
-		Path:     "/",
-		HttpOnly: true,
-		//Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-		Expires:  expires,
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(respBody, &parsed); err != nil {
+		return string(respBody), nil
 	}
-	http.SetCookie(w, c)
-	return nil
-}
 
-func (ss *SessionService) HandleLogout(w http.ResponseWriter, r *http.Request) error {
-	c, err := r.Cookie("sessid")
-	if err == nil {
-		_, _ = ss.MySqlDb.Exec(`DELETE FROM sessions WHERE session_hash = ?`, utils.HashToken(c.Value))
-		http.SetCookie(w, &http.Cookie{
-			Name:     "sessid",
-			Value:    "",
-			Path:     "/",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -1,
-			HttpOnly: true,
-			Secure:   true,
-		})
-	}
-	w.WriteHeader(http.StatusNoContent)
-	return err
-}
-
-func (ss *SessionService) GetAuthMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie("sessid")
-		if err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		token := c.Value
-		hash := utils.HashToken(token)
-
-		var userID string
-		var expiresAt time.Time
-		err = ss.MySqlDb.QueryRowContext(context.Background(),
-			`SELECT user_id, expires_at FROM sessions WHERE session_hash = ?`, hash,
-		).Scan(&userID, &expiresAt)
-
-		if err == sql.ErrNoRows || (err == nil && time.Now().After(expiresAt)) {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		if err != nil {
-			http.Error(w, "internal", http.StatusInternalServerError)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "userID", userID)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func (ss *SessionService) GetUserMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var userID string
-
-		c, err := r.Cookie("sessid")
-		if err == nil {
-			token := c.Value
-			hash := utils.HashToken(token)
-
-			var expiresAt time.Time
-			err = ss.MySqlDb.QueryRowContext(context.Background(),
-				`SELECT user_id, expires_at FROM sessions WHERE session_hash = ?`, hash,
-			).Scan(&userID, &expiresAt)
-
-			if err != nil || time.Now().After(expiresAt) {
-				userID = ""
-			}
-		}
-
-		// Добавляем userID (возможно пустой) в контекст
-		ctx := context.WithValue(r.Context(), "userID", userID)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+	return parsed, nil
 }

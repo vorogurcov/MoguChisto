@@ -11,6 +11,7 @@ type OrderModel struct {
 	UserID    string    `json:"user_id,omitempty"`
 	Type      string    `json:"type"`
 	Cost      float64   `json:"cost"`
+	Area      float64   `json:"area"`
 	Status    string    `json:"status"`
 	StartDate time.Time `json:"start_date"`
 	Cleaners  string    `json:"cleaners"`
