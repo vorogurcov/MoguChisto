@@ -8,10 +8,15 @@
 	.titleModal {
 		font-size: 40px;
 		margin: 0px;
+		text-align: center;
 	}
 	.descrModal {
 		margin-top: 10px;
 		font-size: 15px;
 		font-weight: 500;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 }

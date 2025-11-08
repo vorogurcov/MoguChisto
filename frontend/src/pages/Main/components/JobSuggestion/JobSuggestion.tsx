@@ -6,6 +6,7 @@ import { FooterSVG, WhatsApp } from "../../../../public/svg";
 import { CleanerSVG } from "./CleanerSVG";
 import "./css.scss";
 import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
 
 const SVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -56,6 +57,7 @@ const parts = [
 ];
 
 const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
+	const width = useWindowWidth();
 	return (
 		<PageItem className="JobSuggestion">
 			<Info>
@@ -80,7 +82,7 @@ const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 				</MainButton>
 				<Hh />
 			</div>
-			<CleanerSVG className="cleanerSvg" />
+			{width > 850 && <CleanerSVG className="cleanerSvg" />}
 			<footer>
 				<FooterSVG fill="white" className="footerJob" />
 			</footer>

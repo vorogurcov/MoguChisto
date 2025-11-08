@@ -3,8 +3,16 @@
 	display: flex;
 	justify-content: space-between;
 	padding-right: 100px;
+	flex-wrap: wrap;
 	span {
 		max-width: 65%;
+		min-width: 330px;
+	}
+	svg {
+		margin-top: 10px;
 	}
 	margin-bottom: 30px;
+}
+.infoTitleMobile {
+	font-size: 36px;
 }

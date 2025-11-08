@@ -6,6 +6,7 @@ import {
 	ModalStateContext,
 } from "../../hooks/ModalContext";
 import classNames from "classnames";
+import useWindowWidth from "../../hooks/useWindowWidth";
 
 export default function ModalBase({
 	className,
@@ -15,10 +16,13 @@ export default function ModalBase({
 }: Omit<ReactModal.Props, "isOpen">) {
 	const state = useContext(ModalStateContext);
 	const dispatch = useContext(ModalDispatchContext);
+	const width = useWindowWidth();
 	return (
 		<ReactModal
 			isOpen={state.isOpen}
-			className={classNames("modalContent", className)}
+			className={classNames("modalContent", className, {
+				modalContentMobile: width < 500,
+			})}
 			style={style}
 			onRequestClose={() => dispatch({ type: "DESTROY_MODAL" })}
 			overlayClassName={classNames("overlay", overlayClassName)}

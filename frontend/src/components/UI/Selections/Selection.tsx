@@ -2,6 +2,7 @@ import classNames from "classnames";
 import "../common.scss";
 import "./css.scss";
 import Select, { Props } from "react-select";
+import useWindowWidth from "../../../hooks/useWindowWidth";
 
 type SelectionProps = Props & {
 	title: string;
@@ -10,17 +11,21 @@ type SelectionProps = Props & {
 };
 
 export default function Selection({ title, error, ...props }: SelectionProps) {
+	const width = useWindowWidth();
 	return (
 		<div className={classNames(props.classNameContainer, "containerRectangle")}>
 			<span className="title">{title}</span>
 			<Select
 				unstyled
 				classNames={{
-					control: () => "rectangle",
+					control: () => classNames("rectangle"),
 					menu: () => "custom-menu",
 					menuList: () => "menu-list",
 					input: () => "selectInput",
-					container: () => "containerSelect",
+					container: () =>
+						classNames("containerSelect", {
+							rectangleMobile: width < 600,
+						}),
 					option: (state) =>
 						classNames("option", {
 							"option--selected": state.isSelected,

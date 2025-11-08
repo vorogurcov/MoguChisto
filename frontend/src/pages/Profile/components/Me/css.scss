@@ -1,0 +1,55 @@
+@import "@colors";
+
+.profileTitle {
+	font-size: 40px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	@media (max-width: 700px) {
+		font-size: 30px;
+	}
+}
+.InputRow {
+	width: 100%;
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	input[type="date"]::-webkit-calendar-picker-indicator {
+		filter: brightness(0) invert(0.85);
+		cursor: pointer;
+		&:focus::-webkit-calendar-picker-indicator {
+			filter: brightness(0) invert(0.16);
+		}
+	}
+	input[type="date"]:focus::-webkit-calendar-picker-indicator {
+		filter: brightness(0) invert(0.16);
+	}
+}
+.pushs {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+.CheckboxLabel {
+	padding: 14px 0px 14px 0px;
+	border-bottom: 1px solid #4849531a;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+}
+.lastPush {
+	border: none;
+	padding-bottom: 0px;
+}
+.BorderedItemPushs {
+	margin-bottom: 30px;
+}
+.saveProfile {
+	background-color: $blue;
+	color: white;
+	width: 100%;
+	margin-bottom: 50px;
+}
+.profileInput {
+	min-width: 300px;
+	width: 47%;
+}

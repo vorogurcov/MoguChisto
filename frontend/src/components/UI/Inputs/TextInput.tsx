@@ -3,9 +3,10 @@ import { InputPropsType } from "./InputPropsTypeAlias";
 import "../common.scss";
 import "./css.scss";
 import InfoHover from "../../InfoHover/InfoHover";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, forwardRef, useRef, useState } from "react";
+import useWindowWidth from "../../../hooks/useWindowWidth";
 
-type Props = InputPropsType & {
+export type TextInputProps = InputPropsType & {
 	error?: string;
 	title?: string;
 	prompts?: string[];
@@ -121,14 +122,6 @@ function PhoneInput({
 		}
 	};
 
-	// // Синхронизация с внешним value
-	// useEffect(() => {
-	// 	if (value !== getRawPhoneNumber(displayValue)) {
-	// 		const formatted = formatPhoneNumber(value.toString());
-	// 		setDisplayValue(formatted);
-	// 	}
-	// }, [displayValue, value]);
-
 	return (
 		<input
 			ref={inputRef}
@@ -146,31 +139,40 @@ function PhoneInput({
 export const isValidNumber = (number: string) =>
 	getRawPhoneNumber(number).length === 11;
 
-export default function TextInput({
-	title,
-	prompts,
-	type,
-	error,
-	...props
-}: Props) {
-	return (
-		<div className={classNames(props.classnamecontainer, "containerRectangle")}>
-			{title && (
-				<div className="titleContainer">
-					<span className="title">{title}</span>
-					{prompts && <InfoHover infoStrings={prompts} />}
-				</div>
-			)}
-			{type === "phone" ? (
-				<PhoneInput {...props} />
-			) : (
-				<input
-					{...props}
-					type={type ?? "text"}
-					className={classNames("rectangle", props.className)}
-				/>
-			)}
-			{error && <div className="errorInput">{error}</div>}
-		</div>
-	);
-}
+const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+	({ title, prompts, type, error, ...props }, ref) => {
+		const width = useWindowWidth();
+		return (
+			<div
+				className={classNames(props.classnamecontainer, "containerRectangle")}
+			>
+				{title && (
+					<div className="titleContainer">
+						<span className="title">{title}</span>
+						{prompts && <InfoHover infoStrings={prompts} />}
+					</div>
+				)}
+				{type === "phone" ? (
+					<PhoneInput
+						{...props}
+						className={classNames(props.className, {
+							rectangleMobile: width < 600,
+						})}
+					/>
+				) : (
+					<input
+						ref={ref}
+						{...props}
+						type={type ?? "text"}
+						className={classNames("rectangle", props.className, {
+							rectangleMobile: width < 600,
+						})}
+					/>
+				)}
+				{error && <div className="errorInput">{error}</div>}
+			</div>
+		);
+	},
+);
+TextInput.displayName = "TextInput";
+export default TextInput;

@@ -24,6 +24,17 @@
 	width: 50%;
 	height: 100%;
 }
+.leftBlockApplicationMobile {
+	width: 100%;
+}
+.buttonsApplicationMobile {
+	width: 100% !important;
+	display: flex;
+	justify-content: space-between;
+	button {
+		width: 45%;
+	}
+}
 
 .cleanerContainer {
 	width: 45%;

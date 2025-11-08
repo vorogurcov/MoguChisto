@@ -9,6 +9,7 @@
 	.title {
 		svg {
 			max-width: 50%;
+			min-width: 300px;
 		}
 	}
 	.applicationFooter {
@@ -17,10 +18,10 @@
 }
 
 .description {
+	flex-wrap: wrap;
 	font-size: 15px;
 	color: $black;
-	height: 42px;
-	width: calc(100% - 100px);
+	width: calc(100% - 10%);
 	font-size: 15px;
 	padding-left: 16px;
 	background-color: $page-gray;
@@ -28,15 +29,21 @@
 	align-items: center;
 	justify-content: flex-start;
 	span {
-		margin-left: 10px;
+		min-width: 350px;
+		max-width: 90%;
+	}
+	svg {
+		margin-right: 10px;
+		margin-bottom: 10px;
 	}
 	margin-bottom: 30px;
 	margin-top: 30px;
 }
-
 .card {
-	min-width: 506px;
-	max-width: 506px;
+	// min-width: 506px;
+	// max-width: 506px;
+	width: 40%;
+	min-width: 370px;
 	margin-right: 20px;
 	position: relative;
 	.info {
@@ -61,7 +68,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: 14px;
+		font-size: 12px;
 		svg {
 			margin-right: 4px;
 		}
@@ -74,7 +81,8 @@
 	}
 	.imgs {
 		display: flex;
-		height: 350px;
+		// height: 350px;
+		aspect-ratio: 1.5/1;
 		width: 100%;
 		position: relative;
 	}

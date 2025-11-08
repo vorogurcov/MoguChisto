@@ -1,5 +1,5 @@
 import { FC, forwardRef, SVGProps } from "react";
-import { Logo, NameBrend } from "../../../public/svg";
+import { Logo } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
 import MainButton from "../../Buttons/MainButton/MainButton";
@@ -9,14 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
 import { PagePart } from "../../NavigatePanel/NavigatePanel";
 
-const tools: string[] = [
-	"Услуги",
-	"О нас",
-	"Клинеры",
-	"Уборка",
-	"FAQ",
-	"Работа",
-	"Контакты",
+const tools = [
+	{ name: "Услуги", type: PagePart.service },
+	{ name: "Уборка", type: PagePart.cleaning },
+	{ name: "Клинеры", type: PagePart.cleaners },
+	{ name: "О нас", type: PagePart.about },
+	{ name: "Работа", type: PagePart.job },
+	{ name: "FAQ", type: PagePart.faq },
+	{ name: "Контакты", type: PagePart.contacts },
 ];
 
 const Phone: FC<SVGProps<SVGSVGElement>> = (props) => (
@@ -158,15 +158,23 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 		<PageItem className="footerPage">
 			<div ref={ref} className="footerTools">
 				{tools.map((tool) => (
-					<ButtonLikeText key={tool} className="toolFooter">
-						{tool}
+					<ButtonLikeText
+						key={tool.type}
+						className="toolFooter"
+						onClick={() => {
+							contextSection?.setActiveSection(tool.type);
+							contextSection?.setShouldSmooth(true);
+							navigate("/");
+						}}
+					>
+						{tool.name}
 					</ButtonLikeText>
 				))}
 			</div>
 			<div className="contactsFooter">
 				<div className="contactsNumber">
 					<span>
-						<Phone />8 (993) 281-05-02
+						<Phone />8 (923) 123-23-35
 					</span>
 					<span>
 						<MailSVG />
