@@ -2,17 +2,37 @@ package converters
 
 import (
 	"main/services/amocrm-service/internal/dto"
+	amocrm_types "main/services/amocrm-service/internal/types"
 	"main/services/amocrm-service/pkg/types"
+	"strconv"
 )
 
 func ConvertNewLeadDtoToCrmLeadDto(newLeadDto types.NewLeadDto, contactID int64) dto.CrmLeadDto {
-	// Преобразуем стоимость из float64 в int (AmoCRM требует int для price)
 	priceInt := int(newLeadDto.Cost)
 
 	var customFields []dto.CustomField
 
-	// Кастомные поля для лида временно отключены, так как нужно создать поля в AmoCRM
-	// После создания полей в AmoCRM нужно получить их ID и обновить AmoAreaFieldID и AmoTypeFieldID
+	if newLeadDto.Area > 0 {
+		customFields = append(customFields, dto.CustomField{
+			FieldID: amocrm_types.AmoAreaFieldID,
+			Values: []dto.CustomFieldValue{
+				{
+					Value: strconv.Itoa(newLeadDto.Area),
+				},
+			},
+		})
+	}
+
+	if newLeadDto.Type != "" {
+		customFields = append(customFields, dto.CustomField{
+			FieldID: amocrm_types.AmoTypeFieldID,
+			Values: []dto.CustomFieldValue{
+				{
+					Value: newLeadDto.Type,
+				},
+			},
+		})
+	}
 
 	result := dto.CrmLeadDto{
 		Name:               newLeadDto.Name,
@@ -20,7 +40,6 @@ func ConvertNewLeadDtoToCrmLeadDto(newLeadDto types.NewLeadDto, contactID int64)
 		CustomFieldsValues: customFields,
 	}
 
-	// Связываем контакт с лидом через _embedded, если контакт был создан
 	if contactID > 0 {
 		result.Embedded = dto.EmbeddedContacts{
 			Contacts: []dto.EmbeddedContact{

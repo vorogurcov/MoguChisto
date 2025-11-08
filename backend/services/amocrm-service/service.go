@@ -7,12 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"main/services/amocrm-service/internal/converters"
 	"main/services/amocrm-service/internal/dto"
 	amocrm_types "main/services/amocrm-service/internal/types"
 	"main/services/amocrm-service/pkg/types"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
+	"time"
 )
 
 type AmoCrmService struct {
@@ -108,15 +112,87 @@ func (amoSvc *AmoCrmService) createContact(ctx context.Context, phoneNumber stri
 	return int64(idFloat), nil
 }
 
+func (amoSvc *AmoCrmService) findContact(ctx context.Context, phoneNumber string) (int64, error) {
+	values := url.Values{}
+	values.Set("query", phoneNumber)
+	values.Set("limit", "1")
+
+	endpoint := fmt.Sprintf("%scontacts?%s", strings.TrimRight(amoSvc.apiUrl, "/")+"/", values.Encode())
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
+	if err != nil {
+		return 0, fmt.Errorf("ошибка создания запроса: %w", err)
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", amoSvc.apiKey))
+	req.Header.Set("Accept", "application/json")
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, fmt.Errorf("ошибка выполнения запроса: %w", err)
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("ошибка получения контактов: status=%d body=%s", resp.StatusCode, string(bodyBytes))
+	}
+
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &parsed); err != nil {
+		return 0, fmt.Errorf("ошибка парсинга ответа: %w (body=%s)", err, string(bodyBytes))
+	}
+
+	embedded, ok := parsed["_embedded"].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("в ответе отсутствует _embedded")
+	}
+
+	items, ok := embedded["contacts"].([]interface{})
+	if !ok {
+		return 0, fmt.Errorf("в ответе отсутствует _embedded.items")
+	}
+	if len(items) == 0 {
+		return 0, fmt.Errorf("контакт не найден")
+	}
+
+	first, ok := items[0].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("не удалось разобрать первую сущность контакта")
+	}
+
+	idVal, ok := first["id"]
+	if !ok {
+		return 0, fmt.Errorf("в контакте отсутствует поле id")
+	}
+
+	switch v := idVal.(type) {
+	case float64:
+		return int64(v), nil
+	case int64:
+		return v, nil
+	case int:
+		return int64(v), nil
+	default:
+		return 0, fmt.Errorf("неожиданный тип id: %T", idVal)
+	}
+}
+
 func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (interface{}, error) {
 	var contactID int64
 	var err error
-	//TODO: Связывать лид с существующим контактом, посредством первоначального поиска
-	// контакта с таким же номером телефона как в заявке
+
 	if newLeadDto.PhoneNumber != "" {
-		contactID, err = amoSvc.createContact(ctx, newLeadDto.PhoneNumber)
+
+		contactID, err = amoSvc.findContact(ctx, newLeadDto.PhoneNumber)
+		log.Println(contactID)
 		if err != nil {
-			return nil, fmt.Errorf("ошибка создания контакта: %w", err)
+			log.Print(err)
+			contactID, err = amoSvc.createContact(ctx, newLeadDto.PhoneNumber)
+			if err != nil {
+				return nil, fmt.Errorf("ошибка создания контакта: %w", err)
+			}
 		}
 	}
 
