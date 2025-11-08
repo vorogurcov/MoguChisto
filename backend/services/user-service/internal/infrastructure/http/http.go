@@ -2,6 +2,8 @@ package http
 
 import (
 	"encoding/json"
+	"log"
+	notification_service "main/services/notification-service"
 	ss "main/services/session-service"
 	"main/services/user-service/internal/domain"
 	"main/services/user-service/internal/dto"
@@ -10,7 +12,7 @@ import (
 	"time"
 )
 
-func NewSignUpHandler(userSvc *service.UserService, sessSvc *ss.SessionService) http.HandlerFunc {
+func NewSignUpHandler(userSvc *service.UserService, sessSvc *ss.SessionService, notifSvc *notification_service.NotificationService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -30,13 +32,32 @@ func NewSignUpHandler(userSvc *service.UserService, sessSvc *ss.SessionService) 
 			return
 		}
 
-		// TODO: Implement proper verification code check
-		if createUser.VerificationCode != "111111" {
+		// Если код подтверждения не передан, генерируем и отправляем новый
+		if createUser.VerificationCode == "" {
+			log.Print("Генерируем код подтверждения")
+			if err := notifSvc.GenerateVerificationCode(r.Context(), createUser.PhoneNumber); err != nil {
+				log.Printf("Ошибка при генерации кода: %v", err)
+				http.Error(w, "failed to generate verification code", http.StatusInternalServerError)
+				return
+			}
+
 			w.Header().Set("Content-Type", "application/json")
 			apiAns := domain.SignupAnswer{
 				IsVerificationRequired: true,
 			}
 			json.NewEncoder(w).Encode(apiAns)
+			return
+		}
+
+		isValid, err := notifSvc.ValidateVerificationCode(r.Context(), createUser.PhoneNumber, createUser.VerificationCode)
+		if err != nil {
+			log.Printf("Ошибка при валидации кода: %v", err)
+			http.Error(w, "failed to validate verification code", http.StatusInternalServerError)
+			return
+		}
+
+		if !isValid {
+			http.Error(w, "invalid verification code", http.StatusBadRequest)
 			return
 		}
 

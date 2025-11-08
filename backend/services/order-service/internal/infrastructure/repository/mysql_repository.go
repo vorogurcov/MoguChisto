@@ -21,7 +21,7 @@ func NewMySqlOrderRepository(db *sql.DB) *mySqlOrderRepository {
 
 func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID string) ([]*domain.OrderModel, error) {
 	const selectOrdersQuery = `
-        SELECT o.order_id, o.user_id, o.type, o.cost, o.status, o.start_date, o.cleaners
+        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners
         FROM orders o
         WHERE o.user_id = ?
     `
@@ -40,12 +40,13 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			dbUserID     string
 			orderType    string
 			cost         float64
+			area         sql.NullFloat64
 			status       string
 			startTimeStr sql.NullString
 			cleaners     sql.NullString
 		)
 
-		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &status, &startTimeStr, &cleaners); err != nil {
+		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners); err != nil {
 			return nil, fmt.Errorf("scan order: %w", err)
 		}
 
@@ -61,9 +62,13 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			UserID:    dbUserID,
 			Type:      orderType,
 			Cost:      cost,
+			Area:      0,
 			Status:    status,
 			StartDate: startTimeParsed,
 			Cleaners:  "",
+		}
+		if area.Valid {
+			order.Area = area.Float64
 		}
 		if cleaners.Valid {
 			order.Cleaners = cleaners.String
@@ -81,7 +86,7 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 
 func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string) (*domain.OrderModel, error) {
 	const q = `
-        SELECT o.order_id, o.user_id, o.type, o.cost, o.status, o.start_date, o.cleaners
+        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners
         FROM orders o
         WHERE o.order_id = ?
         LIMIT 1`
@@ -91,12 +96,13 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		userID       sql.NullString
 		orderType    string
 		cost         float64
+		area         sql.NullFloat64
 		status       string
 		startTimeStr sql.NullString
 		cleaners     sql.NullString
 	)
 
-	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &status, &startTimeStr, &cleaners)
+	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("order not found")
@@ -121,9 +127,13 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		UserID:    userIDField,
 		Type:      orderType,
 		Cost:      cost,
+		Area:      0,
 		Status:    status,
 		StartDate: startTimeParsed,
 		Cleaners:  "",
+	}
+	if area.Valid {
+		order.Area = area.Float64
 	}
 	if cleaners.Valid {
 		order.Cleaners = cleaners.String
@@ -145,11 +155,11 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 	id := uuid.NewString()
 
 	const insertQ = `
-		INSERT INTO orders (order_id, user_id, type, cost, status, start_date, cleaners)
-		VALUES (?, ?, ?, ?, 'pending', ?, NULL)
+		INSERT INTO orders (order_id, user_id, type, cost, area, status, start_date, cleaners)
+		VALUES (?, ?, ?, ?, ?, 'pending', ?, NULL)
 	`
 
-	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, time.Now()); err != nil {
+	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, createOrderDto.Area, time.Now()); err != nil {
 		return nil, fmt.Errorf("insert order: %w", err)
 	}
 
