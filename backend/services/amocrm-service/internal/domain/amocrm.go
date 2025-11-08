@@ -5,6 +5,8 @@ import (
 	"main/services/amocrm-service/pkg/types"
 )
 
+//TODO: Сделать webhook с crm на сайт для поддержки возможности смены статуса заказа
+
 type AmoCRMService interface {
 	//SendAuthenticationCode(w http.ResponseWriter, authCode string) error
 	//ProcessAccessTokens(w http.ResponseWriter, r *http.Request, db *sql.DB) error

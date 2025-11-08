@@ -2,11 +2,15 @@ package http
 
 import (
 	"encoding/json"
+	"log"
+	notification_service "main/services/notification-service"
+	"main/services/notification-service/pkg/types"
 	ss "main/services/session-service"
 	"main/services/user-service/internal/domain"
 	"main/services/user-service/internal/dto"
 	"main/services/user-service/internal/service"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -31,6 +35,15 @@ func NewSignUpHandler(userSvc *service.UserService, sessSvc *ss.SessionService) 
 		}
 
 		// TODO: Implement proper verification code check
+
+		testEnv := os.Getenv("TEST_ENV")
+		if testEnv == "" {
+			log.Print("Отправляем соо в sms-aero")
+			notifSvc, _ := notification_service.NewNotificationService()
+			codeDto := types.SendVerificationCodeDto{Code: "111111", PhoneNumber: createUser.PhoneNumber}
+			notifSvc.SendVerificationCode(r.Context(), codeDto)
+		}
+
 		if createUser.VerificationCode != "111111" {
 			w.Header().Set("Content-Type", "application/json")
 			apiAns := domain.SignupAnswer{

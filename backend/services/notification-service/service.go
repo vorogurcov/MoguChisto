@@ -1,118 +1,75 @@
-package session_service
+package notification_service
 
 import (
 	"context"
-	"database/sql"
-	"main/services/session-service/internal/utils"
+	"errors"
+	"fmt"
+	"io"
+	"log"
+	"main/services/notification-service/pkg/types"
 	"net/http"
-	"time"
+	"net/url"
+	"os"
 )
 
-type SessionService struct {
-	MySqlDb *sql.DB
+type NotificationService struct {
+	apiKey       string
+	apiUrl       string
+	accountEmail string
+	accountSign  string
 }
 
-func (ss *SessionService) CreateSessionAndSetCookie(w http.ResponseWriter, userID string, ttl time.Duration) error {
-	token, err := utils.GenerateToken()
+func NewNotificationService() (*NotificationService, error) {
+	smsAeroApiKey := os.Getenv("SMSAERO_API_KEY")
+	if smsAeroApiKey == "" {
+		return nil, errors.New("smsAero api key is not set in env")
+	}
+
+	smsAeroAccountEmail := os.Getenv("SMSAERO_ACCOUNT_EMAIL")
+	if smsAeroAccountEmail == "" {
+		return nil, errors.New("accountEmail is not set in env")
+	}
+
+	smsAeroAccountSign := os.Getenv("SMSAERO_ACCOUNT_SIGN")
+	if smsAeroAccountSign == "" {
+		smsAeroAccountSign = "SMS Aero"
+	}
+	return &NotificationService{
+		apiKey:       smsAeroApiKey,
+		apiUrl:       "https://gate.smsaero.ru/v2",
+		accountEmail: smsAeroAccountEmail,
+		accountSign:  smsAeroAccountSign,
+	}, nil
+}
+
+func (ns NotificationService) SendVerificationCode(ctx context.Context, sendCodeDto types.SendVerificationCodeDto) error {
+	smsText := fmt.Sprintf("Ваш код для подтверждения номера в moguchisto.ru: %s.", sendCodeDto.Code)
+
+	params := url.Values{}
+	params.Add("number", sendCodeDto.PhoneNumber)
+	params.Add("text", smsText)
+	params.Add("sign", ns.accountSign)
+
+	reqURL := fmt.Sprintf("https://gate.smsaero.ru/v2/sms/send?%s", params.Encode())
+	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка создания запроса: %w", err)
 	}
-	hash := utils.HashToken(token)
 
-	now := time.Now().UTC()
-	expires := now.Add(ttl)
+	req.SetBasicAuth(ns.accountEmail, ns.apiKey)
 
-	_, err = ss.MySqlDb.Exec(
-		`INSERT INTO sessions (session_hash, user_id, issued_at, expires_at)
-         VALUES (?, ?, ?, ?)`,
-		hash, userID, now, expires,
-	)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка отправки запроса: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("ошибка от SMSAero: %s", string(body))
 	}
 
-	c := &http.Cookie{
-		Name:     "sessid",
-		Value:    token,
-		Path:     "/",
-		HttpOnly: true,
-		//Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-		Expires:  expires,
-	}
-	http.SetCookie(w, c)
+	log.Printf("SMS отправлено успешно: %s", string(body))
 	return nil
-}
-
-func (ss *SessionService) HandleLogout(w http.ResponseWriter, r *http.Request) error {
-	c, err := r.Cookie("sessid")
-	if err == nil {
-		_, _ = ss.MySqlDb.Exec(`DELETE FROM sessions WHERE session_hash = ?`, utils.HashToken(c.Value))
-		http.SetCookie(w, &http.Cookie{
-			Name:     "sessid",
-			Value:    "",
-			Path:     "/",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -1,
-			HttpOnly: true,
-			Secure:   true,
-		})
-	}
-	w.WriteHeader(http.StatusNoContent)
-	return err
-}
-
-func (ss *SessionService) GetAuthMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie("sessid")
-		if err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		token := c.Value
-		hash := utils.HashToken(token)
-
-		var userID string
-		var expiresAt time.Time
-		err = ss.MySqlDb.QueryRowContext(context.Background(),
-			`SELECT user_id, expires_at FROM sessions WHERE session_hash = ?`, hash,
-		).Scan(&userID, &expiresAt)
-
-		if err == sql.ErrNoRows || (err == nil && time.Now().After(expiresAt)) {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		if err != nil {
-			http.Error(w, "internal", http.StatusInternalServerError)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "userID", userID)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func (ss *SessionService) GetUserMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var userID string
-
-		c, err := r.Cookie("sessid")
-		if err == nil {
-			token := c.Value
-			hash := utils.HashToken(token)
-
-			var expiresAt time.Time
-			err = ss.MySqlDb.QueryRowContext(context.Background(),
-				`SELECT user_id, expires_at FROM sessions WHERE session_hash = ?`, hash,
-			).Scan(&userID, &expiresAt)
-
-			if err != nil || time.Now().After(expiresAt) {
-				userID = ""
-			}
-		}
-
-		// Добавляем userID (возможно пустой) в контекст
-		ctx := context.WithValue(r.Context(), "userID", userID)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
 }
