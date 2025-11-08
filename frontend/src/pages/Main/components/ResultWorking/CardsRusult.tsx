@@ -1,11 +1,10 @@
-import { useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import bef from "../../../../public/imgs/results/bef.jpg";
 import aft from "../../../../public/imgs/results/aft.png";
-import aga from "./aga.jpg";
 import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
 import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
 import { MiniCleanerSVG } from "../../../../public/svg";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type ImgsResultT = {
 	before: string;
@@ -18,7 +17,7 @@ type CardResultT = {
 	time: string;
 	square: number;
 	services?: string;
-	imgs: ImgsResultT[];
+	imgs: ImgsResultT;
 	title?: string;
 };
 
@@ -29,10 +28,7 @@ const cards: CardResultT[] = [
 		time: "2,5",
 		square: 15,
 		services: "PRO средства",
-		imgs: [
-			{ before: bef, after: aft },
-			{ before: aga, after: aga },
-		],
+		imgs: { before: bef, after: aft },
 		title: "Генеральная уборка кухни",
 	},
 	{
@@ -41,7 +37,7 @@ const cards: CardResultT[] = [
 		time: "2,5",
 		square: 15,
 		services: "PRO средства",
-		imgs: [{ before: bef, after: aft }],
+		imgs: { before: bef, after: aft },
 		title: "Генеральная уборка кухни",
 	},
 	{
@@ -50,7 +46,7 @@ const cards: CardResultT[] = [
 		time: "2,5",
 		square: 15,
 		services: "PRO средства",
-		imgs: [{ before: bef, after: aft }],
+		imgs: { before: bef, after: aft },
 		title: "Генеральная уборка кухни",
 	},
 	{
@@ -59,58 +55,148 @@ const cards: CardResultT[] = [
 		time: "2,5",
 		square: 15,
 		services: "PRO средства",
-		imgs: [{ before: bef, after: aft }],
+		imgs: { before: bef, after: aft },
 		title: "Генеральная уборка кухни",
 	},
 ];
 
-function ImgsResult({ imgs }: { imgs: ImgsResultT[] }) {
-	const [selected, setSelected] = useState(0);
-	const handleSelect = (index: number) => {
-		if (imgs.length > index && index != -1) {
-			setSelected(index);
-		}
+function ImgsResult({ imgs }: { imgs: ImgsResultT }) {
+	const [sliderPosition, setSliderPosition] = useState(50); // 50% по умолчанию
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [isDragging, setIsDragging] = useState(false);
+
+	const handleMouseDown = (e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(true);
 	};
+
+	const handleTouchStart = (e: React.TouchEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging(true);
+	};
+
+	const handleMove = useCallback(
+		(clientX: number) => {
+			if (!containerRef.current || !isDragging) return;
+
+			const containerRect = containerRef.current.getBoundingClientRect();
+			const relativeX = clientX - containerRect.left;
+			const percentage = (relativeX / containerRect.width) * 100;
+
+			// Ограничиваем от 5% до 95% для удобства
+			const newPosition = Math.max(5, Math.min(95, percentage));
+			setSliderPosition(newPosition);
+		},
+		[isDragging],
+	);
+
+	const handleMouseMove = useCallback(
+		(e: MouseEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			handleMove(e.clientX);
+		},
+		[handleMove],
+	);
+
+	const handleTouchMove = useCallback(
+		(e: TouchEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			handleMove(e.touches[0].clientX);
+		},
+		[handleMove],
+	);
+
+	const handleEnd = () => {
+		setIsDragging(false);
+	};
+
+	useEffect(() => {
+		if (isDragging) {
+			document.addEventListener("mousemove", handleMouseMove);
+			document.addEventListener("mouseup", handleEnd);
+			document.addEventListener("touchmove", handleTouchMove);
+			document.addEventListener("touchend", handleEnd);
+		}
+
+		return () => {
+			document.removeEventListener("mousemove", handleMouseMove);
+			document.removeEventListener("mouseup", handleEnd);
+			document.removeEventListener("touchmove", handleTouchMove);
+			document.removeEventListener("touchend", handleEnd);
+		};
+	}, [handleMouseMove, handleTouchMove, isDragging]);
+
 	return (
-		<div className="imgs">
-			<div className="img">
-				<img src={imgs[selected].before} alt="before" />
-			</div>
-			<div className="img">
-				<img src={imgs[selected].after} alt="after" />
-			</div>
-			<div className="changePicture">
-				<button className="leftSkip" onClick={() => handleSelect(selected + 1)}>
-					<svg
-						width="12"
-						height="12"
-						viewBox="0 0 12 12"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M6 0L7.0575 1.0575L2.8725 5.25H12V6.75H2.8725L7.065 10.935L6 12L0 6L6 0Z"
-							fill="#292929"
-						/>
-					</svg>
-				</button>
-				<button
-					className="rightSkip"
-					onClick={() => handleSelect(selected - 1)}
+		<div
+			className="imgsComparison"
+			ref={containerRef}
+			onMouseDown={handleMouseDown}
+			onTouchStart={handleTouchStart}
+			style={{ touchAction: isDragging ? "none" : "pan-y" }}
+		>
+			<div className="imageContainer">
+				{/* Before image - всегда видна полностью */}
+				<div className="imageBefore">
+					<img src={imgs.before} alt="before" />
+				</div>
+
+				{/* After image - обрезается справа */}
+				<div
+					className="imageAfter"
+					style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
 				>
+					<img src={imgs.after} alt="after" />
+				</div>
+			</div>
+
+			{/* Slider handle */}
+			<div className="sliderHandle" style={{ left: `${sliderPosition}%` }}>
+				<div className="sliderLine" />
+				<div className="sliderButton">
 					<svg
-						width="12"
-						height="12"
-						viewBox="0 0 12 12"
+						width="65"
+						height="65"
+						viewBox="0 0 65 65"
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
 					>
-						<path
-							d="M6 0L4.9425 1.0575L9.1275 5.25H0V6.75H9.1275L4.935 10.935L6 12L12 6L6 0Z"
-							fill="#292929"
-						/>
+						<rect width="65" height="65" rx="32.5" fill="white" />
+						<g clipPath="url(#clip0_9_354)">
+							<path
+								d="M44.5 26.5L43.4425 27.5575L47.6275 31.75H38.5V33.25H47.6275L43.435 37.435L44.5 38.5L50.5 32.5L44.5 26.5Z"
+								fill="#292929"
+							/>
+						</g>
+						<g clipPath="url(#clip1_9_354)">
+							<path
+								d="M20.5 26.5L21.5575 27.5575L17.3725 31.75H26.5V33.25H17.3725L21.565 37.435L20.5 38.5L14.5 32.5L20.5 26.5Z"
+								fill="#292929"
+							/>
+						</g>
+						<defs>
+							<clipPath id="clip0_9_354">
+								<rect
+									width="18"
+									height="18"
+									fill="white"
+									transform="matrix(0 1 -1 0 53.5 23.5)"
+								/>
+							</clipPath>
+							<clipPath id="clip1_9_354">
+								<rect
+									width="18"
+									height="18"
+									fill="white"
+									transform="matrix(0 1 1 0 11.5 23.5)"
+								/>
+							</clipPath>
+						</defs>
 					</svg>
-				</button>
+				</div>
 			</div>
 		</div>
 	);
