@@ -6,5 +6,7 @@ import (
 )
 
 type NotificationService interface {
-	SendVerificationCode(ctx context.Context, sendCodeDto types.SendVerificationCodeDto)
+	SendVerificationCode(ctx context.Context, sendCodeDto types.SendVerificationCodeDto) error
+	GenerateVerificationCode(ctx context.Context, phoneNumber string) error
+	ValidateVerificationCode(ctx context.Context, phoneNumber string, code string) (bool, error)
 }

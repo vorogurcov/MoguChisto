@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"database/sql"
+	notification_service "main/services/notification-service"
 	session_service "main/services/session-service"
 	http2 "main/services/user-service/internal/infrastructure/http"
 	"main/services/user-service/internal/infrastructure/repository"
@@ -16,9 +17,15 @@ func NewHandler(db *sql.DB) http.Handler {
 		UserRepo: userRepo,
 	}
 
+	// Создаем NotificationService с репозиторием через публичный API
+	notifSvc, err := notification_service.NewNotificationServiceWithDB(db)
+	if err != nil {
+		panic("failed to create notification service: " + err.Error())
+	}
+
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/signup", http2.NewSignUpHandler(userSvc, &sessionSvc))
+	mux.HandleFunc("/signup", http2.NewSignUpHandler(userSvc, &sessionSvc, notifSvc))
 	mux.HandleFunc("/profile", func(w http.ResponseWriter, r *http.Request) {
 		sessionSvc.GetAuthMiddleware(http2.NewProfileHandler(userSvc, &sessionSvc)).ServeHTTP(w, r)
 	})
