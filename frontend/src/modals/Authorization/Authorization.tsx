@@ -5,6 +5,7 @@ import ModalBase from "../ModalBase/ModalBase";
 import "./css.scss";
 import useShowModal from "../../hooks/useShowModal";
 import { Controller, useForm } from "react-hook-form";
+import ApiController from "../../api/ApiController";
 
 export default function Authorization({ phone }: { phone?: string }) {
 	const showModal = useShowModal();
@@ -17,7 +18,6 @@ export default function Authorization({ phone }: { phone?: string }) {
 		},
 	});
 	const phoneValue = watch("phone");
-	console.log("phoneValue", phoneValue);
 	const errors = formState.errors;
 	return (
 		<ModalBase>
@@ -26,7 +26,9 @@ export default function Authorization({ phone }: { phone?: string }) {
 			</ModalHeader>
 			<form
 				onSubmit={handleSubmit((phone) => {
-					showModal("SendCode", phone);
+					ApiController.signup(phone.phone).then(() =>
+						showModal("SendCode", phone),
+					);
 				})}
 			>
 				<Controller

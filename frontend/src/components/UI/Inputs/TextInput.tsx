@@ -14,7 +14,7 @@ export type TextInputProps = InputPropsType & {
 };
 
 // Функция для получения неформатированного номера
-const getRawPhoneNumber = (formatted: string): string => {
+export const getRawPhoneNumber = (formatted: string): string => {
 	return formatted ? "7" + formatted.replace(/\D/g, "").slice(1) : "";
 };
 
