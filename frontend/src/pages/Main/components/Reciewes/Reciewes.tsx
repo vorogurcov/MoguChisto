@@ -7,6 +7,8 @@ import "./css.scss";
 import { RateStarSVG } from "../../../../public/svg";
 import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import PageItem from "../../../../components/PageItem";
+import classNames from "classnames";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
 
 type RecieweT = {
 	photo?: string;
@@ -96,12 +98,20 @@ function OneReciewe({ photo, text, name }: RecieweT) {
 }
 
 const Reciewes = forwardRef<HTMLDivElement>((_, ref) => {
+	const width = useWindowWidth();
 	return (
 		<PageItem className="reciewes">
 			<Info>
 				<span ref={ref}>
 					<b>
-						Честная оценка <span className="numberRate">4.9</span>
+						Честная оценка{" "}
+						<span
+							className={classNames("numberRate", {
+								numberRateMobile: width < 1000, // надо синхронизировать с Info
+							})}
+						>
+							4.9
+						</span>
 					</b>
 				</span>
 				<div className="maps">

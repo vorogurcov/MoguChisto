@@ -1,4 +1,4 @@
-import { forwardRef, memo, useMemo, useRef, useState } from "react";
+import { forwardRef, useMemo } from "react";
 import CleanerPicture from "./CleanerPicture";
 import TextInput, {
 	isValidNumber,
@@ -8,12 +8,16 @@ import MainButton from "../../../../components/Buttons/MainButton/MainButton";
 import "./css.scss";
 import { FooterSVG, NameBrend } from "../../../../public/svg";
 import PageItem from "../../../../components/PageItem";
-import { Controller, Resolver, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import calculatorPrice from "../../../../helpers/calculatorPrice";
+import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext";
+import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
+import classNames from "classnames";
 
 export type CleaningType = "exrpess" | "comfort" | "elite";
 
-const typesCleaning: { type: CleaningType; label: string }[] = [
+export const typesCleaning: { type: CleaningType; label: string }[] = [
 	{ type: "exrpess", label: "Экспресс" },
 	{ type: "comfort", label: "Комфорт" },
 	{ type: "elite", label: "Элит" },
@@ -35,7 +39,7 @@ const prompts = [
 ];
 
 const Application = forwardRef<HTMLDivElement>((_, ref) => {
-	// const [value, setValue] = useState<CleaningOption>(typesCleaning[0]);
+	const contextSection = useActiveSectionContext();
 
 	const { register, watch, control, ...form } = useForm<FormT>({
 		defaultValues: { typeCleaning: typesCleaning[0] },
@@ -58,11 +62,15 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 				: undefined,
 		[formValues.square, formValues.typeCleaning],
 	);
-
+	const width = useWindowWidth();
 	return (
 		<PageItem className="applicationContainer">
 			<main className="application">
-				<div className="leftBlockApplication">
+				<div
+					className={classNames("leftBlockApplication", {
+						leftBlockApplicationMobile: width < 900,
+					})}
+				>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<div ref={ref} className="nameBrend">
 							<NameBrend />
@@ -97,24 +105,35 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 									/>
 								)}
 							/>
-							<TextInput
-								{...register("phone", {
+							<Controller
+								name="phone"
+								control={control}
+								rules={{
 									required: "Телефон обязателен",
 									validate: (value) =>
 										isValidNumber(value) || "Некорректный номер телефона",
-								})}
-								type="phone"
-								name="phone"
-								title="Номер телефона"
-								placeholder="+7 (999) 999-99-99"
-								classnamecontainer="applicationPart"
-								error={errors.phone?.message}
+								}}
+								render={({ field }) => (
+									<TextInput
+										{...field}
+										type="phone"
+										name="phone"
+										title="Номер телефона"
+										placeholder="+7 (999) 999-99-99"
+										classnamecontainer="applicationPart"
+										error={errors.phone?.message}
+									/>
+								)}
 							/>
 						</div>
 						<div className="price">
 							{price ? <span>{price} ₽</span> : <span>Давайте посчитаем!</span>}
 						</div>
-						<div className="buttonsApplication">
+						<div
+							className={classNames("buttonsApplication", {
+								buttonsApplicationMobile: width < 500,
+							})}
+						>
 							<MainButton
 								className="send"
 								disabled={isSubmitting || !isValid}
@@ -124,13 +143,23 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 							>
 								Отправить заявку
 							</MainButton>
-							<MainButton className="more">Узнать детали</MainButton>
+							<MainButton
+								className="more"
+								onClick={() => {
+									contextSection?.setActiveSection(PagePart.service);
+									contextSection?.setShouldSmooth(true);
+								}}
+							>
+								Узнать детали
+							</MainButton>
 						</div>
 					</form>
 				</div>
-				<div className="cleanerContainer">
-					<CleanerPicture className="cleaner" />
-				</div>
+				{width > 900 && (
+					<div className="cleanerContainer">
+						<CleanerPicture className="cleaner" />
+					</div>
+				)}
 			</main>
 			<footer>
 				<FooterSVG />

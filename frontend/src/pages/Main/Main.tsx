@@ -32,10 +32,11 @@ export default function Main() {
 		[PagePart.about]: aboutRef,
 		[PagePart.faq]: faqRef,
 		[PagePart.contacts]: contactsRef,
+		[PagePart.job]: jobSuggestionRef,
 	};
 
 	useSectionScroll(navigation);
-	// useSectionObserver(navigation);
+	useSectionObserver(navigation);
 
 	return (
 		<Page>

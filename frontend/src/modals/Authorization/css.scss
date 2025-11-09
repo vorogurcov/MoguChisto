@@ -1,5 +1,35 @@
 @import "@colors";
-.input {
+
+.input-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.phone-input {
+	width: 100%;
+	text-align: start;
+	padding-left: 20px;
+	position: relative; // Для z-index
+	z-index: 2; // Чтобы инпут был выше лейбла
+	background: transparent; // Прозрачный фон чтобы видеть лейбл
+	font-size: 15px;
+	font-weight: 500;
+}
+.labelPhone {
+	position: absolute;
+	left: 21px; // из-за border
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none; // Чтобы клики проходили сквозь на инпут
+	z-index: 1;
+	color: $font-gray;
+	font-size: 15px;
+	font-weight: 500;
+	span {
+		color: $black;
+	}
+}
+.input-send {
 	width: 100%;
 }
 

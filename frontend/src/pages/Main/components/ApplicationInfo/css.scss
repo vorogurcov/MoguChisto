@@ -9,9 +9,13 @@
 		justify-content: space-between;
 		padding-bottom: 60px;
 		border-bottom: 1px solid #d9d9d9;
+		flex-wrap: wrap;
 	}
 	.title {
-		width: 45%;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		margin-right: 20px;
 		span {
 			font-size: 15px;
 			font-weight: 500;
@@ -22,12 +26,44 @@
 			margin-bottom: 20px;
 		}
 	}
+	.titleMobile {
+		min-width: 330px;
+		h1 {
+			font-size: 36px;
+		}
+	}
 	.widgets {
 		width: 50%;
 		display: grid;
 		grid-template-columns: repeat(3, minmax(100px, 1fr));
 		grid-template-rows: repeat(2, 50%);
 		gap: 10px;
+	}
+	.widgetsMobile div {
+		font-size: 14px;
+	}
+	.thinWidgets {
+		width: 100%;
+		margin-top: 30px;
+		.mobileWidget {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+		.widgetContent {
+			margin-top: 0px;
+			flex-direction: row-reverse;
+			width: 100%;
+			justify-content: flex-end;
+			div {
+				margin: 0px;
+				align-items: center;
+				width: auto;
+			}
+			svg {
+				margin-right: 10px;
+			}
+		}
 	}
 	.longerWidget-0 {
 		grid-column-start: 1;
@@ -68,7 +104,7 @@
 		}
 		svg {
 			margin-top: auto;
-			height: 15%;
+			min-width: 47px;
 			aspect-ratio: 1/1;
 		}
 	}
@@ -96,7 +132,7 @@
 	}
 	.tarifCards {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 		gap: 10px;
 	}
 	.svg {

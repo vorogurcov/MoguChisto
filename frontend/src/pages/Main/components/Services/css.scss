@@ -15,6 +15,13 @@
 		box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.02);
 		display: flex;
 	}
+	.contentRazdelMobile {
+		flex-wrap: wrap;
+		.tableRazdel {
+			padding-left: 0px;
+			width: auto;
+		}
+	}
 	.nameRazdel {
 		font-weight: bold;
 	}
@@ -33,6 +40,16 @@
 			padding: 5px 0px 5px 0px;
 		}
 	}
+	.panelRazdelMobile {
+		width: 100%;
+		height: auto;
+		justify-content: flex-start;
+		.buttonsRazdel {
+			flex-direction: row;
+			height: auto;
+			width: 180px;
+		}
+	}
 	.tableWrapper {
 		display: grid;
 		grid-template-columns: minmax(200px, 50%) repeat(3, minmax(100px, 1fr));
@@ -41,6 +58,43 @@
 		justify-items: center;
 		.attrName {
 			justify-self: start;
+		}
+	}
+	.tableWrapperMobile {
+		width: 100%;
+		.tableMobile {
+			margin-top: 20px;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 20px;
+			align-items: center;
+			justify-items: center;
+			.attrName {
+				justify-self: start;
+			}
+			.attrHas {
+				justify-self: end;
+			}
+			div {
+				font-size: 12px !important;
+			}
+		}
+		.switchRazdels {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+		}
+		.switchRazdel {
+			color: $font-gray;
+			font-weight: 500;
+			font-size: 15px;
+			padding: 0px;
+		}
+		.activeSwitchRazdel {
+			color: $blue;
+		}
+		.borderRowRazdelMobile {
+			grid-column: span 2 !important;
 		}
 	}
 	.tableRazdel {
@@ -69,8 +123,10 @@
 			font-size: 14px;
 			font-weight: 500;
 			color: #3e3e3e;
+			text-align: center;
 		}
-		.borderRowRazdel {
+		.borderRowRazdel,
+		.borderRowRazdelMobile {
 			border-bottom: 1px solid #d9d9d9;
 			grid-column: span 4;
 			width: 100%;

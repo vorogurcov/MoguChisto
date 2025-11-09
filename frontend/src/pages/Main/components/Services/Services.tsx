@@ -3,48 +3,52 @@ import Razdel, { AboutAttribute, RazdelT } from "./Razdel";
 import "./css.scss";
 import { BathroomSVG, KitchenSVG, TotalSVG } from "./svg";
 import PageItem from "../../../../components/PageItem";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
+import classNames from "classnames";
 
 const razdels: Record<RazdelT, AboutAttribute[]> = {
 	kitchen: [
 		{
 			attribute: "Мытьё посуды и раковины",
-			hasComfort: true,
-			hasElite: true,
-			hasExpress: true,
+			comfort: true,
+			elite: true,
+			exrpess: true,
 		},
 		{
 			attribute: "Рабочая зона",
-			hasComfort: true,
-			hasElite: true,
-			hasExpress: true,
+			comfort: true,
+			elite: true,
+			exrpess: true,
 		},
 		{
 			attribute: "Фартук",
-			hasComfort: true,
-			hasElite: true,
-			hasExpress: true,
+			comfort: true,
+			elite: true,
+			exrpess: true,
 		},
 		{
 			attribute: "Вытяжка",
-			hasComfort: true,
-			hasElite: true,
+			comfort: true,
+			elite: true,
+			exrpess: undefined,
 		},
 		{
 			attribute: "Варочная панель",
-			hasComfort: true,
-			hasElite: true,
-			hasExpress: true,
+			comfort: true,
+			elite: true,
+			exrpess: true,
 		},
 		{
 			attribute: "Бытовая техника (духовой шкаф, СВЧ, холодильник, чайник)",
-			hasComfort: "Снаружи и внутри стеклянных дверц",
-			hasElite: "Полная чистка",
+			comfort: "Снаружи и внутри стеклянных дверц",
+			elite: "Полная чистка",
+			exrpess: undefined,
 		},
 		{
 			attribute: "Гарнитур, пол и плинтуса, пространство под кухней, мусор",
-			hasComfort: "+ очистка углов и стыков пароочистителем",
-			hasElite: "+ пятновыведение, отодвигая мебель",
-			hasExpress: "Пылесос, мытьё пола и открытых плинтусов",
+			comfort: "+ очистка углов и стыков пароочистителем",
+			elite: "+ пятновыведение, отодвигая мебель",
+			exrpess: "Пылесос, мытьё пола и открытых плинтусов",
 		},
 	],
 	bathroom: [],
@@ -61,11 +65,20 @@ const DifficueltShadowsWrapper = ({ children }: { children: ReactNode }) => {
 
 const Services = forwardRef<HTMLDivElement>((_, ref) => {
 	const [razdel, setRazdel] = useState<RazdelT>("kitchen");
+	const width = useWindowWidth();
 	return (
 		<PageItem className="razdel">
 			<DifficueltShadowsWrapper>
-				<div className="contentRazdel">
-					<div className="panelRazdel">
+				<div
+					className={classNames("contentRazdel", {
+						contentRazdelMobile: width < 900,
+					})}
+				>
+					<div
+						className={classNames("panelRazdel", {
+							panelRazdelMobile: width < 900,
+						})}
+					>
 						<div className="buttonsRazdel">
 							<TotalSVG
 								className="svgButton"

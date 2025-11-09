@@ -24,7 +24,14 @@
 	background-color: white;
 	position: relative;
 }
-.childrenModal {
+.modalContentMobile {
+	width: 350px;
+	.titleModal {
+		font-size: 30px;
+	}
+}
+.childrenModal,
+.childrenModal form {
 	display: grid;
 	grid-template-columns: 100%;
 	gap: 40px;

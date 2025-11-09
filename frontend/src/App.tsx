@@ -4,6 +4,7 @@ import { ActiveSectionProvider } from "./hooks/ActiveSectionContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ModalRoot from "./modals/ModalRoot";
 import { ModalContextProvider } from "./hooks/ModalContext";
+import Profile from "./pages/Profile/ProfileRouters";
 
 function App() {
 	return (
@@ -13,9 +14,10 @@ function App() {
 					<BrowserRouter>
 						<Routes>
 							<Route path="/" element={<Main />} />
+							<Route path="/profile/*" element={<Profile />} />
 						</Routes>
+						<ModalRoot />
 					</BrowserRouter>
-					<ModalRoot />
 				</ActiveSectionProvider>
 			</ModalContextProvider>
 		</ErrorBoundary>

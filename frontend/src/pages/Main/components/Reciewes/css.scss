@@ -25,6 +25,12 @@
 			z-index: -1;
 		}
 	}
+	.numberRateMobile {
+		&::after {
+			width: 51px;
+			height: 66px;
+		}
+	}
 	.rateReciewes {
 		font-size: 64px;
 		font-weight: bold;

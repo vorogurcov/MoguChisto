@@ -8,6 +8,9 @@ import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
 import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
 import { FooterSVG, MiniCleanerSVG } from "../../../../public/svg";
 import PageItem from "../../../../components/PageItem";
+import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext";
+import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
 
 type WidgetT = {
 	title: string;
@@ -115,31 +118,52 @@ function Tarifs() {
 	);
 }
 
+function Widgets({ widgets }: { widgets: WidgetT[] }) {
+	const width = useWindowWidth();
+	return width > 950 ? (
+		<div className={classNames("widgets", { widgetsMobile: width < 1100 })}>
+			{widgets.map((widget, index) => (
+				<Widget
+					key={index}
+					{...widget}
+					className={index === 0 || index === 3 ? `longerWidget-${index}` : ""}
+				/>
+			))}
+		</div>
+	) : (
+		<div className="thinWidgets">
+			{widgets.map((widget, index) => (
+				<Widget key={index} {...widget} className="mobileWidget" />
+			))}
+		</div>
+	);
+}
+
 const ApplicationInfo = forwardRef<HTMLDivElement>((_, ref) => {
+	const contextSection = useActiveSectionContext();
+	const width = useWindowWidth();
 	return (
 		<PageItem className="applicatioInfo">
 			<div ref={ref} className="titles">
-				<div className="title">
+				<div className={classNames("title", { titleMobile: width < 1100 })}>
 					<h1>
 						Современный или классический дизайн? Для квартиры, студии или
 						загородного дома?
 					</h1>
 					<span>Выполним свою работу профессионально.</span>
 					<div>
-						<MainButton className="button">Оставить заявку</MainButton>
+						<MainButton
+							className="button"
+							onClick={() => {
+								contextSection?.setActiveSection(PagePart.top);
+								contextSection?.setShouldSmooth(true);
+							}}
+						>
+							Оставить заявку
+						</MainButton>
 					</div>
 				</div>
-				<div className="widgets">
-					{widgets.map((widget, index) => (
-						<Widget
-							key={index}
-							{...widget}
-							className={
-								index === 0 || index === 3 ? `longerWidget-${index}` : ""
-							}
-						/>
-					))}
-				</div>
+				<Widgets widgets={widgets} />
 			</div>
 			<Tarifs />
 			<footer>

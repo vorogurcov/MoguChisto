@@ -1,3 +1,5 @@
+@import "@colors";
+
 .titleContainer {
 	display: flex;
 	align-items: center;
@@ -11,4 +13,49 @@ input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+input {
+	font-family: "PT Root UI", sans-serif;
+}
+
+.inputWihtUnderLine {
+	all: unset;
+	height: 46px;
+	min-width: 300px;
+	border: none;
+	background: none;
+	padding: 14px 10px 14px 10px;
+	border-bottom: 1px solid #d9d9d9;
+	&:focus {
+		outline: none;
+		border-color: $black;
+	}
+	&::-webkit-calendar-picker-indicator {
+		cursor: pointer;
+	}
+}
+
+.inputWihtUnderLineWithValue {
+	border-color: $black;
+	&::-webkit-calendar-picker-indicator {
+		cursor: pointer;
+	}
+}
+.inputWihtUnderLineWithValue::-webkit-calendar-picker-indicator {
+	filter: brightness(0) invert(0.16) !important;
+}
+
+.checkbox {
+	height: 18px;
+	aspect-ratio: 1/1;
+	border: 1px solid $black;
+	border-radius: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: 10px;
+	&.checked {
+		background-color: $blue;
+	}
 }

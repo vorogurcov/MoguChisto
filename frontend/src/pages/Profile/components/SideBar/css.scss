@@ -1,0 +1,30 @@
+@import "@colors";
+
+.sideBar {
+	display: grid;
+	gap: 32px;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto;
+	.profileButton,
+	.exiteButton {
+		color: $black;
+		font-size: 16px;
+		padding-bottom: 5px;
+		width: fit-content;
+		height: fit-content;
+	}
+	.selectedProfile {
+		color: $blue;
+		border-bottom: 1px solid $blue;
+	}
+	.exiteButton {
+		color: $font-gray;
+	}
+	@media (max-width: 700px) {
+		grid-template-columns: repeat(3, auto);
+		align-items: start;
+		button {
+			font-size: 14px !important;
+		}
+	}
+}
