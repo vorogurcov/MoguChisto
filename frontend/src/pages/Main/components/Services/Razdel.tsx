@@ -57,7 +57,7 @@ const DesctopRazdel = forwardRef<
 					<React.Fragment key={index}>
 						<div className="attrName">{attr.attribute}</div>
 						<div className="oneRazdel">
-							<AllowAnnotation hasType={attr.exrpess} />
+							<AllowAnnotation hasType={attr.express} />
 						</div>
 						<div className="oneRazdel">
 							<AllowAnnotation hasType={attr.comfort} />
@@ -96,7 +96,7 @@ const MobileRazdel = forwardRef<
 >(({ attributes, razdel }, ref) => {
 	const contextSection = useActiveSectionContext();
 	const [typeCleaningActive, setTypeCleaningActive] =
-		useState<CleaningType>("exrpess");
+		useState<CleaningType>("express");
 	return (
 		<div className="tableRazdel">
 			<div ref={ref}>

@@ -1,10 +1,28 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+	BrowserRouter,
+	Navigate,
+	Outlet,
+	Route,
+	Routes,
+} from "react-router-dom";
 import Main from "./pages/Main/Main";
 import { ActiveSectionProvider } from "./hooks/ActiveSectionContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ModalRoot from "./modals/ModalRoot";
 import { ModalContextProvider } from "./hooks/ModalContext";
 import Profile from "./pages/Profile/ProfileRouters";
+import { sessIdKey } from "./core";
+import useShowModal from "./hooks/useShowModal";
+
+const ProtectedRoute: React.FC = () => {
+	const showModal = useShowModal();
+	if (!localStorage.getItem(sessIdKey)) {
+		showModal("Authorization", {});
+		return <Navigate to="/" />;
+	}
+
+	return <Outlet />;
+};
 
 function App() {
 	return (
@@ -14,7 +32,9 @@ function App() {
 					<BrowserRouter>
 						<Routes>
 							<Route path="/" element={<Main />} />
-							<Route path="/profile/*" element={<Profile />} />
+							<Route path={"/profile"} element={<ProtectedRoute />}>
+								<Route path="*" element={<Profile />} />
+							</Route>
 						</Routes>
 						<ModalRoot />
 					</BrowserRouter>

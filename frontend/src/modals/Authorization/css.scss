@@ -36,8 +36,14 @@
 .getCode {
 	background-color: $blue;
 	color: white;
+	width: 100%;
 }
 
 .changeNumber {
 	margin-top: 10px;
+}
+
+.sendCodeWrapper {
+	width: 100%;
+	position: relative;
 }

@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import CleanerPicture from "./CleanerPicture";
 import TextInput, {
 	isValidNumber,
@@ -14,20 +14,21 @@ import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext"
 import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 import classNames from "classnames";
+import ApiController from "../../../../api/ApiController";
 
-export type CleaningType = "exrpess" | "comfort" | "elite";
+export type CleaningType = "express" | "comfort" | "elite";
 
 export const typesCleaning: { type: CleaningType; label: string }[] = [
-	{ type: "exrpess", label: "Экспресс" },
+	{ type: "express", label: "Экспресс" },
 	{ type: "comfort", label: "Комфорт" },
 	{ type: "elite", label: "Элит" },
 ];
-type CleaningOption = (typeof typesCleaning)[0];
+export type CleaningOption = (typeof typesCleaning)[0];
 
-type FormT = {
-	square: number;
-	typeCleaning: CleaningOption;
-	phone: string;
+export type CreateOrderT = {
+	area: number;
+	type: CleaningOption;
+	phoneNumber: string;
 };
 
 const prompts = [
@@ -41,26 +42,27 @@ const prompts = [
 const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	const contextSection = useActiveSectionContext();
 
-	const { register, watch, control, ...form } = useForm<FormT>({
-		defaultValues: { typeCleaning: typesCleaning[0] },
+	const { register, watch, control, ...form } = useForm<CreateOrderT>({
+		defaultValues: { type: typesCleaning[0] },
 		mode: "onBlur",
 	});
 	const { isSubmitting, isValid, errors } = form.formState;
 	const formValues = watch();
+	const [success, setSuccess] = useState<string>();
 
-	const onSubmit = (data: FormT) => {
-		console.log("data", data);
+	const onSubmit = async (data: CreateOrderT) => {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		await ApiController.createOrder(data, price!);
+		form.reset();
+		setSuccess("Спасибо за заявку! С вами свяжется наш менеджер");
 	};
 
 	const price = useMemo(
 		() =>
-			formValues.square && formValues.typeCleaning.type
-				? calculatorPrice(
-						Number(formValues.square),
-						formValues.typeCleaning.type,
-					)
+			formValues.area && formValues.type.type
+				? calculatorPrice(Number(formValues.area), formValues.type.type)
 				: undefined,
-		[formValues.square, formValues.typeCleaning],
+		[formValues.area, formValues.type],
 	);
 	const width = useWindowWidth();
 	return (
@@ -77,36 +79,36 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 						</div>
 						<div className="applicationParts">
 							<TextInput
-								{...register("square", {
+								{...register("area", {
 									required: "Площадь обязательна",
 									valueAsNumber: true,
 								})}
-								name="square"
+								name="area"
 								type="number"
 								min={1}
 								title="Жил. площадь"
 								placeholder="20м²"
 								classnamecontainer="applicationPart"
 								prompts={prompts}
-								error={errors.square?.message}
+								error={errors.area?.message}
 							/>
 							<Controller
-								name="typeCleaning"
+								name="type"
 								control={control}
 								rules={{ required: "Тип уборки обязателен" }}
 								render={({ field }) => (
 									<Selection
 										{...field}
-										name="typeCleaning"
+										name="type"
 										title="Тип уборки"
 										options={typesCleaning}
 										classNameContainer="applicationPart"
-										error={errors.typeCleaning?.message}
+										error={errors.type?.message}
 									/>
 								)}
 							/>
 							<Controller
-								name="phone"
+								name="phoneNumber"
 								control={control}
 								rules={{
 									required: "Телефон обязателен",
@@ -117,17 +119,21 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 									<TextInput
 										{...field}
 										type="phone"
-										name="phone"
+										name="phoneNumber"
 										title="Номер телефона"
 										placeholder="+7 (999) 999-99-99"
 										classnamecontainer="applicationPart"
-										error={errors.phone?.message}
+										error={errors.phoneNumber?.message}
 									/>
 								)}
 							/>
 						</div>
 						<div className="price">
-							{price ? <span>{price} ₽</span> : <span>Давайте посчитаем!</span>}
+							{price ? (
+								<span>{price} ₽</span>
+							) : (
+								<span>{success ?? "Давайте посчитаем!"}</span>
+							)}
 						</div>
 						<div
 							className={classNames("buttonsApplication", {
@@ -139,15 +145,17 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								disabled={isSubmitting || !isValid}
 								type="submit"
 								submiting={isSubmitting}
-								submitingText="Отправляем текст..."
+								submitingText="Отправляем..."
 							>
 								Отправить заявку
 							</MainButton>
 							<MainButton
+								type="button"
 								className="more"
-								onClick={() => {
+								onClick={(e) => {
 									contextSection?.setActiveSection(PagePart.service);
 									contextSection?.setShouldSmooth(true);
+									e.stopPropagation();
 								}}
 							>
 								Узнать детали

@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { ProfileEnum } from "./components/SideBar/SideBar";
-import Me from "./components/Me/Me";
+import Me from "./Me/Me";
 import Orders from "./Orders/Orders";
 
 export default function Profile() {

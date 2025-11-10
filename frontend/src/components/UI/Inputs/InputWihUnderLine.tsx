@@ -1,18 +1,16 @@
-import { useRef, useState } from "react";
 import classNames from "classnames";
 import "./css.scss";
 import TextInput, { TextInputProps } from "./TextInput";
 
 export default function InputWihUnderLine({
 	className,
-	onBlur,
+	value,
+	hasValue,
 	...props
-}: TextInputProps) {
-	const ref = useRef<HTMLInputElement | null>(null);
-	const [hasValue, setHasValue] = useState(false);
+}: TextInputProps & { hasValue?: boolean }) {
 	return (
 		<TextInput
-			ref={ref}
+			value={value}
 			{...props}
 			className={classNames(
 				"inputWihtUnderLine",
@@ -21,10 +19,6 @@ export default function InputWihUnderLine({
 				},
 				className,
 			)}
-			onBlur={(e) => {
-				setHasValue(!!ref.current?.value);
-				onBlur?.(e);
-			}}
 		/>
 	);
 }

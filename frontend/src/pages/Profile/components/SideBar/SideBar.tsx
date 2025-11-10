@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import ButtonLikeText from "../../../../components/Buttons/ButtonLikeText/ButtonLikeText";
 import classNames from "classnames";
 import "./css.scss";
+import ApiController from "../../../../api/ApiController";
+import { sessIdKey } from "../../../../core";
 
 export enum ProfileEnum {
 	ME = "me",
@@ -15,6 +17,12 @@ const buttons: { name: string; type: ProfileEnum }[] = [
 
 export default function SideBar({ url }: { url: ProfileEnum }) {
 	const naigate = useNavigate();
+	const handleExite = () => {
+		ApiController.logout().then(() => {
+			naigate("/");
+			localStorage.removeItem(sessIdKey);
+		});
+	};
 	return (
 		<div className="sideBar">
 			{buttons.map((button) => (
@@ -28,7 +36,9 @@ export default function SideBar({ url }: { url: ProfileEnum }) {
 					{button.name}
 				</ButtonLikeText>
 			))}
-			<ButtonLikeText className="exiteButton">Выйти</ButtonLikeText>
+			<ButtonLikeText className="exiteButton" onClick={handleExite}>
+				Выйти
+			</ButtonLikeText>
 		</div>
 	);
 }

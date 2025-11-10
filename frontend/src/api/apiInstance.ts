@@ -8,9 +8,7 @@ const apiInstance = axios.create({
 
 apiInstance.interceptors.request.use(
 	(config) => {
-		if (config.method?.toLowerCase() === "post") {
-			config.withCredentials = true; // Устанавливаем withCredentials для POST-запросов
-		}
+		config.withCredentials = true; // Устанавливаем withCredentials для POST-запросов
 		return config;
 	},
 	(error) => {
