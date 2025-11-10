@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRawPhoneNumber } from "../components/UI/Inputs/TextInput";
 import { apiBaseUrl } from "../core";
 import { formatDateForInput, formatPhoneNumber } from "../helpers/formatData";
@@ -92,10 +93,26 @@ const ApiController = {
 			cost: price,
 		});
 	},
-	async getOrders() {
-		console.log("get");
+	async getOrders(): Promise<OrderCardT[]> {
 		const data = await apiInstance.get(getPath("orders/"));
-		console.log("data", data);
+		return data.data.map(
+			(el: {
+				order_id: any;
+				status: any;
+				type: any;
+				cost: any;
+				cleaners: any;
+				start_date: any;
+			}) => ({
+				id: el.order_id,
+				status: el.status,
+				typeCleaning: el.type,
+				price: el.cost,
+				cleaners: el.cleaners,
+				startDate: el.start_date,
+				notification: "Сегодня в 08:20",
+			}),
+		);
 	},
 };
 
