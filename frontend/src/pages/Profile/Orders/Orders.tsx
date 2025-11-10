@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import MainButton from "../../../components/Buttons/MainButton/MainButton";
 import {
 	CleaningType,
@@ -9,6 +9,7 @@ import SideBar, { ProfileEnum } from "../components/SideBar/SideBar";
 import "./css.scss";
 import BorderedItem from "../components/BorderedItem/BorderedItem";
 import ProfileContent from "../components/ProfileContent/ProfileContent";
+import ApiController from "../../../api/ApiController";
 
 type OrderProcessT = "process" | "fine";
 
@@ -68,7 +69,7 @@ const placeholders: Record<OrderProcessT, { label: string; icon: ReactNode }> =
 		},
 	};
 
-type OrderCardT = {
+export type OrderCardT = {
 	id: number;
 	typeCleaning: CleaningType;
 	cleaners: string;
@@ -102,6 +103,9 @@ function OrderCard({
 	status,
 	notification,
 }: OrderCardT) {
+	useEffect(() => {
+		ApiController.getOrders();
+	}, []);
 	return (
 		<BorderedItem className="orderCard">
 			<div className="orderIdWrapper">
@@ -134,7 +138,7 @@ function OrderCard({
 const cards: OrderCardT[] = [
 	{
 		id: 1111,
-		typeCleaning: "exrpess",
+		typeCleaning: "express",
 		startDate: "05 сентября 2025г.",
 		price: 25000,
 		cleaners: "2 (Мария Анферова, Дмитрий Денисов)",
@@ -143,7 +147,7 @@ const cards: OrderCardT[] = [
 	},
 	{
 		id: 22222,
-		typeCleaning: "exrpess",
+		typeCleaning: "express",
 		startDate: "05 сентября 2025г.",
 		price: 25000,
 		cleaners: "2 (Мария Анферова, Дмитрий Денисов)",
@@ -152,7 +156,7 @@ const cards: OrderCardT[] = [
 	},
 	{
 		id: 33333,
-		typeCleaning: "exrpess",
+		typeCleaning: "express",
 		startDate: "05 сентября 2025г.",
 		price: 25000,
 		cleaners: "2 (Мария Анферова, Дмитрий Денисов)",

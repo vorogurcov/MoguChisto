@@ -3,8 +3,10 @@ import { InputPropsType } from "./InputPropsTypeAlias";
 import "../common.scss";
 import "./css.scss";
 import InfoHover from "../../InfoHover/InfoHover";
-import { ChangeEvent, forwardRef, useRef, useState } from "react";
+import { ChangeEvent, forwardRef, useEffect, useRef, useState } from "react";
 import useWindowWidth from "../../../hooks/useWindowWidth";
+import ErrorMessage from "../../ErrorMessage/ErrorMessage";
+import { formatPhoneNumber } from "../../../helpers/formatData";
 
 export type TextInputProps = InputPropsType & {
 	error?: string;
@@ -26,42 +28,6 @@ function PhoneInput({
 }: InputPropsType) {
 	const [displayValue, setDisplayValue] = useState<string>(value.toString());
 	const inputRef = useRef<HTMLInputElement>(null);
-	const formatPhoneNumber = (input: string): string => {
-		// Удаляем все нецифровые символы, кроме возможного плюса в начале
-		let numbers = input.replace(/\D/g, "");
-
-		// Если номер начинается с 7 или 8, заменяем на +7
-		if (numbers.startsWith("7") || numbers.startsWith("8")) {
-			numbers = "7" + numbers.slice(1);
-		}
-		// Если номер не начинается с 7, добавляем +7
-		else if (!numbers.startsWith("7") && numbers.length > 0) {
-			numbers = "7" + numbers;
-		}
-
-		// Ограничиваем длину (1 код страны + 10 цифр номера)
-		numbers = numbers.slice(0, 11);
-
-		// Форматируем номер
-		let formatted = "";
-		if (numbers.length > 0) {
-			formatted = "+7 ";
-			if (numbers.length > 1) {
-				formatted += "(" + numbers.slice(1, 4);
-			}
-			if (numbers.length >= 4) {
-				formatted += ") " + numbers.slice(4, 7);
-			}
-			if (numbers.length >= 7) {
-				formatted += "-" + numbers.slice(7, 9);
-			}
-			if (numbers.length >= 9) {
-				formatted += "-" + numbers.slice(9, 11);
-			}
-		}
-		console.log("formatted", formatted);
-		return formatted;
-	};
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const input = e.target.value;
@@ -122,6 +88,10 @@ function PhoneInput({
 		}
 	};
 
+	useEffect(() => {
+		setDisplayValue(formatPhoneNumber(value.toString()));
+	}, [value]);
+
 	return (
 		<input
 			ref={inputRef}
@@ -169,7 +139,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 						})}
 					/>
 				)}
-				{error && <div className="errorInput">{error}</div>}
+				<ErrorMessage>{error}</ErrorMessage>
 			</div>
 		);
 	},

@@ -12,7 +12,7 @@ type CalcT = {
 };
 
 const calcData: Record<CleaningType, Omit<CalcT, "square">> = {
-	exrpess: {
+	express: {
 		oil: 600,
 		chemistry: 300,
 		salary: 1000,

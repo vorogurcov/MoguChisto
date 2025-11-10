@@ -4,10 +4,10 @@ import MainButton from "../Buttons/MainButton/MainButton";
 import "./css.scss";
 import { useActiveSectionContext } from "../../hooks/ActiveSectionContext";
 import { useNavigate } from "react-router-dom";
-import useShowModal from "../../hooks/useShowModal";
 import useWindowWidth from "../../hooks/useWindowWidth";
 import { ButtonPropsType } from "../Buttons/ButtonPropsTypeAlias";
 import classNames from "classnames";
+import { ProfileEnum } from "../../pages/Profile/components/SideBar/SideBar";
 
 export enum PagePart {
 	top = 1,
@@ -85,7 +85,6 @@ function ProfileButton({ ...props }: ButtonPropsType) {
 }
 
 export default function NavigatePanel() {
-	const showModal = useShowModal();
 	const navigate = useNavigate();
 	const contextSection = useActiveSectionContext();
 	const width = useWindowWidth();
@@ -125,7 +124,9 @@ export default function NavigatePanel() {
 						</a>
 					</div>
 					<div>
-						<ProfileButton onClick={() => showModal("Authorization", {})} />
+						<ProfileButton
+							onClick={() => navigate("/profile/" + ProfileEnum.ME)}
+						/>
 					</div>
 				</div>
 			</div>
