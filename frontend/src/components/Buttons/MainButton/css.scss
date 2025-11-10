@@ -11,6 +11,17 @@
 	&:hover {
 		opacity: 0.9;
 	}
+	.button-text {
+		visibility: visible;
+		opacity: 1;
+		transition: opacity 0.2s ease;
+
+		&.hidden {
+			position: absolute;
+			visibility: hidden;
+			opacity: 0;
+		}
+	}
 }
 
 .mainButtonMobile {

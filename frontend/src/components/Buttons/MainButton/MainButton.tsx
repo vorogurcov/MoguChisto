@@ -18,7 +18,12 @@ export default function MainButton({
 			})}
 			{...props}
 		>
-			{submiting && submitingText ? submitingText : children}
+			<span className={classNames("button-text", { hidden: submiting })}>
+				{children}
+			</span>
+			<span className={classNames("button-text", { hidden: !submiting })}>
+				{submitingText || children}
+			</span>
 		</button>
 	);
 }
