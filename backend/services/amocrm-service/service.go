@@ -40,7 +40,8 @@ func NewAmoCrmService() (*AmoCrmService, error) {
 	}, nil
 }
 
-func (amoSvc *AmoCrmService) createContact(ctx context.Context, phoneNumber string) (int64, error) {
+func (amoSvc *AmoCrmService) CreateContact(ctx context.Context, phoneNumber string) (int64, error) {
+	//TODO: Call from CreateUser and save int64 id as amocrm_contact_id
 	contactDto := dto.ContactDto{
 		CustomFieldsValues: []dto.CustomField{
 			{
@@ -87,6 +88,79 @@ func (amoSvc *AmoCrmService) createContact(ctx context.Context, phoneNumber stri
 	var contactResponse map[string]interface{}
 	if err := json.Unmarshal(respBody, &contactResponse); err != nil {
 		return 0, fmt.Errorf("ошибка парсинга ответа создания контакта: %w", err)
+	}
+
+	embedded, ok := contactResponse["_embedded"].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("не удалось получить _embedded из ответа")
+	}
+
+	contacts, ok := embedded["contacts"].([]interface{})
+	if !ok || len(contacts) == 0 {
+		return 0, fmt.Errorf("не удалось получить контакты из ответа")
+	}
+
+	firstContact, ok := contacts[0].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("не удалось получить первый контакт из ответа")
+	}
+
+	idFloat, ok := firstContact["id"].(float64)
+	if !ok {
+		return 0, fmt.Errorf("не удалось получить ID контакта из ответа")
+	}
+
+	return int64(idFloat), nil
+}
+
+func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto types.UpdateContactDto) (interface{}, error) {
+	//request to /api/v4/contacts/{id}
+	contactDto := dto.ContactDto{
+		CustomFieldsValues: []dto.CustomField{
+			{
+				FieldID: amocrm_types.AmoPhoneFieldID,
+				Values: []dto.CustomFieldValue{
+					{
+						Value:    updateContactDto.PhoneNumber,
+						EnumCode: "MOB",
+					},
+				},
+			},
+		},
+	}
+
+	body, err := json.Marshal([]dto.ContactDto{contactDto})
+	if err != nil {
+		return 0, err
+	}
+
+	req, err := http.NewRequest("POST", amoSvc.apiUrl+"contacts/"+updateContactDto.ContactID, bytes.NewBuffer(body))
+	if err != nil {
+		return 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", amoSvc.apiKey))
+	req.Header.Set("Accept", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("ошибка изменения контакта: %s", string(respBody))
+	}
+
+	var contactResponse map[string]interface{}
+	if err := json.Unmarshal(respBody, &contactResponse); err != nil {
+		return 0, fmt.Errorf("ошибка парсинга ответа изменения контакта: %w", err)
 	}
 
 	embedded, ok := contactResponse["_embedded"].(map[string]interface{})
@@ -189,7 +263,7 @@ func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.N
 		log.Println(contactID)
 		if err != nil {
 			log.Print(err)
-			contactID, err = amoSvc.createContact(ctx, newLeadDto.PhoneNumber)
+			contactID, err = amoSvc.CreateContact(ctx, newLeadDto.PhoneNumber)
 			if err != nil {
 				return nil, fmt.Errorf("ошибка создания контакта: %w", err)
 			}

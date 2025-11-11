@@ -12,5 +12,7 @@ type AmoCRMService interface {
 	//ProcessAccessTokens(w http.ResponseWriter, r *http.Request, db *sql.DB) error
 	//RefreshAccessTokens(w http.ResponseWriter, r *http.Request, db *sql.DB) error
 	//TODO: CRUD Protected Resources from amocrm api
-	SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (interface{}, error) // TODO: Типизировать response
+	CreateContact(ctx context.Context, phoneNumber string) (int64, error)
+	UpdateContact(ctx context.Context, updateContactDto types.UpdateContactDto) (interface{}, error) // TODO: Типизировать response
+	SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (interface{}, error)               // TODO: Типизировать response
 }

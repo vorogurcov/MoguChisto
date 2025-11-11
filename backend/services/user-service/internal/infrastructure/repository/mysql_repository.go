@@ -8,6 +8,7 @@ import (
 	"main/services/user-service/internal/domain"
 	"main/services/user-service/internal/dto"
 	"strings"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -150,7 +151,13 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 	}
 	if changeUserProfileDto.Email != nil {
 		setClauses = append(setClauses, "email = ?")
-		args = append(args, *changeUserProfileDto.Email)
+
+		emailValue := sql.NullString{
+			String: *changeUserProfileDto.Email,
+			Valid:  *changeUserProfileDto.Email != "",
+		}
+
+		args = append(args, emailValue)
 	}
 	if changeUserProfileDto.PhoneNumber != nil {
 		setClauses = append(setClauses, "phone_number = ?")
@@ -158,7 +165,17 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 	}
 	if changeUserProfileDto.BirthdayDate != nil {
 		setClauses = append(setClauses, "birthday_date = ?")
-		args = append(args, *changeUserProfileDto.BirthdayDate)
+
+		var nt sql.NullTime
+		if *changeUserProfileDto.BirthdayDate != "" {
+			// Проверяем и парсим дату формата YYYY-MM-DD
+			t, _ := time.Parse("2006-01-02", *changeUserProfileDto.BirthdayDate)
+			nt = sql.NullTime{Time: t, Valid: true} // Дата валидна
+		} else {
+			nt = sql.NullTime{Valid: false} // NULL в базе
+		}
+
+		args = append(args, nt)
 	}
 
 	if len(setClauses) == 0 {
@@ -176,10 +193,7 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return nil, fmt.Errorf("rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return nil, fmt.Errorf("user not found")
+		return nil, fmt.Errorf("rows affected: %w", rowsAffected)
 	}
 
 	return r.GetUserByID(ctx, userID)
