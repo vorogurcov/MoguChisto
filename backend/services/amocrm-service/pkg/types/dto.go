@@ -9,7 +9,7 @@ type NewLeadDto struct {
 }
 
 type UpdateContactDto struct {
-	ContactID   string
+	ContactID   int64
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	Email       string `json:"email"`

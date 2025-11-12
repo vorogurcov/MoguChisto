@@ -7,12 +7,13 @@ import (
 )
 
 type UserModel struct {
-	UserID       string     `json:"user_id"`
-	LastName     *string    `json:"last_name,omitempty"`
-	FirstName    *string    `json:"first_name,omitempty"`
-	BirthdayDate *time.Time `json:"birthday_date,omitempty"`
-	PhoneNumber  *string    `json:"phone_number,omitempty"`
-	Email        *string    `json:"email,omitempty"`
+	UserID          string     `json:"user_id"`
+	AmoCrmContactId *string    `json:"amocrm_contact_id,omitempty"`
+	LastName        *string    `json:"last_name,omitempty"`
+	FirstName       *string    `json:"first_name,omitempty"`
+	BirthdayDate    *time.Time `json:"birthday_date,omitempty"`
+	PhoneNumber     *string    `json:"phone_number,omitempty"`
+	Email           *string    `json:"email,omitempty"`
 }
 
 type NotificationsModel struct {
@@ -26,7 +27,7 @@ type SignupAnswer struct {
 }
 
 type UserRepository interface {
-	CreateUser(ctx context.Context, phoneNumber string) (*UserModel, error)
+	CreateUser(ctx context.Context, userDto dto.CreateRepoUserDto) (*UserModel, error)
 	GetUserByID(ctx context.Context, userID string) (*UserModel, error)
 	UpdateUserByID(ctx context.Context, userID string, changeUserProfileDto dto.ChangeUserProfileDto) (*UserModel, error)
 	UpdateUserNotifications(ctx context.Context, userID string, settingsDto dto.ChangeUserNotificationSettingsDto) (*NotificationsModel, error)

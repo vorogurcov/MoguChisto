@@ -155,11 +155,11 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 	id := uuid.NewString()
 
 	const insertQ = `
-		INSERT INTO orders (order_id, user_id, type, cost, area, status, start_date, cleaners)
-		VALUES (?, ?, ?, ?, ?, 'pending', ?, NULL)
+		INSERT INTO orders (order_id, user_id, type, cost, phone_number, area, status, start_date, cleaners)
+		VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NULL)
 	`
 
-	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, createOrderDto.Area, time.Now()); err != nil {
+	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, createOrderDto.PhoneNumber, createOrderDto.Area, time.Now()); err != nil {
 		return nil, fmt.Errorf("insert order: %w", err)
 	}
 

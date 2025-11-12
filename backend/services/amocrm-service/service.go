@@ -41,7 +41,13 @@ func NewAmoCrmService() (*AmoCrmService, error) {
 }
 
 func (amoSvc *AmoCrmService) CreateContact(ctx context.Context, phoneNumber string) (int64, error) {
-	//TODO: Call from CreateUser and save int64 id as amocrm_contact_id
+
+	contactId, err := amoSvc.findContact(ctx, phoneNumber)
+
+	if err == nil {
+		return contactId, nil
+	}
+
 	contactDto := dto.ContactDto{
 		CustomFieldsValues: []dto.CustomField{
 			{
@@ -114,8 +120,11 @@ func (amoSvc *AmoCrmService) CreateContact(ctx context.Context, phoneNumber stri
 }
 
 func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto types.UpdateContactDto) (interface{}, error) {
-	//request to /api/v4/contacts/{id}
 	contactDto := dto.ContactDto{
+		ID:        updateContactDto.ContactID,
+		FirstName: updateContactDto.FirstName,
+		LastName:  updateContactDto.LastName,
+		Name:      updateContactDto.FirstName + " " + updateContactDto.LastName,
 		CustomFieldsValues: []dto.CustomField{
 			{
 				FieldID: amocrm_types.AmoPhoneFieldID,
@@ -126,15 +135,24 @@ func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto
 					},
 				},
 			},
+			{
+				FieldID: amocrm_types.AmoEmailFieldID,
+				Values: []dto.CustomFieldValue{
+					{
+						Value:    updateContactDto.Email,
+						EnumCode: "PRIV",
+					},
+				},
+			},
 		},
 	}
 
-	body, err := json.Marshal([]dto.ContactDto{contactDto})
+	body, err := json.Marshal(contactDto)
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := http.NewRequest("POST", amoSvc.apiUrl+"contacts/"+updateContactDto.ContactID, bytes.NewBuffer(body))
+	req, err := http.NewRequest("PATCH", amoSvc.apiUrl+fmt.Sprintf("contacts/%v", updateContactDto.ContactID), bytes.NewBuffer(body))
 	if err != nil {
 		return 0, err
 	}
@@ -155,6 +173,8 @@ func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto
 	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
+		log.Println(string(respBody))
+
 		return 0, fmt.Errorf("ошибка изменения контакта: %s", string(respBody))
 	}
 
@@ -162,23 +182,8 @@ func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto
 	if err := json.Unmarshal(respBody, &contactResponse); err != nil {
 		return 0, fmt.Errorf("ошибка парсинга ответа изменения контакта: %w", err)
 	}
-
-	embedded, ok := contactResponse["_embedded"].(map[string]interface{})
-	if !ok {
-		return 0, fmt.Errorf("не удалось получить _embedded из ответа")
-	}
-
-	contacts, ok := embedded["contacts"].([]interface{})
-	if !ok || len(contacts) == 0 {
-		return 0, fmt.Errorf("не удалось получить контакты из ответа")
-	}
-
-	firstContact, ok := contacts[0].(map[string]interface{})
-	if !ok {
-		return 0, fmt.Errorf("не удалось получить первый контакт из ответа")
-	}
-
-	idFloat, ok := firstContact["id"].(float64)
+	
+	idFloat, ok := contactResponse["id"].(float64)
 	if !ok {
 		return 0, fmt.Errorf("не удалось получить ID контакта из ответа")
 	}
