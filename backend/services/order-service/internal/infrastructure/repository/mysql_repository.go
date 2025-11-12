@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"main/services/order-service/internal/domain"
 	"main/services/order-service/internal/dto"
+	"main/services/order-service/pkg/types"
 	"time"
 
 	"github.com/google/uuid"
@@ -166,6 +167,67 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 	order, err := r.GetOrderById(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("select created order: %w", err)
+	}
+
+	return order, nil
+}
+
+func (r *mySqlOrderRepository) UpdateOrderByLeadId(ctx context.Context, updateOrderDto types.UpdateOrderDto) (*domain.OrderModel, error) {
+	if updateOrderDto.AmocrmLeadId == 0 {
+		return nil, fmt.Errorf("amocrm_lead_id is empty")
+	}
+
+	updateOrderQuery := "UPDATE orders SET status = ?, cleaners = ? WHERE amocrm_lead_id = ?"
+
+	res, err := r.db.ExecContext(ctx, updateOrderQuery, updateOrderDto.Status, updateOrderDto.Cleaners, updateOrderDto.AmocrmLeadId)
+	if err != nil {
+		return nil, fmt.Errorf("update order: %w", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("could not get rows affected after update: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("order not found")
+	}
+
+	var orderID string
+	const selectIDQ = "SELECT order_id FROM orders WHERE amocrm_lead_id = ? LIMIT 1"
+	if err := r.db.QueryRowContext(ctx, selectIDQ, updateOrderDto.AmocrmLeadId).Scan(&orderID); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("order not found after update")
+		}
+		return nil, fmt.Errorf("select order id: %w", err)
+	}
+
+	order, err := r.GetOrderById(ctx, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("fetch updated order: %w", err)
+	}
+
+	return order, nil
+}
+
+func (r *mySqlOrderRepository) SetLeadIDToOrder(ctx context.Context, amocrmLeadId int64, orderID string) (*domain.OrderModel, error) {
+	updateOrderQuery := "UPDATE orders SET amocrm_lead_id = ? WHERE order_id = ?"
+
+	res, err := r.db.ExecContext(ctx, updateOrderQuery, amocrmLeadId, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("update order: %w", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("could not get rows affected after update: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("order not found")
+	}
+
+	order, err := r.GetOrderById(ctx, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("fetch updated order: %w", err)
 	}
 
 	return order, nil

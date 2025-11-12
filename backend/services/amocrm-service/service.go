@@ -182,7 +182,7 @@ func (amoSvc *AmoCrmService) UpdateContact(ctx context.Context, updateContactDto
 	if err := json.Unmarshal(respBody, &contactResponse); err != nil {
 		return 0, fmt.Errorf("ошибка парсинга ответа изменения контакта: %w", err)
 	}
-	
+
 	idFloat, ok := contactResponse["id"].(float64)
 	if !ok {
 		return 0, fmt.Errorf("не удалось получить ID контакта из ответа")
@@ -258,7 +258,7 @@ func (amoSvc *AmoCrmService) findContact(ctx context.Context, phoneNumber string
 	}
 }
 
-func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (interface{}, error) {
+func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.NewLeadDto) (int64, error) {
 	var contactID int64
 	var err error
 
@@ -270,7 +270,7 @@ func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.N
 			log.Print(err)
 			contactID, err = amoSvc.CreateContact(ctx, newLeadDto.PhoneNumber)
 			if err != nil {
-				return nil, fmt.Errorf("ошибка создания контакта: %w", err)
+				return 0, fmt.Errorf("ошибка создания контакта: %w", err)
 			}
 		}
 	}
@@ -279,12 +279,12 @@ func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.N
 
 	body, err := json.Marshal([]dto.CrmLeadDto{crmLeadDto})
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	req, err := http.NewRequest("POST", amoSvc.apiUrl+"leads", bytes.NewBuffer(body))
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", amoSvc.apiKey))
@@ -293,19 +293,42 @@ func (amoSvc *AmoCrmService) SendNewLead(ctx context.Context, newLeadDto types.N
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	var parsed map[string]interface{}
 	if err := json.Unmarshal(respBody, &parsed); err != nil {
-		return string(respBody), nil
+		return 0, err
 	}
 
-	return parsed, nil
+	_embedded, ok := parsed["_embedded"].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("_embedded not found or invalid")
+	}
+
+	leads, ok := _embedded["leads"].([]interface{})
+	if !ok || len(leads) == 0 {
+		return 0, fmt.Errorf("leads not found or empty")
+	}
+
+	firstLead, ok := leads[0].(map[string]interface{})
+	if !ok {
+		return 0, fmt.Errorf("lead item invalid")
+	}
+
+	idFloat, ok := firstLead["id"].(float64)
+	if !ok {
+		return 0, fmt.Errorf("id not found or not a number")
+	}
+
+	// Если нужен int64
+	id := int64(idFloat)
+
+	return id, nil
 }

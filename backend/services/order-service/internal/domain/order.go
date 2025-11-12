@@ -3,6 +3,7 @@ package domain
 import (
 	"context"
 	"main/services/order-service/internal/dto"
+	"main/services/order-service/pkg/types"
 	"time"
 )
 
@@ -26,4 +27,6 @@ type OrderRepository interface {
 	GetAllUserOrders(ctx context.Context, userID string) ([]*OrderModel, error)
 	GetOrderById(ctx context.Context, orderID string) (*OrderModel, error)
 	CreateOrder(ctx context.Context, createOrderDto dto.CreateOrderDto) (*OrderModel, error)
+	SetLeadIDToOrder(ctx context.Context, amocrmLeadId int64, orderID string) (*OrderModel, error)
+	UpdateOrderByLeadId(ctx context.Context, updateOrderDto types.UpdateOrderDto) (*OrderModel, error)
 }

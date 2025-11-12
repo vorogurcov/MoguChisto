@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	amocrm "main/services/amocrm-service/cmd"
 	order "main/services/order-service/cmd"
 	user "main/services/user-service/cmd"
 	db2 "main/shared/db"
@@ -22,11 +23,11 @@ func main() {
 	}
 
 	c := cors.New(cors.Options{
-    AllowedOrigins:   []string{
-        "http://localhost:3000",          // для локальной разработки
-        "https://mogucheesto.ru",        // основной домен
-        "https://www.mogucheesto.ru",    // с www, если используется
-    },
+		AllowedOrigins: []string{
+			"http://localhost:3000",      // для локальной разработки
+			"https://mogucheesto.ru",     // основной домен
+			"https://www.mogucheesto.ru", // с www, если используется
+		},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
@@ -44,8 +45,11 @@ func main() {
 
 	orderMux := order.NewHandler(db)
 
+	amocrmMux := amocrm.NewHandler(db)
+
 	mux.Handle("/user/", http.StripPrefix("/user", userMux))
 	mux.Handle("/orders/", http.StripPrefix("/orders", orderMux))
+	mux.Handle("/integrations/", http.StripPrefix("/integrations", amocrmMux))
 
 	httpAddr := os.Getenv("HTTP_ADDR")
 	if httpAddr == "" {

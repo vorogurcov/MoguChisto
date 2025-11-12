@@ -41,9 +41,14 @@ func (o *OrderService) CreateNewOrder(ctx context.Context, createOrderDto dto.Cr
 		newLeadDto := types.NewLeadDto{Name: fmt.Sprintf("Заявка на уборку от %v", createOrderDto.PhoneNumber), Type: createOrderDto.Type, Cost: createOrderDto.Cost, Area: createOrderDto.Area,
 			PhoneNumber: createOrderDto.PhoneNumber}
 
-		_, crmErr := amoCrmService.SendNewLead(ctx, newLeadDto)
+		leadId, crmErr := amoCrmService.SendNewLead(ctx, newLeadDto)
 		if crmErr != nil {
 			log.Print(crmErr.Error())
+		}
+
+		order, err = o.OrderRepo.SetLeadIDToOrder(ctx, leadId, order.OrderID)
+		if err != nil {
+			return nil, err
 		}
 	}
 
