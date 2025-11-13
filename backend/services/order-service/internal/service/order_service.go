@@ -9,6 +9,7 @@ import (
 	"main/services/amocrm-service/pkg/types"
 	"main/services/order-service/internal/domain"
 	"main/services/order-service/internal/dto"
+	types2 "main/services/order-service/pkg/types"
 )
 
 type OrderService struct {
@@ -53,4 +54,14 @@ func (o *OrderService) CreateNewOrder(ctx context.Context, createOrderDto dto.Cr
 	}
 
 	return order, nil
+}
+
+func (o *OrderService) UpdateOrderInfoByLeadId(ctx context.Context, updateOrderDto types2.UpdateOrderDto) error {
+	_, err := o.OrderRepo.UpdateOrderByLeadId(ctx, updateOrderDto)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

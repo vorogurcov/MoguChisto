@@ -179,17 +179,9 @@ func (r *mySqlOrderRepository) UpdateOrderByLeadId(ctx context.Context, updateOr
 
 	updateOrderQuery := "UPDATE orders SET status = ?, cleaners = ? WHERE amocrm_lead_id = ?"
 
-	res, err := r.db.ExecContext(ctx, updateOrderQuery, updateOrderDto.Status, updateOrderDto.Cleaners, updateOrderDto.AmocrmLeadId)
+	_, err := r.db.ExecContext(ctx, updateOrderQuery, updateOrderDto.Status, updateOrderDto.Cleaners, updateOrderDto.AmocrmLeadId)
 	if err != nil {
 		return nil, fmt.Errorf("update order: %w", err)
-	}
-
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return nil, fmt.Errorf("could not get rows affected after update: %w", err)
-	}
-	if rowsAffected == 0 {
-		return nil, fmt.Errorf("order not found")
 	}
 
 	var orderID string

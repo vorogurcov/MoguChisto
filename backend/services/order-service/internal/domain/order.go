@@ -21,6 +21,7 @@ type OrderModel struct {
 type OrderService interface {
 	GetAllUserOrders(ctx context.Context) ([]*OrderModel, error)
 	CreateNewOrder(ctx context.Context, createOrderDto dto.CreateOrderDto) (*OrderModel, error)
+	UpdateOrderInfoByLeadId(ctx context.Context, updateOrderDto types.UpdateOrderDto)
 }
 
 type OrderRepository interface {

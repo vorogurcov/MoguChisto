@@ -33,5 +33,7 @@ func NewHandler(db *sql.DB) http.Handler {
 		}
 	})
 
+	mux.HandleFunc("/amocrm/webhook", http2.NewAmocrmWebhookHandler(&orderService))
+
 	return mux
 }
