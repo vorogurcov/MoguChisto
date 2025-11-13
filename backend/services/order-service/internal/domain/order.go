@@ -8,14 +8,15 @@ import (
 )
 
 type OrderModel struct {
-	OrderID   string    `json:"order_id"`
-	UserID    string    `json:"user_id,omitempty"`
-	Type      string    `json:"type"`
-	Cost      float64   `json:"cost"`
-	Area      float64   `json:"area"`
-	Status    string    `json:"status"`
-	StartDate time.Time `json:"start_date"`
-	Cleaners  string    `json:"cleaners"`
+	OrderID       string     `json:"order_id"`
+	UserID        string     `json:"user_id,omitempty"`
+	Type          string     `json:"type"`
+	Cost          float64    `json:"cost"`
+	Area          float64    `json:"area"`
+	Status        string     `json:"status"`
+	StartDate     time.Time  `json:"start_date"`
+	Cleaners      string     `json:"cleaners"`
+	LeadUpdatedAt *time.Time `json:"lead_updated_at,omitempty"`
 }
 
 type OrderService interface {

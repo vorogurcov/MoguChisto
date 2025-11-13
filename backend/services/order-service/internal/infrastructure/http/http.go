@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func NewHandleUserOrders(ordSvc *service.OrderService) http.HandlerFunc {
@@ -203,6 +204,17 @@ func NewAmocrmWebhookHandler(ordSvc *service.OrderService) http.HandlerFunc {
 
 		var status string
 		var cleanersList []string
+		var leadUpdated *time.Time
+
+		lastModifiedStr := r.FormValue("leads[update][0][last_modified]")
+		if lastModifiedStr != "" {
+			if lastModified, err := strconv.ParseInt(lastModifiedStr, 10, 64); err == nil {
+				t := time.Unix(lastModified, 0).UTC()
+				leadUpdated = &t
+			} else {
+				log.Printf("Lead %d: invalid last_modified %q: %v", leadID, lastModifiedStr, err)
+			}
+		}
 
 		for _, cf := range upd.CustomFields {
 			// аккуратно: в форме иногда name==Status, а code может быть TYPE — учитываем оба варианта
@@ -223,7 +235,7 @@ func NewAmocrmWebhookHandler(ordSvc *service.OrderService) http.HandlerFunc {
 		}
 
 		// Если нет изменений — логируем и выходим
-		if status == "" && len(cleanersList) == 0 {
+		if status == "" && len(cleanersList) == 0 && leadUpdated == nil {
 			log.Printf("Lead %d: no relevant changes, skipping", leadID)
 			w.WriteHeader(http.StatusOK)
 			return
@@ -238,6 +250,7 @@ func NewAmocrmWebhookHandler(ordSvc *service.OrderService) http.HandlerFunc {
 			AmocrmLeadId: leadID,
 			Status:       status,
 			Cleaners:     cleaners,
+			LeadUpdated:  leadUpdated,
 		}
 
 		if err := ordSvc.UpdateOrderInfoByLeadId(r.Context(), dto); err != nil {
