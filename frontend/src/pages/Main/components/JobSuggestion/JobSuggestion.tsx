@@ -7,6 +7,7 @@ import { CleanerSVG } from "./CleanerSVG";
 import "./css.scss";
 import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
+import { Link } from "react-router-dom";
 
 const SVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -72,15 +73,41 @@ const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 				<Part key={part}>{part}</Part>
 			))}
 			<div className="buttons">
-				<ButtonWithBottomLine>Требования</ButtonWithBottomLine>
-				<ButtonWithBottomLine>Комфортные условия</ButtonWithBottomLine>
+				<a
+					href="/docs/Требования к клинеру.docx"
+					download="Требования к клинеру.docx"
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					<ButtonWithBottomLine>Требования</ButtonWithBottomLine>
+				</a>
+				<a
+					href="/docs/Комфортные условия.docx"
+					download="Комфортные условия.docx"
+				>
+					<ButtonWithBottomLine>Комфортные условия</ButtonWithBottomLine>
+				</a>
 			</div>
 			<div className="sourcesMess">
-				<MainButton className="writeButton">
-					Написать в WhatsApp
-					<WhatsApp className="whatsapp" fill="white" />
-				</MainButton>
-				<Hh />
+				<Link
+					to="https://wa.me/79219255225"
+					target="_blank"
+					rel="noopener noreferrer"
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					<MainButton className="writeButton">
+						Написать в WhatsApp
+						<WhatsApp className="whatsapp" fill="white" />
+					</MainButton>
+				</Link>
+
+				<Link
+					to="https://spb.hh.ru/vacancy/127745735"
+					target="_blank"
+					rel="noopener noreferrer"
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					<Hh />
+				</Link>
 			</div>
 			{width > 850 && <CleanerSVG className="cleanerSvg" />}
 			<footer>

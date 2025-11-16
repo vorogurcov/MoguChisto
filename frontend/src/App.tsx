@@ -17,7 +17,7 @@ import useShowModal from "./hooks/useShowModal";
 const ProtectedRoute: React.FC = () => {
 	const showModal = useShowModal();
 	if (!localStorage.getItem(sessIdKey)) {
-		showModal("Authorization", {});
+		setTimeout(() => showModal("Authorization", {}), 0);
 		return <Navigate to="/" />;
 	}
 

@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRawPhoneNumber } from "../components/UI/Inputs/TextInput";
 import { apiBaseUrl } from "../core";
-import { formatDateForInput, formatPhoneNumber } from "../helpers/formatData";
+import {
+	formatDateForInput,
+	formatPhoneNumber,
+	formatTime,
+} from "../helpers/formatData";
 import {
 	CleaningOption,
 	CreateOrderT,
@@ -34,7 +38,7 @@ const ApiController = {
 		return data.data as { is_verification_required: boolean; sessid?: string };
 	},
 	async logout() {
-		await apiInstance.delete(getPath("/user/logout"));
+		await apiInstance.delete(getPath("user/logout"));
 	},
 	async getUserData() {
 		const data = (
@@ -62,12 +66,12 @@ const ApiController = {
 		);
 		return adaptedData;
 	},
-	async patchUserData(userData: UserT & PushT) {
+	async patchUserData(userData: Omit<UserT, "phoneNumber"> & PushT) {
 		await Promise.all([
 			apiInstance.patch(getPath("user/profile"), {
+				...userData,
 				last_name: userData.lastName,
 				first_name: userData.firstName,
-				phone_number: getRawPhoneNumber(userData.phoneNumber),
 				email: userData.email,
 				birthday_date: formatDateForInput(userData.birthdayDate),
 			}),
@@ -78,7 +82,6 @@ const ApiController = {
 		]);
 	},
 	async createOrder(order: CreateOrderT, price: number) {
-		console.log("post");
 		await apiInstance.post(getPath("orders/"), {
 			...Object.fromEntries(
 				Object.entries(order).map(([key, value]) => [
@@ -96,21 +99,16 @@ const ApiController = {
 	async getOrders(): Promise<OrderCardT[]> {
 		const data = await apiInstance.get(getPath("orders/"));
 		return data.data.map(
-			(el: {
-				order_id: any;
-				status: any;
-				type: any;
-				cost: any;
-				cleaners: any;
-				start_date: any;
-			}) => ({
+			(el: { [x: string]: string | number | Date; start_date: any }) => ({
 				id: el.order_id,
 				status: el.status,
 				typeCleaning: el.type,
 				price: el.cost,
 				cleaners: el.cleaners,
-				startDate: el.start_date,
-				notification: "Сегодня в 08:20",
+				startDate: formatDateForInput(el.start_date),
+				notification: el.lead_updated_at
+					? formatTime(new Date(el.lead_updated_at))
+					: undefined,
 			}),
 		);
 	},

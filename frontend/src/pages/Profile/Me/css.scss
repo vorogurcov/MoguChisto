@@ -11,19 +11,11 @@
 .InputRow {
 	width: 100%;
 	margin-bottom: 20px;
-	display: flex;
+	display: grid;
+	gap: 30px;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	justify-content: space-between;
 	flex-wrap: wrap;
-	input[type="date"]::-webkit-calendar-picker-indicator {
-		filter: brightness(0) invert(0.85);
-		cursor: pointer;
-		&:focus::-webkit-calendar-picker-indicator {
-			filter: brightness(0) invert(0.16);
-		}
-	}
-	input[type="date"]:focus::-webkit-calendar-picker-indicator {
-		filter: brightness(0) invert(0.16);
-	}
 }
 .pushs {
 	display: grid;
@@ -48,8 +40,4 @@
 	color: white;
 	width: 100%;
 	margin-bottom: 50px;
-}
-.profileInput {
-	min-width: 300px;
-	width: 47%;
 }

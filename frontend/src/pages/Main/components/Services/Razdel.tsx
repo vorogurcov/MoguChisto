@@ -21,8 +21,11 @@ const razdelTemplates: Record<RazdelT, { name: string; description: string }> =
 			description:
 				"Мы знаем, как сложно представить кухню только по картинке. Поэтому делаем всё, чтобы вам было удобно:",
 		},
-		bathroom: { name: "ТУАЛЕТ", description: "Туааалеееет" },
-		total: { name: "КОМНАТЫ", description: "Всеееееее" },
+		bathroom: {
+			name: "ТУАЛЕТ",
+			description: "Иногда хочется, чтобы туалет помыл кто-то за нас...",
+		},
+		total: { name: "ОБЩЕЕ", description: "Общая информация для вас:" },
 	};
 
 const AllowAnnotation = ({ hasType }: { hasType?: boolean | string }) => {

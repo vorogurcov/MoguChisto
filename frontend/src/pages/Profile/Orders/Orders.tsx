@@ -10,14 +10,15 @@ import "./css.scss";
 import BorderedItem from "../components/BorderedItem/BorderedItem";
 import ProfileContent from "../components/ProfileContent/ProfileContent";
 import ApiController from "../../../api/ApiController";
+import { Link } from "react-router-dom";
 
-type OrderProcessT = "in_progress" | "complete" | "pending";
+type OrderProcessT = "in_progress" | "completed" | "pending";
 
 const placeholders: Record<
 	OrderProcessT,
 	{ label: string; icon: ReactNode; angleFlag: ReactElement }
 > = {
-	complete: {
+	completed: {
 		label: "Завершено",
 		icon: (
 			<svg
@@ -142,7 +143,7 @@ export type OrderCardT = {
 	price: number;
 	startDate: string;
 	status: OrderProcessT;
-	notification: string;
+	notification?: string;
 };
 
 function OrderRow({
@@ -169,9 +170,6 @@ function OrderCard({
 	status,
 	notification,
 }: OrderCardT) {
-	useEffect(() => {
-		ApiController.getOrders();
-	}, []);
 	return (
 		<BorderedItem className="orderCard">
 			<div className="orderIdWrapper">
@@ -216,7 +214,14 @@ export default function Orders() {
 						<OrderCard key={card.id} {...card} />
 					))}
 				</div>
-				<MainButton className="writeToHelp">Написать в поддержку</MainButton>
+				<Link
+					to="mailto:03vlad1986@gmail.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					<MainButton className="writeToHelp">Написать в поддержку</MainButton>
+				</Link>
 			</ProfileContent>
 		</ProfileTemplate>
 	);

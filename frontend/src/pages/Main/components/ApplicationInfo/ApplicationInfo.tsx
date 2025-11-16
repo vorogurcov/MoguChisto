@@ -11,6 +11,7 @@ import PageItem from "../../../../components/PageItem";
 import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext";
 import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
+import calculatorPrice from "../../../../helpers/calculatorPrice";
 
 type WidgetT = {
 	title: string;
@@ -61,12 +62,65 @@ type TarifNames = "Экспресс" | "Комфорт" | "Элит";
 
 const tarifs: Record<TarifNames, TarifT[]> = {
 	Экспресс: [
-		{ square: 20, price: 4250, countCleaner: "1", time: "2 - 4 часа" },
-		{ square: 40, price: 4950, countCleaner: "1 - 2", time: "2 - 4 часа" },
-		{ square: 60, price: 5650, countCleaner: "1", time: "2 - 4 часа" },
+		{
+			square: 20,
+			price: calculatorPrice(20, "express"),
+			countCleaner: "1",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 40,
+			price: calculatorPrice(40, "express"),
+			countCleaner: "1",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 60,
+			price: calculatorPrice(60, "express"),
+			countCleaner: "1 - 2",
+			time: "2 - 4 часа",
+		},
 	],
-	Комфорт: [{ square: 20, price: 4250, countCleaner: "1", time: "2 - 4 часа" }],
-	Элит: [{ square: 20, price: 4250, countCleaner: "1", time: "2 - 4 часа" }],
+	Комфорт: [
+		{
+			square: 20,
+			price: calculatorPrice(20, "comfort"),
+			countCleaner: "1",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 40,
+			price: calculatorPrice(40, "comfort"),
+			countCleaner: "1 - 2",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 60,
+			price: calculatorPrice(60, "comfort"),
+			countCleaner: "1 - 2",
+			time: "2 - 4 часа",
+		},
+	],
+	Элит: [
+		{
+			square: 20,
+			price: calculatorPrice(20, "elite"),
+			countCleaner: "1",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 40,
+			price: calculatorPrice(40, "elite"),
+			countCleaner: "1 - 2",
+			time: "2 - 4 часа",
+		},
+		{
+			square: 60,
+			price: calculatorPrice(60, "elite"),
+			countCleaner: "1 - 2",
+			time: "2 - 4 часа",
+		},
+	],
 };
 
 function OneTarif({ square, price, countCleaner, time }: TarifT) {

@@ -1,10 +1,104 @@
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
-import bef from "../../../../public/imgs/results/bef.jpg";
-import aft from "../../../../public/imgs/results/aft.png";
 import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
 import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
 import { MiniCleanerSVG } from "../../../../public/svg";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+// Импорт всех фотографий "до"
+import ГрязнаяПлита from "./cards/Грязная плита.png";
+import ГрязнаяПлиткаВанна from "./cards/Грязная плитка ванна.png";
+import ГрязнаяПодкухня from "./cards/Грязная подкухня.png";
+import ГрязнаяРучка from "./cards/Грязная ручка.png";
+import ГрязнаяСтиралка from "./cards/Грязная стиралка.png";
+import ГрязноЗаСтолом from "./cards/Грязно за столом.png";
+import ГрязноСверху from "./cards/Грязно сверху.png";
+import ХолодосГрязный from "./cards/Холодос грязный.png";
+
+// Импорт всех фотографий "после"
+import ЧистаяПлита from "./cards/Чистая плита.png";
+import ЧистаяПлиткаВанна from "./cards/Чистая плитка ванна.png";
+import ЧистаяПодкухня from "./cards/Чистая подкухня.png";
+import ЧистаяРучка from "./cards/Чистая ручка.png";
+import ЧистаяСтиралка from "./cards/Чистая стиралка.png";
+import ЧистоЗаСтолом from "./cards/Чисто за столом.png";
+import ЧистоСверху from "./cards/Чисто сверху.png";
+import ХолодосЧистый from "./cards/Холодос чистый.png";
+
+// Массив объектов
+const cards: CardResultT[] = [
+	{
+		price: 5200,
+		countCleaner: 2,
+		time: "2,5",
+		square: 25,
+		services: "PRO средства",
+		imgs: { before: ГрязнаяПодкухня, after: ЧистаяПодкухня },
+		title: "Уборка подкухонного пространства",
+	},
+	{
+		price: 3000,
+		countCleaner: 1,
+		time: "1",
+		square: 15,
+		services: "PRO средства",
+		imgs: { before: ГрязнаяРучка, after: ЧистаяРучка },
+		title: "Чистка дверных ручек",
+	},
+	{
+		price: 3500,
+		countCleaner: 1,
+		time: "1,5",
+		square: 16,
+		services: "PRO средства",
+		imgs: { before: ГрязнаяСтиралка, after: ЧистаяСтиралка },
+		title: "Уборка стиральной машины",
+	},
+	{
+		price: 4800,
+		countCleaner: 2,
+		time: "2",
+		square: 22,
+		services: "PRO средства",
+		imgs: { before: ГрязноЗаСтолом, after: ЧистоЗаСтолом },
+		title: "Уборка обеденной зоны",
+	},
+	{
+		price: 5500,
+		countCleaner: 2,
+		time: "2,5",
+		square: 28,
+		services: "PRO средства",
+		imgs: { before: ГрязноСверху, after: ЧистоСверху },
+		title: "Уборка верхних поверхностей",
+	},
+	{
+		price: 4200,
+		countCleaner: 1,
+		time: "1,5",
+		square: 19,
+		services: "PRO средства",
+		imgs: { before: ХолодосГрязный, after: ХолодосЧистый },
+		title: "Чистка холодильника",
+	},
+	{
+		price: 6500,
+		countCleaner: 2,
+		time: "3",
+		square: 30,
+		services: "PRO средства",
+		imgs: { before: ГрязнаяПлита, after: ЧистаяПлита },
+		title: "Комплексная уборка кухни",
+	},
+	{
+		price: 3200,
+		countCleaner: 1,
+		time: "1",
+		square: 17,
+		services: "PRO средства",
+		imgs: { before: ГрязнаяПлиткаВанна, after: ЧистаяПлиткаВанна },
+		title: "Ежедневная уборка ванной",
+	},
+];
 
 type ImgsResultT = {
 	before: string;
@@ -20,45 +114,6 @@ type CardResultT = {
 	imgs: ImgsResultT;
 	title?: string;
 };
-
-const cards: CardResultT[] = [
-	{
-		price: 6500,
-		countCleaner: 2,
-		time: "2,5",
-		square: 15,
-		services: "PRO средства",
-		imgs: { before: bef, after: aft },
-		title: "Генеральная уборка кухни",
-	},
-	{
-		price: 6500,
-		countCleaner: 2,
-		time: "2,5",
-		square: 15,
-		services: "PRO средства",
-		imgs: { before: bef, after: aft },
-		title: "Генеральная уборка кухни",
-	},
-	{
-		price: 6500,
-		countCleaner: 2,
-		time: "2,5",
-		square: 15,
-		services: "PRO средства",
-		imgs: { before: bef, after: aft },
-		title: "Генеральная уборка кухни",
-	},
-	{
-		price: 6500,
-		countCleaner: 2,
-		time: "2,5",
-		square: 15,
-		services: "PRO средства",
-		imgs: { before: bef, after: aft },
-		title: "Генеральная уборка кухни",
-	},
-];
 
 function ImgsResult({ imgs }: { imgs: ImgsResultT }) {
 	const [sliderPosition, setSliderPosition] = useState(50); // 50% по умолчанию
@@ -141,7 +196,7 @@ function ImgsResult({ imgs }: { imgs: ImgsResultT }) {
 			<div className="imageContainer">
 				{/* Before image - всегда видна полностью */}
 				<div className="imageBefore">
-					<img src={imgs.before} alt="before" />
+					<img src={imgs.before} alt="before" loading="lazy" />
 				</div>
 
 				{/* After image - обрезается справа */}
@@ -149,7 +204,7 @@ function ImgsResult({ imgs }: { imgs: ImgsResultT }) {
 					className="imageAfter"
 					style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
 				>
-					<img src={imgs.after} alt="after" />
+					<img src={imgs.after} alt="after" loading="lazy" />
 				</div>
 			</div>
 

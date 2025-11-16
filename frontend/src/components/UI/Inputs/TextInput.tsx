@@ -7,13 +7,16 @@ import { ChangeEvent, forwardRef, useEffect, useRef, useState } from "react";
 import useWindowWidth from "../../../hooks/useWindowWidth";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage";
 import { formatPhoneNumber } from "../../../helpers/formatData";
+import useDateInput from "../../../hooks/useDateInput";
 
-export type TextInputProps = InputPropsType & {
+export type CustomInputLabelsT = {
 	error?: string;
 	title?: string;
 	prompts?: string[];
 	classnamecontainer?: string;
 };
+
+export type TextInputProps = InputPropsType & CustomInputLabelsT;
 
 // Функция для получения неформатированного номера
 export const getRawPhoneNumber = (formatted: string): string => {
@@ -109,6 +112,22 @@ function PhoneInput({
 export const isValidNumber = (number: string) =>
 	getRawPhoneNumber(number).length === 11;
 
+const DateInput = ({ className, value, ...props }: TextInputProps) => {
+	const width = useWindowWidth();
+	const { value: display } = useDateInput(value?.toString());
+
+	return (
+		<input
+			{...props}
+			type="text"
+			className={classNames("rectangle", className, {
+				rectangleMobile: width < 600,
+			})}
+			value={display}
+		/>
+	);
+};
+
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 	({ title, prompts, type, error, ...props }, ref) => {
 		const width = useWindowWidth();
@@ -127,6 +146,15 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 						{...props}
 						className={classNames(props.className, {
 							rectangleMobile: width < 600,
+							readOnly: props.readOnly,
+						})}
+					/>
+				) : type === "date" ? (
+					<DateInput
+						{...props}
+						className={classNames("rectangle", props.className, {
+							rectangleMobile: width < 600,
+							readOnly: props.readOnly,
 						})}
 					/>
 				) : (
@@ -136,6 +164,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 						type={type ?? "text"}
 						className={classNames("rectangle", props.className, {
 							rectangleMobile: width < 600,
+							readOnly: props.readOnly,
 						})}
 					/>
 				)}

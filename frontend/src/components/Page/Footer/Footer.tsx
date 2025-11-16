@@ -3,11 +3,12 @@ import { Logo } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
 import MainButton from "../../Buttons/MainButton/MainButton";
-import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+// import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import "./css.scss";
 import { useNavigate } from "react-router-dom";
 import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
 import { PagePart } from "../../NavigatePanel/NavigatePanel";
+import { Link } from "react-router-dom";
 
 const tools = [
 	{ name: "Услуги", type: PagePart.service },
@@ -178,15 +179,27 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					</span>
 					<span>
 						<MailSVG />
-						info@mail.ru
+						03vlad1986@gmail.com
 					</span>
 					<span>
 						<span className="everyDay">Ежедневно</span> 10:00 - 21:00
 					</span>
 				</div>
 				<div className="messangers">
-					<SquareTelegram />
-					<SquareWhatsApp />
+					<Link
+						to={"https://t.me/vl_vl_vlaad"}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<SquareTelegram />
+					</Link>
+					<Link
+						to="https://wa.me/79219255225"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<SquareWhatsApp />
+					</Link>
 				</div>
 			</div>
 			<div className="footerBrend">
@@ -208,17 +221,14 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 			</div>
 			<footer>
 				<p>© 2025 Могу чисто. All rights reserved.</p>
-				<div>
+				{/* <div>
 					<ButtonWithBottomLine className="settingsFooter">
 						Политика конфиденциальности
 					</ButtonWithBottomLine>
 					<ButtonWithBottomLine className="settingsFooter">
 						Условия пользования
 					</ButtonWithBottomLine>
-					<ButtonWithBottomLine className="settingsFooter">
-						Настройки Куки
-					</ButtonWithBottomLine>
-				</div>
+				</div> */}
 			</footer>
 		</PageItem>
 	);
