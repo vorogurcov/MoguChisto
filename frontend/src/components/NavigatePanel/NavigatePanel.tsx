@@ -114,13 +114,26 @@ export default function NavigatePanel() {
 				<ButtonsPanel />
 				<div className="tools">
 					<div className="number">
-						<Phone height={18} width={18} />{" "}
-						{width > 1300 || (width <= 900 && width > 500) ? (
-							<span>+7 (923) 123-23-35</span>
-						) : null}
+						<Link
+							to="tel:+79231232335"
+							target="_blank"
+							rel="noopener noreferrer"
+							style={{ textDecoration: "none", color: "inherit" }}
+						>
+							<Phone height={18} width={18} />{" "}
+							{width > 1300 || (width <= 900 && width > 500) ? (
+								<span>+7 (923) 123-23-35</span>
+							) : null}
+						</Link>
 					</div>
 					<div className="chats">
-						<WhatsApp height={24} width={24} />
+						<Link
+							to="https://wa.me/79219255225"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<WhatsApp height={24} width={24} />
+						</Link>
 						<Link
 							to={"https://t.me/vl_vl_vlaad"}
 							target="_blank"

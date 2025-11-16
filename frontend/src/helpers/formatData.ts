@@ -130,3 +130,41 @@ export const formatDate = (input: string) => {
 
 	return parts.join(".");
 };
+
+export const formatTime = (date: Date) => {
+	const now = new Date();
+
+	// Устанавливаем время на 00:00 для сравнения дат
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+	const yesterday = new Date(today);
+	yesterday.setDate(yesterday.getDate() - 1);
+
+	const inputDate = new Date(
+		date.getFullYear(),
+		date.getMonth(),
+		date.getDate(),
+	);
+
+	// Форматируем время
+	const timeFormatter = new Intl.DateTimeFormat("ru-RU", {
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: false,
+	});
+	const timeString = timeFormatter.format(date);
+
+	// Определяем относительную дату
+	if (inputDate.getTime() === today.getTime()) {
+		return `Сегодня в ${timeString}`;
+	} else if (inputDate.getTime() === yesterday.getTime()) {
+		return `Вчера в ${timeString}`;
+	} else {
+		// Для более старых дат форматируем дату
+		const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
+			day: "numeric",
+			month: "long",
+		});
+		const dateString = dateFormatter.format(date);
+		return `${dateString} в ${timeString}`;
+	}
+};

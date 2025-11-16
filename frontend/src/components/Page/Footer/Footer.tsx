@@ -3,7 +3,7 @@ import { Logo } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
 import MainButton from "../../Buttons/MainButton/MainButton";
-import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+// import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import "./css.scss";
 import { useNavigate } from "react-router-dom";
 import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
@@ -179,7 +179,7 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					</span>
 					<span>
 						<MailSVG />
-						info@mail.ru
+						03vlad1986@gmail.com
 					</span>
 					<span>
 						<span className="everyDay">Ежедневно</span> 10:00 - 21:00
@@ -193,7 +193,13 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					>
 						<SquareTelegram />
 					</Link>
-					<SquareWhatsApp />
+					<Link
+						to="https://wa.me/79219255225"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<SquareWhatsApp />
+					</Link>
 				</div>
 			</div>
 			<div className="footerBrend">
@@ -215,14 +221,14 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 			</div>
 			<footer>
 				<p>© 2025 Могу чисто. All rights reserved.</p>
-				<div>
+				{/* <div>
 					<ButtonWithBottomLine className="settingsFooter">
 						Политика конфиденциальности
 					</ButtonWithBottomLine>
 					<ButtonWithBottomLine className="settingsFooter">
 						Условия пользования
 					</ButtonWithBottomLine>
-				</div>
+				</div> */}
 			</footer>
 		</PageItem>
 	);

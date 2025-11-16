@@ -7,6 +7,7 @@ import { CleanerSVG } from "./CleanerSVG";
 import "./css.scss";
 import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
+import { Link } from "react-router-dom";
 
 const SVG: FC<SVGProps<SVGSVGElement>> = (props) => (
 	<svg
@@ -76,11 +77,24 @@ const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 				<ButtonWithBottomLine>Комфортные условия</ButtonWithBottomLine>
 			</div>
 			<div className="sourcesMess">
-				<MainButton className="writeButton">
-					Написать в WhatsApp
-					<WhatsApp className="whatsapp" fill="white" />
-				</MainButton>
-				<Hh />
+				<Link
+					to="https://wa.me/79219255225"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<MainButton className="writeButton">
+						Написать в WhatsApp
+						<WhatsApp className="whatsapp" fill="white" />
+					</MainButton>
+				</Link>
+
+				<Link
+					to="https://spb.hh.ru/vacancy/127745735"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<Hh />
+				</Link>
 			</div>
 			{width > 850 && <CleanerSVG className="cleanerSvg" />}
 			<footer>

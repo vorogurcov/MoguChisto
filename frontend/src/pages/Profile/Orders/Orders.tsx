@@ -10,6 +10,7 @@ import "./css.scss";
 import BorderedItem from "../components/BorderedItem/BorderedItem";
 import ProfileContent from "../components/ProfileContent/ProfileContent";
 import ApiController from "../../../api/ApiController";
+import { Link } from "react-router-dom";
 
 type OrderProcessT = "in_progress" | "completed" | "pending";
 
@@ -213,7 +214,14 @@ export default function Orders() {
 						<OrderCard key={card.id} {...card} />
 					))}
 				</div>
-				<MainButton className="writeToHelp">Написать в поддержку</MainButton>
+				<Link
+					to="mailto:03vlad1986@gmail.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					<MainButton className="writeToHelp">Написать в поддержку</MainButton>
+				</Link>
 			</ProfileContent>
 		</ProfileTemplate>
 	);

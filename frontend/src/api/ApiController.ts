@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRawPhoneNumber } from "../components/UI/Inputs/TextInput";
 import { apiBaseUrl } from "../core";
-import { formatDateForInput, formatPhoneNumber } from "../helpers/formatData";
+import {
+	formatDateForInput,
+	formatPhoneNumber,
+	formatTime,
+} from "../helpers/formatData";
 import {
 	CleaningOption,
 	CreateOrderT,
@@ -94,21 +98,14 @@ const ApiController = {
 	async getOrders(): Promise<OrderCardT[]> {
 		const data = await apiInstance.get(getPath("orders/"));
 		return data.data.map(
-			(el: {
-				order_id: any;
-				status: any;
-				type: any;
-				cost: any;
-				cleaners: any;
-				start_date: any;
-			}) => ({
+			(el: { [x: string]: string | number | Date; start_date: any }) => ({
 				id: el.order_id,
 				status: el.status,
 				typeCleaning: el.type,
 				price: el.cost,
 				cleaners: el.cleaners,
 				startDate: formatDateForInput(el.start_date),
-				notification: "Сегодня в 08:20",
+				notification: formatTime(new Date(el.lead_updated_at)),
 			}),
 		);
 	},
