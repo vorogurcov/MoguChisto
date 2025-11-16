@@ -34,7 +34,7 @@ const ApiController = {
 		return data.data as { is_verification_required: boolean; sessid?: string };
 	},
 	async logout() {
-		await apiInstance.delete(getPath("/user/logout"));
+		await apiInstance.delete(getPath("user/logout"));
 	},
 	async getUserData() {
 		const data = (
@@ -62,12 +62,11 @@ const ApiController = {
 		);
 		return adaptedData;
 	},
-	async patchUserData(userData: UserT & PushT) {
+	async patchUserData(userData: Omit<UserT, "phoneNumber"> & PushT) {
 		await Promise.all([
 			apiInstance.patch(getPath("user/profile"), {
 				last_name: userData.lastName,
 				first_name: userData.firstName,
-				phone_number: getRawPhoneNumber(userData.phoneNumber),
 				email: userData.email,
 				birthday_date: formatDateForInput(userData.birthdayDate),
 			}),
@@ -78,7 +77,6 @@ const ApiController = {
 		]);
 	},
 	async createOrder(order: CreateOrderT, price: number) {
-		console.log("post");
 		await apiInstance.post(getPath("orders/"), {
 			...Object.fromEntries(
 				Object.entries(order).map(([key, value]) => [
@@ -109,7 +107,7 @@ const ApiController = {
 				typeCleaning: el.type,
 				price: el.cost,
 				cleaners: el.cleaners,
-				startDate: el.start_date,
+				startDate: formatDateForInput(el.start_date),
 				notification: "Сегодня в 08:20",
 			}),
 		);

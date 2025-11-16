@@ -7,37 +7,41 @@ type CalcT = {
 	salary: number;
 	square: number;
 	koefSquare: number;
+	koefSalary: number;
 	koefMarketing: number;
 	koefMarge: number;
 };
 
 const calcData: Record<CleaningType, Omit<CalcT, "square">> = {
 	express: {
-		oil: 600,
-		chemistry: 300,
+		oil: 1000,
+		chemistry: 500,
 		salary: 1000,
-		koefSquare: 20,
-		koefMarketing: 1.3,
+		koefSalary: 20,
+		koefMarketing: 1.25,
 		koefMarge: 1.4,
 		countCleaners: 1,
+		koefSquare: 60,
 	},
 	comfort: {
-		oil: 600,
-		chemistry: 500,
+		oil: 1000,
+		chemistry: 1000,
 		salary: 1500,
-		koefSquare: 25,
+		koefSalary: 100,
 		koefMarketing: 1.25,
 		koefMarge: 1.4,
 		countCleaners: 2,
+		koefSquare: 30,
 	},
 	elite: {
-		oil: 600,
-		chemistry: 1000,
+		oil: 1000,
+		chemistry: 2000,
 		salary: 3000,
-		koefSquare: 50,
-		koefMarketing: 1,
+		koefSalary: 120,
+		koefMarketing: 1.25,
 		koefMarge: 1.4,
 		countCleaners: 3,
+		koefSquare: 20,
 	},
 };
 
@@ -47,8 +51,11 @@ export default function calculatorPrice(
 ) {
 	const type = calcData[typeCleaning];
 	return Math.round(
-		(type.oil + type.chemistry + (type.salary + square * type.koefSquare)) *
-			type.koefMarge *
-			type.koefMarketing,
+		(type.salary * (square / type.koefSquare) +
+			type.koefSalary * square +
+			type.chemistry +
+			type.oil) *
+			type.koefMarketing *
+			type.koefMarge,
 	);
 }

@@ -12,12 +12,12 @@ import InputWihUnderLine from "../../../components/UI/Inputs/InputWihUnderLine";
 import MainButton from "../../../components/Buttons/MainButton/MainButton";
 import { Controller, useForm } from "react-hook-form";
 import { isValidNumber } from "../../../components/UI/Inputs/TextInput";
-import { formatDateForInput } from "../../../helpers/formatData";
+import useDateInput from "../../../hooks/useDateInput";
 
 export type UserT = {
 	lastName?: string;
 	firstName?: string;
-	birthdayDate?: Date;
+	birthdayDate?: string;
 	phoneNumber: string;
 	email?: string;
 };
@@ -56,16 +56,22 @@ export default function Me() {
 	const userForm = useForm<UserT & PushT>({ mode: "onBlur" });
 	useEffect(() => {
 		ApiController.getUserData().then((data) => {
-			console.log("formData", data);
 			userForm.reset(data);
 		});
 	}, [userForm]);
-	const onSubmit = (userData: UserT & PushT) => {
+	const onSubmit = async (userData: UserT & PushT) => {
 		console.log("userData", userData);
-		ApiController.patchUserData(userData).then(() => console.log("success"));
+		const dataToSend: Omit<UserT & PushT, "phoneNumber"> = userData;
+		await ApiController.patchUserData(dataToSend);
 	};
 	const formValues = userForm.watch();
-	console.log("formValues", formValues);
+	const { isValid } = useDateInput(formValues.birthdayDate ?? "");
+	console.log(
+		"userForm.formState.isSubmitting",
+		userForm.formState.isSubmitting,
+		userForm.formState.isValid,
+		userForm.formState.errors,
+	);
 	return (
 		<ProfileTemplate>
 			<SideBar url={ProfileEnum.ME} />
@@ -93,22 +99,16 @@ export default function Me() {
 							<Controller
 								name="birthdayDate"
 								control={userForm.control}
+								rules={{ validate: isValid }}
 								render={({ field }) => (
 									<InputWihUnderLine
 										{...field}
-										value={formatDateForInput(field.value)}
-										onChange={(e) => {
-											// Преобразуем обратно в Date или оставляем как есть
-											const newValue = e.target.value
-												? new Date(e.target.value)
-												: undefined;
-											field.onChange(newValue);
-										}}
-										name="birthdayDate"
 										type="date"
+										name="birthdayDate"
 										placeholder="Дата рождения"
 										classnamecontainer="profileInput"
 										hasValue={!!formValues.birthdayDate}
+										error={userForm.formState.errors.birthdayDate?.message}
 									/>
 								)}
 							/>
@@ -129,6 +129,7 @@ export default function Me() {
 										classnamecontainer="profileInput"
 										error={userForm.formState.errors.phoneNumber?.message}
 										hasValue={!!formValues.phoneNumber}
+										readOnly
 									/>
 								)}
 							/>
@@ -139,7 +140,9 @@ export default function Me() {
 								name="email"
 								placeholder="Почта"
 								classnamecontainer="profileInput"
+								hasValue={!!formValues.email}
 							/>
+							<div />
 						</InputRow>
 					</BorderedItem>
 					<BorderedItem className="BorderedItemPushs">
@@ -170,7 +173,13 @@ export default function Me() {
 							/>
 						</div>
 					</BorderedItem>
-					<MainButton className="saveProfile" type="submit">
+					<MainButton
+						className="saveProfile"
+						type="submit"
+						submitingText="Сохраняем..."
+						disabled={userForm.formState.isSubmitting}
+						submiting={userForm.formState.isSubmitting}
+					>
 						Сохранить данные
 					</MainButton>
 				</form>

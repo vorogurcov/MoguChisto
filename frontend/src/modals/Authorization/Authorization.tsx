@@ -25,7 +25,7 @@ export default function Authorization({ phone }: { phone?: string }) {
 				Введите ваш номер телефона для авторизации
 			</ModalHeader>
 			<form
-				onSubmit={handleSubmit((phone) => {
+				onSubmit={handleSubmit(async (phone) => {
 					ApiController.signup(phone.phone).then(() =>
 						showModal("SendCode", phone),
 					);
@@ -63,7 +63,11 @@ export default function Authorization({ phone }: { phone?: string }) {
 						</div>
 					)}
 				/>
-				<MainButton className="getCode" type="submit">
+				<MainButton
+					className="getCode"
+					type="submit"
+					disabled={formState.isSubmitting}
+				>
 					Получить код
 				</MainButton>
 			</form>

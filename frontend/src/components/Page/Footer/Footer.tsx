@@ -8,6 +8,7 @@ import "./css.scss";
 import { useNavigate } from "react-router-dom";
 import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
 import { PagePart } from "../../NavigatePanel/NavigatePanel";
+import { Link } from "react-router-dom";
 
 const tools = [
 	{ name: "Услуги", type: PagePart.service },
@@ -185,7 +186,13 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					</span>
 				</div>
 				<div className="messangers">
-					<SquareTelegram />
+					<Link
+						to={"https://t.me/vl_vl_vlaad"}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<SquareTelegram />
+					</Link>
 					<SquareWhatsApp />
 				</div>
 			</div>
@@ -214,9 +221,6 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					</ButtonWithBottomLine>
 					<ButtonWithBottomLine className="settingsFooter">
 						Условия пользования
-					</ButtonWithBottomLine>
-					<ButtonWithBottomLine className="settingsFooter">
-						Настройки Куки
 					</ButtonWithBottomLine>
 				</div>
 			</footer>

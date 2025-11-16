@@ -11,13 +11,13 @@ import BorderedItem from "../components/BorderedItem/BorderedItem";
 import ProfileContent from "../components/ProfileContent/ProfileContent";
 import ApiController from "../../../api/ApiController";
 
-type OrderProcessT = "in_progress" | "complete" | "pending";
+type OrderProcessT = "in_progress" | "completed" | "pending";
 
 const placeholders: Record<
 	OrderProcessT,
 	{ label: string; icon: ReactNode; angleFlag: ReactElement }
 > = {
-	complete: {
+	completed: {
 		label: "Завершено",
 		icon: (
 			<svg
@@ -169,9 +169,6 @@ function OrderCard({
 	status,
 	notification,
 }: OrderCardT) {
-	useEffect(() => {
-		ApiController.getOrders();
-	}, []);
 	return (
 		<BorderedItem className="orderCard">
 			<div className="orderIdWrapper">

@@ -24,7 +24,6 @@ apiInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 		if (
-			localStorage.getItem(sessIdKey) &&
 			error.response &&
 			error.response.status === 401 &&
 			!originalRequest._retry

@@ -8,6 +8,9 @@ import useWindowWidth from "../../hooks/useWindowWidth";
 import { ButtonPropsType } from "../Buttons/ButtonPropsTypeAlias";
 import classNames from "classnames";
 import { ProfileEnum } from "../../pages/Profile/components/SideBar/SideBar";
+import { sessIdKey } from "../../core";
+import useShowModal from "../../hooks/useShowModal";
+import { Link } from "react-router-dom";
 
 export enum PagePart {
 	top = 1,
@@ -86,6 +89,7 @@ function ProfileButton({ ...props }: ButtonPropsType) {
 
 export default function NavigatePanel() {
 	const navigate = useNavigate();
+	const showModal = useShowModal();
 	const contextSection = useActiveSectionContext();
 	const width = useWindowWidth();
 	return (
@@ -116,16 +120,25 @@ export default function NavigatePanel() {
 						) : null}
 					</div>
 					<div className="chats">
-						<a href="">
-							<WhatsApp height={24} width={24} />
-						</a>
-						<a href="">
+						<WhatsApp height={24} width={24} />
+						<Link
+							to={"https://t.me/vl_vl_vlaad"}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							<Telegram height={24} width={24} />
-						</a>
+						</Link>
 					</div>
 					<div>
 						<ProfileButton
-							onClick={() => navigate("/profile/" + ProfileEnum.ME)}
+							onClick={() => {
+								if (!localStorage.getItem(sessIdKey)) {
+									showModal("Authorization", {});
+									// Не делаем navigate вообще, остаемся на текущей странице
+								} else {
+									navigate(`/profile/${ProfileEnum.ME}`);
+								}
+							}}
 						/>
 					</div>
 				</div>

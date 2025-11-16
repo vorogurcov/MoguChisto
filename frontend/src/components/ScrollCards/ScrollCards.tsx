@@ -1,6 +1,7 @@
 import { ReactElement, RefObject, useRef } from "react";
 import { LeftSVG, RightSVG } from "./SVG";
 import "./css.scss";
+import ButtonLikeText from "../Buttons/ButtonLikeText/ButtonLikeText";
 
 type Props = {
 	children: ReactElement[];
@@ -38,7 +39,7 @@ export default function ScrollCards({ children }: Props) {
 		if (containerRef.current) {
 			const container = containerRef.current;
 			const scrollAmount = getAmount(containerRef as RefObject<HTMLDivElement>);
-			console.log("scrollBehavior" in document.documentElement.style);
+			console.log("scrollBehavior", document.documentElement.style);
 			container.scrollBy({
 				left: scrollAmount,
 				behavior: "smooth",
@@ -61,8 +62,12 @@ export default function ScrollCards({ children }: Props) {
 				{children}
 			</div>
 			<div className="buttons">
-				<LeftSVG onClick={scrollLeft} />
-				<RightSVG onClick={scrollRight} />
+				<ButtonLikeText>
+					<LeftSVG onClick={scrollLeft} />
+				</ButtonLikeText>
+				<ButtonLikeText>
+					<RightSVG onClick={scrollRight} />
+				</ButtonLikeText>
 			</div>
 		</div>
 	);

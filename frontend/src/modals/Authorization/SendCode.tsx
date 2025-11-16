@@ -24,6 +24,7 @@ export default function SendCode({
 	const navigate = useNavigate();
 
 	const handleSubmit = () => {
+		setCode("");
 		ApiController.signup(phone, code)
 			.then((data) => {
 				if (!data.is_verification_required) {
