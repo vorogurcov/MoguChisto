@@ -22,7 +22,11 @@ func main() {
 	}
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+    AllowedOrigins:   []string{
+        "http://localhost:3000",          // для локальной разработки
+        "https://mogucheesto.ru",        // основной домен
+        "https://www.mogucheesto.ru",    // с www, если используется
+    },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
