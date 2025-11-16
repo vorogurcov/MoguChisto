@@ -8,6 +8,7 @@ import (
 	"main/services/user-service/internal/domain"
 	"main/services/user-service/internal/dto"
 	"strings"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -21,7 +22,7 @@ func NewMySqlUserRepository(db *sql.DB) *mySqlUserRepository {
 	return &mySqlUserRepository{db: db}
 }
 
-func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string) (*domain.UserModel, error) {
+func (r *mySqlUserRepository) CreateUser(ctx context.Context, userDto dto.CreateRepoUserDto) (*domain.UserModel, error) {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return nil, fmt.Errorf("begin tx: %w", err)
@@ -35,23 +36,36 @@ func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string
 
 	id := uuid.NewString()
 
-	insertUserQuery := "INSERT INTO users (user_id, phone_number) VALUES (?, ?)"
-	_, err = tx.ExecContext(ctx, insertUserQuery, id, phoneNumber)
+	// Вставка нового пользователя
+	insertUserQuery := "INSERT INTO users (user_id, amocrm_contact_id, phone_number) VALUES (?, ?, ?)"
+	_, err = tx.ExecContext(ctx, insertUserQuery, id, userDto.AmoCrmContactId, userDto.PhoneNumber)
 	if err != nil {
-		tx.Rollback()
-
-		// Проверяем на дубликат
 		var myErr *mysql.MySQLError
 		if errors.As(err, &myErr) && myErr.Number == 1062 {
+			// Дубликат по phone_number
 			selectQuery := "SELECT user_id, phone_number FROM users WHERE phone_number = ? LIMIT 1"
-			row := r.db.QueryRowContext(ctx, selectQuery, phoneNumber)
+			row := r.db.QueryRowContext(ctx, selectQuery, userDto.PhoneNumber)
 
 			var existingID, existingPhone string
-			if scanErr := row.Scan(&existingID, &existingPhone); scanErr != nil {
+			scanErr := row.Scan(&existingID, &existingPhone)
+			if scanErr != nil {
+				tx.Rollback()
 				if errors.Is(scanErr, sql.ErrNoRows) {
 					return nil, fmt.Errorf("insert duplicate but select returned no rows: %w", err)
 				}
 				return nil, fmt.Errorf("select existing user after duplicate: %w", scanErr)
+			}
+
+			// Обновляем заказы для существующего пользователя
+			updateOrdersQuery := "UPDATE orders SET user_id = ? WHERE phone_number = ?"
+			_, err = tx.ExecContext(ctx, updateOrdersQuery, existingID, userDto.PhoneNumber)
+			if err != nil {
+				tx.Rollback()
+				return nil, fmt.Errorf("ошибка обновления user_id в orders: %w", err)
+			}
+
+			if err = tx.Commit(); err != nil {
+				return nil, fmt.Errorf("commit tx after duplicate handling: %w", err)
 			}
 
 			return &domain.UserModel{
@@ -60,6 +74,7 @@ func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string
 			}, nil
 		}
 
+		tx.Rollback()
 		return nil, fmt.Errorf("insert user: %w", err)
 	}
 
@@ -71,21 +86,27 @@ func (r *mySqlUserRepository) CreateUser(ctx context.Context, phoneNumber string
 		return nil, fmt.Errorf("insert notifications for new user: %w", err)
 	}
 
+	// **Привязываем все существующие заказы с этим телефоном к новому user_id**
+	updateOrdersQuery := "UPDATE orders SET user_id = ? WHERE phone_number = ?"
+	_, err = tx.ExecContext(ctx, updateOrdersQuery, id, userDto.PhoneNumber)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("не удалось привязать существующие заказы к новому пользователю: %w", err)
+	}
+
 	if err = tx.Commit(); err != nil {
 		return nil, fmt.Errorf("commit tx: %w", err)
 	}
 
-	user := &domain.UserModel{
+	return &domain.UserModel{
 		UserID:      id,
-		PhoneNumber: &phoneNumber,
-	}
-
-	return user, nil
+		PhoneNumber: &userDto.PhoneNumber,
+	}, nil
 }
 
 func (r *mySqlUserRepository) GetUserByID(ctx context.Context, userID string) (*domain.UserModel, error) {
 	query := `
-		SELECT user_id, last_name, birthday_date, phone_number, email, first_name
+		SELECT user_id, amocrm_contact_id, last_name, birthday_date, phone_number, email, first_name
 		FROM users
 		WHERE users.user_id = ? LIMIT 1
 	`
@@ -99,10 +120,12 @@ func (r *mySqlUserRepository) GetUserByID(ctx context.Context, userID string) (*
 		nullPhone     sql.NullString
 		nullEmail     sql.NullString
 		nullFirstName sql.NullString
+		contactId     sql.NullString
 	)
 
 	err := row.Scan(
 		&user.UserID,
+		&contactId,
 		&nullLastName,
 		&nullBirthday,
 		&nullPhone,
@@ -131,6 +154,9 @@ func (r *mySqlUserRepository) GetUserByID(ctx context.Context, userID string) (*
 	if nullBirthday.Valid {
 		user.BirthdayDate = &nullBirthday.Time
 	}
+	if contactId.Valid {
+		user.AmoCrmContactId = &contactId.String
+	}
 
 	return &user, nil
 }
@@ -150,7 +176,13 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 	}
 	if changeUserProfileDto.Email != nil {
 		setClauses = append(setClauses, "email = ?")
-		args = append(args, *changeUserProfileDto.Email)
+
+		emailValue := sql.NullString{
+			String: *changeUserProfileDto.Email,
+			Valid:  *changeUserProfileDto.Email != "",
+		}
+
+		args = append(args, emailValue)
 	}
 	if changeUserProfileDto.PhoneNumber != nil {
 		setClauses = append(setClauses, "phone_number = ?")
@@ -158,7 +190,17 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 	}
 	if changeUserProfileDto.BirthdayDate != nil {
 		setClauses = append(setClauses, "birthday_date = ?")
-		args = append(args, *changeUserProfileDto.BirthdayDate)
+
+		var nt sql.NullTime
+		if *changeUserProfileDto.BirthdayDate != "" {
+			// Проверяем и парсим дату формата YYYY-MM-DD
+			t, _ := time.Parse("2006-01-02", *changeUserProfileDto.BirthdayDate)
+			nt = sql.NullTime{Time: t, Valid: true} // Дата валидна
+		} else {
+			nt = sql.NullTime{Valid: false} // NULL в базе
+		}
+
+		args = append(args, nt)
 	}
 
 	if len(setClauses) == 0 {
@@ -176,10 +218,7 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return nil, fmt.Errorf("rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return nil, fmt.Errorf("user not found")
+		return nil, fmt.Errorf("rows affected: %w", rowsAffected)
 	}
 
 	return r.GetUserByID(ctx, userID)
