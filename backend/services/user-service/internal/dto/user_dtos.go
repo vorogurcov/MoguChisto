@@ -17,3 +17,8 @@ type ChangeUserNotificationSettingsDto struct {
 	BySms   *bool `json:"by_sms"`
 	ByEmail *bool `json:"by_email"`
 }
+
+type CreateRepoUserDto struct {
+	PhoneNumber     string `json:"phone_number"`
+	AmoCrmContactId int64  `json:"amocrm_contact_id"`
+}

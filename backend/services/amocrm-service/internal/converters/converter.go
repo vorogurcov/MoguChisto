@@ -34,6 +34,15 @@ func ConvertNewLeadDtoToCrmLeadDto(newLeadDto types.NewLeadDto, contactID int64)
 		})
 	}
 
+	customFields = append(customFields, dto.CustomField{
+		FieldID: amocrm_types.AmoStatusFieldId,
+		Values: []dto.CustomFieldValue{
+			{
+				Value: "pending",
+			},
+		},
+	})
+
 	result := dto.CrmLeadDto{
 		Name:               newLeadDto.Name,
 		Price:              priceInt,

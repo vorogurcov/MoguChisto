@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"main/services/order-service/internal/domain"
 	"main/services/order-service/internal/dto"
+	"main/services/order-service/pkg/types"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +22,7 @@ func NewMySqlOrderRepository(db *sql.DB) *mySqlOrderRepository {
 
 func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID string) ([]*domain.OrderModel, error) {
 	const selectOrdersQuery = `
-        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners
+        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners, o.lead_updated_at
         FROM orders o
         WHERE o.user_id = ?
     `
@@ -44,9 +45,10 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			status       string
 			startTimeStr sql.NullString
 			cleaners     sql.NullString
+			leadUpdated  sql.NullTime
 		)
 
-		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners); err != nil {
+		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners, &leadUpdated); err != nil {
 			return nil, fmt.Errorf("scan order: %w", err)
 		}
 
@@ -58,20 +60,25 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 		}
 
 		order := &domain.OrderModel{
-			OrderID:   orderID,
-			UserID:    dbUserID,
-			Type:      orderType,
-			Cost:      cost,
-			Area:      0,
-			Status:    status,
-			StartDate: startTimeParsed,
-			Cleaners:  "",
+			OrderID:       orderID,
+			UserID:        dbUserID,
+			Type:          orderType,
+			Cost:          cost,
+			Area:          0,
+			Status:        status,
+			StartDate:     startTimeParsed,
+			Cleaners:      "",
+			LeadUpdatedAt: nil,
 		}
 		if area.Valid {
 			order.Area = area.Float64
 		}
 		if cleaners.Valid {
 			order.Cleaners = cleaners.String
+		}
+		if leadUpdated.Valid {
+			t := leadUpdated.Time
+			order.LeadUpdatedAt = &t
 		}
 
 		orders = append(orders, order)
@@ -86,7 +93,7 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 
 func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string) (*domain.OrderModel, error) {
 	const q = `
-        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners
+        SELECT o.order_id, o.user_id, o.type, o.cost, o.area, o.status, o.start_date, o.cleaners, o.lead_updated_at
         FROM orders o
         WHERE o.order_id = ?
         LIMIT 1`
@@ -100,9 +107,10 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		status       string
 		startTimeStr sql.NullString
 		cleaners     sql.NullString
+		leadUpdated  sql.NullTime
 	)
 
-	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners)
+	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners, &leadUpdated)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("order not found")
@@ -123,20 +131,25 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 	}
 
 	order := &domain.OrderModel{
-		OrderID:   id,
-		UserID:    userIDField,
-		Type:      orderType,
-		Cost:      cost,
-		Area:      0,
-		Status:    status,
-		StartDate: startTimeParsed,
-		Cleaners:  "",
+		OrderID:       id,
+		UserID:        userIDField,
+		Type:          orderType,
+		Cost:          cost,
+		Area:          0,
+		Status:        status,
+		StartDate:     startTimeParsed,
+		Cleaners:      "",
+		LeadUpdatedAt: nil,
 	}
 	if area.Valid {
 		order.Area = area.Float64
 	}
 	if cleaners.Valid {
 		order.Cleaners = cleaners.String
+	}
+	if leadUpdated.Valid {
+		t := leadUpdated.Time
+		order.LeadUpdatedAt = &t
 	}
 
 	return order, nil
@@ -154,18 +167,78 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 
 	id := uuid.NewString()
 
+	leadUpdatedAt := time.Now().UTC().Add(3 * time.Hour)
+
 	const insertQ = `
-		INSERT INTO orders (order_id, user_id, type, cost, area, status, start_date, cleaners)
-		VALUES (?, ?, ?, ?, ?, 'pending', ?, NULL)
+		INSERT INTO orders (order_id, user_id, type, cost, phone_number, area, status, start_date, cleaners, lead_updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NULL, ?)
 	`
 
-	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, createOrderDto.Area, time.Now()); err != nil {
+	if _, err := r.db.ExecContext(ctx, insertQ, id, userFieldValue, createOrderDto.Type, createOrderDto.Cost, createOrderDto.PhoneNumber, createOrderDto.Area, time.Now(), leadUpdatedAt.UTC()); err != nil {
 		return nil, fmt.Errorf("insert order: %w", err)
 	}
 
 	order, err := r.GetOrderById(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("select created order: %w", err)
+	}
+
+	return order, nil
+}
+
+func (r *mySqlOrderRepository) UpdateOrderByLeadId(ctx context.Context, updateOrderDto types.UpdateOrderDto) (*domain.OrderModel, error) {
+	if updateOrderDto.AmocrmLeadId == 0 {
+		return nil, fmt.Errorf("amocrm_lead_id is empty")
+	}
+
+	updateOrderQuery := "UPDATE orders SET status = ?, cleaners = ?, lead_updated_at = ? WHERE amocrm_lead_id = ?"
+
+	var leadUpdated sql.NullTime
+	if updateOrderDto.LeadUpdated != nil {
+		leadUpdated = sql.NullTime{Time: *updateOrderDto.LeadUpdated, Valid: true}
+	}
+
+	_, err := r.db.ExecContext(ctx, updateOrderQuery, updateOrderDto.Status, updateOrderDto.Cleaners, leadUpdated, updateOrderDto.AmocrmLeadId)
+	if err != nil {
+		return nil, fmt.Errorf("update order: %w", err)
+	}
+
+	var orderID string
+	const selectIDQ = "SELECT order_id FROM orders WHERE amocrm_lead_id = ? LIMIT 1"
+	if err := r.db.QueryRowContext(ctx, selectIDQ, updateOrderDto.AmocrmLeadId).Scan(&orderID); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("order not found after update")
+		}
+		return nil, fmt.Errorf("select order id: %w", err)
+	}
+
+	order, err := r.GetOrderById(ctx, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("fetch updated order: %w", err)
+	}
+
+	return order, nil
+}
+
+func (r *mySqlOrderRepository) SetLeadIDToOrder(ctx context.Context, amocrmLeadId int64, orderID string) (*domain.OrderModel, error) {
+	updateOrderQuery := "UPDATE orders SET amocrm_lead_id = ? WHERE order_id = ?"
+
+	res, err := r.db.ExecContext(ctx, updateOrderQuery, amocrmLeadId, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("update order: %w", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("could not get rows affected after update: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("order not found")
+	}
+
+	order, err := r.GetOrderById(ctx, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("fetch updated order: %w", err)
 	}
 
 	return order, nil

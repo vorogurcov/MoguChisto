@@ -9,6 +9,7 @@ import (
 	"main/services/amocrm-service/pkg/types"
 	"main/services/order-service/internal/domain"
 	"main/services/order-service/internal/dto"
+	types2 "main/services/order-service/pkg/types"
 )
 
 type OrderService struct {
@@ -41,11 +42,26 @@ func (o *OrderService) CreateNewOrder(ctx context.Context, createOrderDto dto.Cr
 		newLeadDto := types.NewLeadDto{Name: fmt.Sprintf("Заявка на уборку от %v", createOrderDto.PhoneNumber), Type: createOrderDto.Type, Cost: createOrderDto.Cost, Area: createOrderDto.Area,
 			PhoneNumber: createOrderDto.PhoneNumber}
 
-		_, crmErr := amoCrmService.SendNewLead(ctx, newLeadDto)
+		leadId, crmErr := amoCrmService.SendNewLead(ctx, newLeadDto)
 		if crmErr != nil {
 			log.Print(crmErr.Error())
+		}
+
+		order, err = o.OrderRepo.SetLeadIDToOrder(ctx, leadId, order.OrderID)
+		if err != nil {
+			return nil, err
 		}
 	}
 
 	return order, nil
+}
+
+func (o *OrderService) UpdateOrderInfoByLeadId(ctx context.Context, updateOrderDto types2.UpdateOrderDto) error {
+	_, err := o.OrderRepo.UpdateOrderByLeadId(ctx, updateOrderDto)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
