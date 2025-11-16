@@ -143,7 +143,7 @@ export type OrderCardT = {
 	price: number;
 	startDate: string;
 	status: OrderProcessT;
-	notification: string;
+	notification?: string;
 };
 
 function OrderRow({

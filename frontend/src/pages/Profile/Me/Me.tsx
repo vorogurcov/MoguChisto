@@ -60,18 +60,11 @@ export default function Me() {
 		});
 	}, [userForm]);
 	const onSubmit = async (userData: UserT & PushT) => {
-		console.log("userData", userData);
 		const dataToSend: Omit<UserT & PushT, "phoneNumber"> = userData;
 		await ApiController.patchUserData(dataToSend);
 	};
 	const formValues = userForm.watch();
 	const { isValid } = useDateInput(formValues.birthdayDate ?? "");
-	console.log(
-		"userForm.formState.isSubmitting",
-		userForm.formState.isSubmitting,
-		userForm.formState.isValid,
-		userForm.formState.errors,
-	);
 	return (
 		<ProfileTemplate>
 			<SideBar url={ProfileEnum.ME} />
@@ -99,7 +92,10 @@ export default function Me() {
 							<Controller
 								name="birthdayDate"
 								control={userForm.control}
-								rules={{ validate: isValid }}
+								rules={{
+									validate: (value) =>
+										value?.length === 0 || isValid() || "Некорректная дата",
+								}}
 								render={({ field }) => (
 									<InputWihUnderLine
 										{...field}

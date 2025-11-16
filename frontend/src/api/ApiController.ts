@@ -69,6 +69,7 @@ const ApiController = {
 	async patchUserData(userData: Omit<UserT, "phoneNumber"> & PushT) {
 		await Promise.all([
 			apiInstance.patch(getPath("user/profile"), {
+				...userData,
 				last_name: userData.lastName,
 				first_name: userData.firstName,
 				email: userData.email,
@@ -105,7 +106,9 @@ const ApiController = {
 				price: el.cost,
 				cleaners: el.cleaners,
 				startDate: formatDateForInput(el.start_date),
-				notification: formatTime(new Date(el.lead_updated_at)),
+				notification: el.lead_updated_at
+					? formatTime(new Date(el.lead_updated_at))
+					: undefined,
 			}),
 		);
 	},
