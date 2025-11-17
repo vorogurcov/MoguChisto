@@ -61,10 +61,11 @@ func (s *UserService) UpdateUserProfile(ctx context.Context, profileDto dto.Chan
 	log.Println(contact)
 
 	updateContact := types.UpdateContactDto{
-		ContactID: contact,
-		FirstName: *profileDto.FirstName,
-		LastName:  *profileDto.LastName,
-		Email:     *profileDto.Email,
+		ContactID:   contact,
+		FirstName:   *profileDto.FirstName,
+		LastName:    *profileDto.LastName,
+		Email:       *profileDto.Email,
+		PhoneNumber: *profileDto.PhoneNumber,
 	}
 
 	_, err = amocrmService.UpdateContact(ctx, updateContact)
