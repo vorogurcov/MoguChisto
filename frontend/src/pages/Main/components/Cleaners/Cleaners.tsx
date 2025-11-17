@@ -60,7 +60,7 @@ const cards: CardT[] = [
 
 function OneCard({ img }: CardT) {
 	return (
-		<div className="cardCleaner">
+		<div className="cardCleaner" style={{ marginRight: "10px" }}>
 			<img src={img} alt="cleaner" loading="lazy" />
 			{/* <div className="img">
 				<img src={img} alt="cleaner" loading="lazy" />

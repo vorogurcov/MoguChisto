@@ -267,7 +267,7 @@ function CardResult({
 	title,
 }: CardResultT) {
 	return (
-		<div className="card">
+		<div className="card" style={{ marginRight: "20px" }}>
 			<CardInfoPanel>
 				<CardItemInfo className="item priceCard">{price}₽</CardItemInfo>
 				<CardItemInfo>

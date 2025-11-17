@@ -20,6 +20,14 @@ export default function ScrollCards({ children }: Props) {
 			const itemWidthPercent = (itemWidth / viewportWidth) * 100;
 
 			let scrollCount = 1; // по умолчанию на 1 элемент
+			const margin =
+				Number(
+					firstItem.style.marginRight.slice(
+						0,
+						firstItem.style.marginRight.length - 2,
+					),
+				) ?? 0;
+			console.log("firstItem.style", container.children);
 
 			if (itemWidthPercent >= 30) {
 				scrollCount = 1; // широкая карточка - скроллим на 1
@@ -29,7 +37,7 @@ export default function ScrollCards({ children }: Props) {
 				scrollCount = 3; // узкая карточка - скроллим на 3
 			}
 			const gap = parseInt(getComputedStyle(container).gap) || 0;
-			const scrollAmount = (itemWidth + gap) * scrollCount;
+			const scrollAmount = (itemWidth + gap + margin) * scrollCount;
 			return scrollAmount;
 		}
 		return 0;
