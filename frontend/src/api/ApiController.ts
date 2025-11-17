@@ -67,9 +67,14 @@ const ApiController = {
 		return adaptedData;
 	},
 	async patchUserData(userData: Omit<UserT, "phoneNumber"> & PushT) {
+		console.log({
+			last_name: userData.lastName,
+			first_name: userData.firstName,
+			email: userData.email,
+			birthday_date: formatDateForInput(userData.birthdayDate),
+		})
 		await Promise.all([
 			apiInstance.patch(getPath("user/profile"), {
-				...userData,
 				last_name: userData.lastName,
 				first_name: userData.firstName,
 				email: userData.email,

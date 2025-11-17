@@ -5,23 +5,23 @@ export const formatDateForInput = (value?: string | Date): string => {
 		return value.toISOString().split("T")[0];
 	}
 
+	// Если строка вида dd.mm.yyyy
 	if (typeof value === "string") {
-		// Если это строка в формате ISO или другой
-		try {
-			const parts = value.split(".");
-			const day = parseInt(parts[0]);
-			const month = parseInt(parts[1]) - 1; // месяцы в JS от 0 до 11
-			const year = parseInt(parts[2]);
+		const [day, month, year] = value.split(".");
+		if (!day || !month || !year) return "";
 
-			const date = new Date(year, month, day);
-			return date.toISOString().split("T")[0];
-		} catch {
-			return "";
-		}
+		// создаём дату ЧЕРЕЗ ISO-строку, чтобы избежать таймзонных смещений
+		const iso = `${year}-${month}-${day}`;
+		const d = new Date(iso);
+
+		if (isNaN(d.getTime())) return "";
+
+		return iso; // уже в формате yyyy-mm-dd
 	}
 
 	return "";
 };
+
 
 export const formatPhoneNumber = (input: string): string => {
 	// Удаляем все нецифровые символы, кроме возможного плюса в начале
