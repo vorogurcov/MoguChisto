@@ -1,4 +1,4 @@
-import { forwardRef, ReactElement, SVGProps, useState } from "react";
+import { forwardRef, memo, ReactElement, SVGProps, useState } from "react";
 import { CacheSVG, CloudSVG, PersonSVG, RaketSVG, TimeSVG } from "./SVG";
 import classNames from "classnames";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
@@ -233,4 +233,4 @@ const ApplicationInfo = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 ApplicationInfo.displayName = "ApplicationInfo";
-export default ApplicationInfo;
+export default memo(ApplicationInfo);

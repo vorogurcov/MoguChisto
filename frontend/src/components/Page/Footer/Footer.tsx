@@ -1,4 +1,4 @@
-import { FC, forwardRef, SVGProps } from "react";
+import { FC, forwardRef, memo, SVGProps } from "react";
 import { Logo } from "../../../public/svg";
 import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
@@ -234,4 +234,4 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 Footer.displayName = "Footer";
-export default Footer;
+export default memo(Footer);

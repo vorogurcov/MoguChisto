@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useState } from "react";
+import { forwardRef, memo, ReactNode, useState } from "react";
 import Razdel, { AboutAttribute, RazdelT } from "./Razdel";
 import "./css.scss";
 import { BathroomSVG, KitchenSVG, TotalSVG } from "./svg";
@@ -202,4 +202,4 @@ const Services = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 Services.displayName = "Cleaning";
-export default Services;
+export default memo(Services);

@@ -133,4 +133,4 @@ const FAQ = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 FAQ.displayName = "FAQ";
-export default FAQ;
+export default memo(FAQ);

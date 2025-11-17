@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import PageItem from "../../../../components/PageItem";
 import { FooterSVG, StarSVG } from "../../../../public/svg";
 import CardsRusult from "./CardsRusult";
@@ -27,4 +27,4 @@ const ResultWorking = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 ResultWorking.displayName = "ResultWorking";
-export default ResultWorking;
+export default memo(ResultWorking);
