@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, memo, useMemo, useState } from "react";
 import CleanerPicture from "./CleanerPicture";
 import TextInput, {
 	isValidNumber,
@@ -182,4 +182,4 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 Application.displayName = "Application";
-export default Application;
+export default memo(Application);

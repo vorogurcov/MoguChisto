@@ -1,4 +1,4 @@
-import { FC, forwardRef, SVGProps } from "react";
+import { FC, forwardRef, memo, SVGProps } from "react";
 import PageItem from "../../../../components/PageItem";
 import Info from "../Title";
 import MainButton from "../../../../components/Buttons/MainButton/MainButton";
@@ -117,4 +117,4 @@ const JobSuggestion = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 JobSuggestion.displayName = "JobSuggestion";
-export default JobSuggestion;
+export default memo(JobSuggestion);

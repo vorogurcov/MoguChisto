@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, memo, useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import Info from "../Title";
 import "./css.scss";
@@ -123,4 +123,4 @@ const Reciewes = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 Reciewes.displayName = "Reciewes";
-export default Reciewes;
+export default memo(Reciewes);

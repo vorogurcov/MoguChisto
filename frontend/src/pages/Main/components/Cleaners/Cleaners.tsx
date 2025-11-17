@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import "./css.scss";
 import Info from "../Title";
@@ -86,4 +86,4 @@ const Cleaners = forwardRef<HTMLDivElement>((_, ref) => {
 	);
 });
 Cleaners.displayName = "Cleaners";
-export default Cleaners;
+export default memo(Cleaners);
