@@ -34,7 +34,6 @@ const ApiController = {
 			phone_number: adaptedPhone,
 			...(code ? { verification_code: code } : {}),
 		});
-		console.log("data", data);
 		return data.data as { is_verification_required: boolean; sessid?: string };
 	},
 	async logout() {
@@ -64,15 +63,15 @@ const ApiController = {
 		adaptedData.phoneNumber = formatPhoneNumber(
 			adaptedData.phoneNumber as string,
 		);
+		adaptedData.birthdayDate = formatDateForInput(
+			adaptedData.birthdayDate
+				? new Date(adaptedData.birthdayDate as string)
+				: "",
+		);
+
 		return adaptedData;
 	},
 	async patchUserData(userData: Omit<UserT, "phoneNumber"> & PushT) {
-		console.log({
-			last_name: userData.lastName,
-			first_name: userData.firstName,
-			email: userData.email,
-			birthday_date: formatDateForInput(userData.birthdayDate),
-		})
 		await Promise.all([
 			apiInstance.patch(getPath("user/profile"), {
 				last_name: userData.lastName,

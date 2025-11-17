@@ -50,12 +50,10 @@ export default function calculatorPrice(
 	typeCleaning: CleaningType,
 ) {
 	const type = calcData[typeCleaning];
-	return Math.round(
-		(type.salary * (square / type.koefSquare) +
-			type.koefSalary * square +
-			type.chemistry +
-			type.oil) *
-			type.koefMarketing *
-			type.koefMarge,
-	);
+	const salary =
+		type.salary * Math.ceil(square / type.koefSquare) +
+		type.koefSalary * square;
+	const costYourself =
+		(salary + type.chemistry + type.oil) * type.koefMarketing;
+	return Math.round(costYourself * type.koefMarge);
 }

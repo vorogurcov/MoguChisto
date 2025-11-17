@@ -5,6 +5,8 @@ import { BathroomSVG, KitchenSVG, TotalSVG } from "./svg";
 import PageItem from "../../../../components/PageItem";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 import classNames from "classnames";
+import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext";
+import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
 
 const razdels: Record<RazdelT, AboutAttribute[]> = {
 	kitchen: [
@@ -53,12 +55,6 @@ const razdels: Record<RazdelT, AboutAttribute[]> = {
 	],
 	bathroom: [
 		{
-			attribute: "Пол",
-			comfort: "В соответствии с разделом общее",
-			elite: "В соответствии с разделом общее",
-			express: "В соответствии с разделом общее",
-		},
-		{
 			attribute: "Стены",
 			comfort: "Зоны с видимыми загрязнениями",
 			elite: "Полное мытьё + очистка швов",
@@ -83,18 +79,6 @@ const razdels: Record<RazdelT, AboutAttribute[]> = {
 			elite:
 				"Снаружи и внутри + прочистка стиральной машины при помощи специальной таблетки",
 			express: "Снаружи",
-		},
-		{
-			attribute: "Фурнитура",
-			comfort: true,
-			elite: true,
-			express: true,
-		},
-		{
-			attribute: "Мебель",
-			comfort: "В соответствии с разделом общее",
-			elite: "В соответствии с разделом общее",
-			express: "В соответствии с разделом общее",
 		},
 	],
 	total: [
@@ -169,6 +153,12 @@ const DifficueltShadowsWrapper = ({ children }: { children: ReactNode }) => {
 const Services = forwardRef<HTMLDivElement>((_, ref) => {
 	const [razdel, setRazdel] = useState<RazdelT>("kitchen");
 	const width = useWindowWidth();
+	const context = useActiveSectionContext();
+	const handleSetRazdel = (razdel: RazdelT) => {
+		setRazdel(razdel);
+		context?.setActiveSection(PagePart.service);
+		context?.setShouldSmooth(true);
+	};
 	return (
 		<PageItem className="razdel">
 			<DifficueltShadowsWrapper>
@@ -186,17 +176,17 @@ const Services = forwardRef<HTMLDivElement>((_, ref) => {
 							<TotalSVG
 								className="svgButton"
 								active={razdel === "total"}
-								onClick={() => setRazdel("total")}
+								onClick={() => handleSetRazdel("total")}
 							/>
 							<BathroomSVG
 								className="svgButton"
 								active={razdel === "bathroom"}
-								onClick={() => setRazdel("bathroom")}
+								onClick={() => handleSetRazdel("bathroom")}
 							/>
 							<KitchenSVG
 								className="svgButton"
 								active={razdel === "kitchen"}
-								onClick={() => setRazdel("kitchen")}
+								onClick={() => handleSetRazdel("kitchen")}
 							/>
 						</div>
 					</div>

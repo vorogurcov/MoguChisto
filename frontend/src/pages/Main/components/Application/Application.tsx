@@ -82,6 +82,12 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								{...register("area", {
 									required: "Площадь обязательна",
 									valueAsNumber: true,
+									validate: {
+										positive: (value) =>
+											value > 0 || "Площадь должна быть больше 0",
+										maxValue: (value) =>
+											value <= 1000 || "Максимальная площадь - 1000 м²",
+									},
 								})}
 								name="area"
 								type="number"
