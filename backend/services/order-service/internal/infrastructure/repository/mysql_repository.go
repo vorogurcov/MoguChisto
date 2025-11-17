@@ -157,7 +157,7 @@ func (r *mySqlOrderRepository) CreateOrder(ctx context.Context, createOrderDto d
 
 	id := uuid.NewString()
 
-	leadUpdatedAt := time.Now().UTC().Add(3 * time.Hour)
+	leadUpdatedAt := time.Now().UTC()
 
 	const insertQ = `
 		INSERT INTO orders (order_id, user_id, type, cost, phone_number, area, status, start_date, cleaners, lead_updated_at)
