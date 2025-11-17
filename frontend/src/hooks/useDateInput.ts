@@ -6,7 +6,6 @@ const useDateInput = (initialValue = "") => {
 
 	useEffect(() => {
 		setValue(formatDate(initialValue));
-		console.log("initialValue", initialValue);
 	}, [initialValue]);
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

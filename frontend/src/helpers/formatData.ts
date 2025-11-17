@@ -9,7 +9,6 @@ export const formatDateForInput = (value?: string | Date): string => {
 	if (typeof value === "string") {
 		const [day, month, year] = value.split(".");
 		if (!day || !month || !year) return "";
-
 		// создаём дату ЧЕРЕЗ ISO-строку, чтобы избежать таймзонных смещений
 		const iso = `${year}-${month}-${day}`;
 		const d = new Date(iso);
@@ -21,7 +20,6 @@ export const formatDateForInput = (value?: string | Date): string => {
 
 	return "";
 };
-
 
 export const formatPhoneNumber = (input: string): string => {
 	// Удаляем все нецифровые символы, кроме возможного плюса в начале
@@ -88,7 +86,6 @@ export const formatDate = (input: string) => {
 	} else {
 		// Полная дата: "12092024" -> "12.09.2024"
 		formatted = `${cleaned.substring(0, 2)}.${cleaned.substring(2, 4)}.${cleaned.substring(4)}`;
-		console.log("formatted, cleaned", formatted, cleaned);
 	}
 
 	// Валидация и форматирование частей даты
@@ -103,7 +100,6 @@ export const formatDate = (input: string) => {
 		else if (dayNum < 1 && day.length === 2) day = "01";
 		else if (day.length === 1 && dayNum > 3) day = "0" + day;
 
-		console.log("month", day);
 		parts[0] = day;
 	}
 
@@ -116,7 +112,6 @@ export const formatDate = (input: string) => {
 		else if (monthNum < 1 && month.length === 2) month = "01";
 		else if (month.length === 1 && monthNum > 1) month = "0" + month;
 
-		console.log("month", month);
 		parts[1] = month;
 	}
 
