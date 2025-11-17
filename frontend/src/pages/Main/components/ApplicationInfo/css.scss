@@ -145,6 +145,12 @@
 		align-items: center;
 		background-color: #1b3c74;
 		aspect-ratio: 4/3;
+		&.Комфорт {
+			background-color: #ecb841;
+		}
+		&.Элит {
+			background-color: #3e3e3e;
+		}
 	}
 	.square {
 		color: white;

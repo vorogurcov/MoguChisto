@@ -67,6 +67,7 @@ export default function Authorization({ phone }: { phone?: string }) {
 					className="getCode"
 					type="submit"
 					disabled={formState.isSubmitting}
+					submitingText="Подождите..."
 				>
 					Получить код
 				</MainButton>

@@ -77,55 +77,61 @@ const tarifs: Record<TarifNames, TarifT[]> = {
 		{
 			square: 60,
 			price: calculatorPrice(60, "express"),
-			countCleaner: "1 - 2",
-			time: "2 - 4 часа",
+			countCleaner: "1",
+			time: "3 - 5 часов",
 		},
 	],
 	Комфорт: [
 		{
 			square: 20,
 			price: calculatorPrice(20, "comfort"),
-			countCleaner: "1",
-			time: "2 - 4 часа",
+			countCleaner: "2",
+			time: "3 - 5 часов",
 		},
 		{
 			square: 40,
 			price: calculatorPrice(40, "comfort"),
-			countCleaner: "1 - 2",
-			time: "2 - 4 часа",
+			countCleaner: "2",
+			time: "3 - 5 часов",
 		},
 		{
 			square: 60,
 			price: calculatorPrice(60, "comfort"),
-			countCleaner: "1 - 2",
-			time: "2 - 4 часа",
+			countCleaner: "3",
+			time: "5 - 7 часов",
 		},
 	],
 	Элит: [
 		{
 			square: 20,
 			price: calculatorPrice(20, "elite"),
-			countCleaner: "1",
-			time: "2 - 4 часа",
+			countCleaner: "2",
+			time: "11 часов",
 		},
 		{
 			square: 40,
 			price: calculatorPrice(40, "elite"),
-			countCleaner: "1 - 2",
-			time: "2 - 4 часа",
+			countCleaner: "3",
+			time: "11 часов",
 		},
 		{
 			square: 60,
 			price: calculatorPrice(60, "elite"),
-			countCleaner: "1 - 2",
-			time: "2 - 4 часа",
+			countCleaner: "4",
+			time: "11 часов",
 		},
 	],
 };
 
-function OneTarif({ square, price, countCleaner, time }: TarifT) {
+function OneTarif({
+	square,
+	price,
+	countCleaner,
+	time,
+	type,
+}: TarifT & { type: TarifNames }) {
 	return (
-		<div className="OneTarif">
+		<div className={classNames("OneTarif", type)}>
 			<CardInfoPanel>
 				<CardItemInfo>{price}₽</CardItemInfo>
 				<CardItemInfo>
@@ -165,7 +171,7 @@ function Tarifs() {
 			</div>
 			<div className="tarifCards">
 				{tarifs[selected].map((tarif, index) => (
-					<OneTarif key={index} {...tarif} />
+					<OneTarif key={index} {...tarif} type={selected} />
 				))}
 			</div>
 		</div>

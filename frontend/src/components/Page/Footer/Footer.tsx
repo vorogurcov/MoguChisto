@@ -175,14 +175,14 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 			<div className="contactsFooter">
 				<div className="contactsNumber">
 					<span>
-						<Phone />8 (923) 123-23-35
+						<Phone />8 (921) 925-52-25
 					</span>
 					<span>
 						<MailSVG />
 						03vlad1986@gmail.com
 					</span>
 					<span>
-						<span className="everyDay">Ежедневно</span> 10:00 - 21:00
+						<span className="everyDay">Ежедневно</span> 08:00 - 20:00
 					</span>
 				</div>
 				<div className="messangers">

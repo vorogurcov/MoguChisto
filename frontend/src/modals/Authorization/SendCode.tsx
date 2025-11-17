@@ -78,7 +78,9 @@ export default function SendCode({
 						onClick={handlRetry}
 						disabled={!ableSendAgain}
 					>
-						Получить код повторно
+						{ableSendAgain
+							? "Получить код повторно"
+							: "Пока запросить нельзя :("}
 					</MainButton>
 				)}
 				<ErrorMessage>{submitError}</ErrorMessage>

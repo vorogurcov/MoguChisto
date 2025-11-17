@@ -54,9 +54,9 @@ const cards: CardResultT[] = [
 		title: "Комплексная уборка кухни",
 	},
 	{
-		price: 7000,
+		price: 11550,
 		countCleaner: 1,
-		time: "2.5",
+		time: "3",
 		square: 5,
 		services: "PRO средства",
 		imgs: { before: ГрязнаяПлиткаВанна, after: ЧистаяПлиткаВанна },
@@ -87,7 +87,7 @@ const cards: CardResultT[] = [
 		square: 72,
 		services: "PRO средства",
 		imgs: { before: ГрязнаяСтиралка, after: ЧистаяСтиралка },
-		title: "Уборка стиральной машины",
+		title: "Комплексная уборка ванной",
 	},
 	{
 		price: 23275,
