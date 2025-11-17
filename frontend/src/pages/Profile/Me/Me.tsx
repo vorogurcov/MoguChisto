@@ -60,7 +60,7 @@ export default function Me() {
 		});
 	}, [userForm]);
 	const onSubmit = async (userData: UserT & PushT) => {
-		const dataToSend: Omit<UserT & PushT, "phoneNumber"> = userData;
+		const dataToSend: UserT & PushT = userData;
 		await ApiController.patchUserData(dataToSend);
 	};
 	const formValues = userForm.watch();
