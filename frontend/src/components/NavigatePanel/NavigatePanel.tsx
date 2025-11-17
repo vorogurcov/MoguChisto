@@ -115,14 +115,14 @@ export default function NavigatePanel() {
 				<div className="tools">
 					<div className="number">
 						<Link
-							to="tel:+79231232335"
+							to="tel:+79219255225"
 							target="_blank"
 							rel="noopener noreferrer"
 							style={{ textDecoration: "none", color: "inherit" }}
 						>
 							<Phone height={18} width={18} />{" "}
 							{width > 1300 || (width <= 900 && width > 500) ? (
-								<span>+7 (923) 123-23-35</span>
+								<span>+7 (921) 925-52-25</span>
 							) : null}
 						</Link>
 					</div>
@@ -135,7 +135,7 @@ export default function NavigatePanel() {
 							<WhatsApp height={24} width={24} />
 						</Link>
 						<Link
-							to={"https://t.me/vl_vl_vlaad"}
+							to={"https://t.me/moguchisto"}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
