@@ -37,26 +37,19 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 
 	for rows.Next() {
 		var (
-			orderID      string
-			dbUserID     string
-			orderType    string
-			cost         float64
-			area         sql.NullFloat64
-			status       string
-			startTimeStr sql.NullString
-			cleaners     sql.NullString
-			leadUpdated  sql.NullTime
+			orderID     string
+			dbUserID    string
+			orderType   string
+			cost        float64
+			area        sql.NullFloat64
+			status      string
+			startTime   sql.NullTime
+			cleaners    sql.NullString
+			leadUpdated sql.NullTime
 		)
 
-		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners, &leadUpdated); err != nil {
+		if err := rows.Scan(&orderID, &dbUserID, &orderType, &cost, &area, &status, &startTime, &cleaners, &leadUpdated); err != nil {
 			return nil, fmt.Errorf("scan order: %w", err)
-		}
-
-		var startTimeParsed time.Time
-		if startTimeStr.Valid {
-			if t, parseErr := time.Parse("15:04:05", startTimeStr.String); parseErr == nil {
-				startTimeParsed = t
-			}
 		}
 
 		order := &domain.OrderModel{
@@ -66,7 +59,7 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			Cost:          cost,
 			Area:          0,
 			Status:        status,
-			StartDate:     startTimeParsed,
+			StartDate:     time.Time{},
 			Cleaners:      "",
 			LeadUpdatedAt: nil,
 		}
@@ -80,7 +73,9 @@ func (r *mySqlOrderRepository) GetAllUserOrders(ctx context.Context, userID stri
 			t := leadUpdated.Time
 			order.LeadUpdatedAt = &t
 		}
-
+		if startTime.Valid {
+			order.StartDate = startTime.Time
+		}
 		orders = append(orders, order)
 	}
 
@@ -99,30 +94,23 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
         LIMIT 1`
 
 	var (
-		id           string
-		userID       sql.NullString
-		orderType    string
-		cost         float64
-		area         sql.NullFloat64
-		status       string
-		startTimeStr sql.NullString
-		cleaners     sql.NullString
-		leadUpdated  sql.NullTime
+		id          string
+		userID      sql.NullString
+		orderType   string
+		cost        float64
+		area        sql.NullFloat64
+		status      string
+		startTime   sql.NullTime
+		cleaners    sql.NullString
+		leadUpdated sql.NullTime
 	)
 
-	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &area, &status, &startTimeStr, &cleaners, &leadUpdated)
+	err := r.db.QueryRowContext(ctx, q, orderID).Scan(&id, &userID, &orderType, &cost, &area, &status, &startTime, &cleaners, &leadUpdated)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("order not found")
 		}
 		return nil, fmt.Errorf("get order by id: %w", err)
-	}
-
-	var startTimeParsed time.Time
-	if startTimeStr.Valid {
-		if t, parseErr := time.Parse("15:04:05", startTimeStr.String); parseErr == nil {
-			startTimeParsed = t
-		}
 	}
 
 	var userIDField string
@@ -137,7 +125,7 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		Cost:          cost,
 		Area:          0,
 		Status:        status,
-		StartDate:     startTimeParsed,
+		StartDate:     time.Time{},
 		Cleaners:      "",
 		LeadUpdatedAt: nil,
 	}
@@ -151,7 +139,9 @@ func (r *mySqlOrderRepository) GetOrderById(ctx context.Context, orderID string)
 		t := leadUpdated.Time
 		order.LeadUpdatedAt = &t
 	}
-
+	if startTime.Valid {
+		order.StartDate = startTime.Time
+	}
 	return order, nil
 }
 

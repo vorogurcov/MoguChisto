@@ -1,21 +1,51 @@
 export const formatDateForInput = (value?: string | Date): string => {
 	if (!value) return "";
 
+	// Date instance -> yyyy-mm-dd
 	if (value instanceof Date) {
+		// используем toISOString чтобы унифицировать к UTC
 		return value.toISOString().split("T")[0];
 	}
 
-	// Если строка вида dd.mm.yyyy
+	// string
 	if (typeof value === "string") {
-		const [day, month, year] = value.split(".");
-		if (!day || !month || !year) return "";
-		// создаём дату ЧЕРЕЗ ISO-строку, чтобы избежать таймзонных смещений
-		const iso = `${year}-${month}-${day}`;
-		const d = new Date(iso);
+		const s = value.trim();
 
-		if (isNaN(d.getTime())) return "";
+		// 1) ISO full datetime or date: 2025-11-17 or 2025-11-17T12:17:10Z
+		const isoDateMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T)/);
+		if (isoDateMatch) {
+			// безопасно вернуть первые 3 группы
+			return `${isoDateMatch[1]}-${isoDateMatch[2]}-${isoDateMatch[3]}`;
+		}
 
-		return iso; // уже в формате yyyy-mm-dd
+		// 2) dd.mm.yyyy (вариант с точками)
+		const dotParts = s.split(".");
+		if (dotParts.length === 3) {
+			const day = parseInt(dotParts[0], 10);
+			const month = parseInt(dotParts[1], 10);
+			const year = parseInt(dotParts[2], 10);
+			if (
+				Number.isInteger(day) &&
+				Number.isInteger(month) &&
+				Number.isInteger(year)
+			) {
+				// создаём дату в UTC чтобы избежать локального смещения
+				const d = new Date(Date.UTC(year, month - 1, day));
+				if (!isNaN(d.getTime())) {
+					return d.toISOString().split("T")[0];
+				}
+			}
+			return "";
+		}
+
+		// 3) альтернативная: попытаться распарсить как Date и вернуть yyyy-mm-dd
+		const parsed = new Date(s);
+		if (!isNaN(parsed.getTime())) {
+			return parsed.toISOString().split("T")[0];
+		}
+
+		// не узнали формат
+		return "";
 	}
 
 	return "";
