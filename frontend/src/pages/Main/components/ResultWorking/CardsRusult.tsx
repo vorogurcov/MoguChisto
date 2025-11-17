@@ -5,24 +5,24 @@ import { MiniCleanerSVG } from "../../../../public/svg";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // Импорт всех фотографий "до"
-import ГрязнаяПлита from "./cards/Грязная плита.png";
-import ГрязнаяПлиткаВанна from "./cards/Грязная плитка ванна.png";
-import ГрязнаяПодкухня from "./cards/Грязная подкухня.png";
-import ГрязнаяРучка from "./cards/Грязная ручка.png";
-import ГрязнаяСтиралка from "./cards/Грязная стиралка.png";
-import ГрязноЗаСтолом from "./cards/Грязно за столом.png";
-import ГрязноСверху from "./cards/Грязно сверху.png";
-import ХолодосГрязный from "./cards/Холодос грязный.png";
+import ГрязнаяПлита from "./cards/Грязная плита.jpg";
+import ГрязнаяПлиткаВанна from "./cards/Грязная плитка ванна.jpg";
+import ГрязнаяПодкухня from "./cards/Грязная подкухня.jpg";
+import ГрязнаяРучка from "./cards/Грязная ручка.jpg";
+import ГрязнаяСтиралка from "./cards/Грязная стиралка.jpg";
+import ГрязноЗаСтолом from "./cards/Грязно за столом.jpg";
+import ГрязноСверху from "./cards/Грязно сверху.jpg";
+import ХолодосГрязный from "./cards/Холодос грязный.jpg";
 
 // Импорт всех фотографий "после"
-import ЧистаяПлита from "./cards/Чистая плита.png";
-import ЧистаяПлиткаВанна from "./cards/Чистая плитка ванна.png";
-import ЧистаяПодкухня from "./cards/Чистая подкухня.png";
-import ЧистаяРучка from "./cards/Чистая ручка.png";
-import ЧистаяСтиралка from "./cards/Чистая стиралка.png";
-import ЧистоЗаСтолом from "./cards/Чисто за столом.png";
-import ЧистоСверху from "./cards/Чисто сверху.png";
-import ХолодосЧистый from "./cards/Холодос чистый.png";
+import ЧистаяПлита from "./cards/Чистая плита.jpg";
+import ЧистаяПлиткаВанна from "./cards/Чистая плитка ванна.jpg";
+import ЧистаяПодкухня from "./cards/Чистая подкухня.jpg";
+import ЧистаяРучка from "./cards/Чистая ручка.jpg";
+import ЧистаяСтиралка from "./cards/Чистая стиралка.jpg";
+import ЧистоЗаСтолом from "./cards/Чисто за столом.jpg";
+import ЧистоСверху from "./cards/Чисто сверху.jpg";
+import ХолодосЧистый from "./cards/Холодос чистый.jpg";
 
 // Массив объектов
 const cards: CardResultT[] = [
