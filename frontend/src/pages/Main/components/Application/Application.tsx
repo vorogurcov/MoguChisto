@@ -46,7 +46,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 		defaultValues: { type: typesCleaning[0] },
 		mode: "onBlur",
 	});
-	const { isSubmitting, isValid, errors } = form.formState;
+	const { isSubmitting, errors } = form.formState;
 	const formValues = watch();
 	const [success, setSuccess] = useState<string>();
 
@@ -148,7 +148,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 						>
 							<MainButton
 								className="send"
-								disabled={isSubmitting || !isValid}
+								disabled={isSubmitting}
 								type="submit"
 								submiting={isSubmitting}
 								submitingText="Отправляем..."

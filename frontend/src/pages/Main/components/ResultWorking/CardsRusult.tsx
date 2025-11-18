@@ -5,24 +5,24 @@ import { MiniCleanerSVG } from "../../../../public/svg";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // Импорт всех фотографий "до"
-import ГрязнаяПлита from "./cards/Грязная плита.jpg";
-import ГрязнаяПлиткаВанна from "./cards/Грязная плитка ванна.jpg";
-import ГрязнаяПодкухня from "./cards/Грязная подкухня.jpg";
-import ГрязнаяРучка from "./cards/Грязная ручка.jpg";
-import ГрязнаяСтиралка from "./cards/Грязная стиралка.jpg";
-import ГрязноЗаСтолом from "./cards/Грязно за столом.jpg";
-import ГрязноСверху from "./cards/Грязно сверху.jpg";
-import ХолодосГрязный from "./cards/Холодос грязный.jpg";
+import ГрязнаяПлита from "./cards/DirtyOven.jpg";
+import ГрязнаяПлиткаВанна from "./cards/DirtyBathroom.jpg";
+import ГрязнаяПодкухня from "./cards/DirtyUndefkitchen.jpg";
+import ГрязнаяРучка from "./cards/DirtyHandle.jpg";
+import ГрязнаяСтиралка from "./cards/DirtyWashmaschine.jpg";
+import ГрязноЗаСтолом from "./cards/DirtyTable.jpg";
+import ГрязноСверху from "./cards/DirtyUp.jpg";
+import ХолодосГрязный from "./cards/DirtyFreezar.jpg";
 
 // Импорт всех фотографий "после"
-import ЧистаяПлита from "./cards/Чистая плита.jpg";
-import ЧистаяПлиткаВанна from "./cards/Чистая плитка ванна.jpg";
-import ЧистаяПодкухня from "./cards/Чистая подкухня.jpg";
-import ЧистаяРучка from "./cards/Чистая ручка.jpg";
-import ЧистаяСтиралка from "./cards/Чистая стиралка.jpg";
-import ЧистоЗаСтолом from "./cards/Чисто за столом.jpg";
-import ЧистоСверху from "./cards/Чисто сверху.jpg";
-import ХолодосЧистый from "./cards/Холодос чистый.jpg";
+import ЧистаяПлита from "./cards/CleanOven.jpg";
+import ЧистаяПлиткаВанна from "./cards/CleanBathroom.jpg";
+import ЧистаяПодкухня from "./cards/CleanUnderkitchen.jpg";
+import ЧистаяРучка from "./cards/CleanHandle.jpg";
+import ЧистаяСтиралка from "./cards/CleanWashingmaschine.jpg";
+import ЧистоЗаСтолом from "./cards/CleanTable.jpg";
+import ЧистоСверху from "./cards/CleanUp.jpg";
+import ХолодосЧистый from "./cards/CleanFreezar.jpg";
 
 // Массив объектов
 const cards: CardResultT[] = [

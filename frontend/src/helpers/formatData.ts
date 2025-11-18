@@ -9,6 +9,9 @@ export const formatDateForInput = (value?: string | Date): string => {
 
 	// string
 	if (typeof value === "string") {
+		if (value.includes("T")) {
+			return value.split("T")[0];
+		}
 		const s = value.trim();
 
 		// 1) ISO full datetime or date: 2025-11-17 or 2025-11-17T12:17:10Z

@@ -205,7 +205,7 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 			<div className="footerBrend">
 				<div className="brendContainer">
 					<Logo fill="white" className="footerName" />
-					<p>Профессиональный клининг в санкт-петербурге</p>
+					<p>Профессиональный клининг в Санкт-Петербурге</p>
 				</div>
 				<div className="sendFooter">
 					<MainButton

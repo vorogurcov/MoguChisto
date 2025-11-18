@@ -7,14 +7,14 @@ import PageItem from "../../../../components/PageItem";
 import classNames from "classnames";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 
-import ЧистаяПлита from "../ResultWorking/cards/Чистая плита.jpg";
-import ЧистаяПлиткаВанна from "../ResultWorking/cards/Чистая плитка ванна.jpg";
-import ЧистаяПодкухня from "../ResultWorking/cards/Чистая подкухня.jpg";
-import ЧистаяРучка from "../ResultWorking/cards/Чистая ручка.jpg";
-import ЧистаяСтиралка from "../ResultWorking/cards/Чистая стиралка.jpg";
-import ЧистоЗаСтолом from "../ResultWorking/cards/Чисто за столом.jpg";
-import ЧистоСверху from "../ResultWorking/cards/Чисто сверху.jpg";
-import ХолодосЧистый from "../ResultWorking/cards/Холодос чистый.jpg";
+import ЧистаяПлита from "../ResultWorking/cards/CleanOven.jpg";
+import ЧистаяПлиткаВанна from "../ResultWorking/cards/CleanBathroom.jpg";
+import ЧистаяПодкухня from "../ResultWorking/cards/CleanUnderkitchen.jpg";
+import ЧистаяРучка from "../ResultWorking/cards/CleanHandle.jpg";
+import ЧистаяСтиралка from "../ResultWorking/cards/CleanWashingmaschine.jpg";
+import ЧистоЗаСтолом from "../ResultWorking/cards/CleanTable.jpg";
+import ЧистоСверху from "../ResultWorking/cards/CleanUp.jpg";
+import ХолодосЧистый from "../ResultWorking/cards/CleanFreezar.jpg";
 
 type RecieweT = {
 	photo?: string;
