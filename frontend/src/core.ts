@@ -1,2 +1,2 @@
-export const apiBaseUrl = "http://localhost:8080";
+export const apiBaseUrl = "https://moguchisto.ru";
 export const sessIdKey = "sessid";

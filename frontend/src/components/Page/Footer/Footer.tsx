@@ -179,7 +179,7 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 					</span>
 					<span>
 						<MailSVG />
-						03vlad1986@gmail.com
+						help@moguchisto.ru
 					</span>
 					<span>
 						<span className="everyDay">Ежедневно</span> 08:00 - 20:00

@@ -215,7 +215,7 @@ export default function Orders() {
 					))}
 				</div>
 				<Link
-					to="mailto:03vlad1986@gmail.com"
+					to="mailto:help@moguchisto.ru"
 					target="_blank"
 					rel="noopener noreferrer"
 					style={{ textDecoration: "none", color: "inherit" }}
