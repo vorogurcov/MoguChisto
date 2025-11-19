@@ -187,7 +187,7 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 				</div>
 				<div className="messangers">
 					<Link
-						to={"https://t.me/vl_vl_vlaad"}
+						to={"https://t.me/moguchisto"}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
