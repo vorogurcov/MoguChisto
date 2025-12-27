@@ -176,7 +176,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								style={{ textDecoration: "none", color: "inherit" }}
 							>
 								<ButtonWithBottomLine type="button">
-									правилами пользования
+									условиями пользования
 								</ButtonWithBottomLine>
 							</a>
 						</div>
