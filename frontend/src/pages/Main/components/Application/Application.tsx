@@ -188,7 +188,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 										className="agree"
 									/>{" "}
 									<div>
-										я ознакомлен с{" "}
+										Я ознакомлен(а) с{" "}
 										<a
 											href="/docs/conf.docx"
 											download="политика сайта.docx"
