@@ -225,11 +225,11 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 				<div>
 					<a
 						href="/docs/conf.docx"
-						download="Условия пользования.docx"
+						download="Политика сайта.docx"
 						style={{ textDecoration: "none", color: "inherit" }}
 					>
 						<ButtonWithBottomLine className="settingsFooter">
-							Условия пользования
+							Политика сайта
 						</ButtonWithBottomLine>
 					</a>
 					{/* <ButtonWithBottomLine className="settingsFooter">

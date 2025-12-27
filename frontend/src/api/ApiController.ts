@@ -86,7 +86,7 @@ const ApiController = {
 			}),
 		]);
 	},
-	async createOrder(order: CreateOrderT, price: number) {
+	async createOrder(order: Omit<CreateOrderT, "agree">, price: number) {
 		await apiInstance.post(getPath("orders/"), {
 			...Object.fromEntries(
 				Object.entries(order).map(([key, value]) => [

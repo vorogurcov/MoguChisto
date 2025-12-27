@@ -16,6 +16,8 @@ import useWindowWidth from "../../../../hooks/useWindowWidth";
 import classNames from "classnames";
 import ApiController from "../../../../api/ApiController";
 import ButtonWithBottomLine from "../../../../components/UI/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+import Checkbox from "../../../../components/UI/Inputs/Checkbox";
+import ErrorMessage from "../../../../components/ErrorMessage/ErrorMessage";
 
 export type CleaningType = "express" | "comfort" | "elite";
 
@@ -30,6 +32,7 @@ export type CreateOrderT = {
 	area: number;
 	type: CleaningOption;
 	phoneNumber: string;
+	agree: boolean;
 };
 
 const prompts = [
@@ -44,7 +47,7 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	const contextSection = useActiveSectionContext();
 
 	const { register, watch, control, ...form } = useForm<CreateOrderT>({
-		defaultValues: { type: typesCleaning[0] },
+		defaultValues: { type: typesCleaning[0], agree: false },
 		mode: "onBlur",
 	});
 	const { isSubmitting, errors } = form.formState;
@@ -52,8 +55,10 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 	const [success, setSuccess] = useState<string>();
 
 	const onSubmit = async (data: CreateOrderT) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { agree, ...reqData } = data;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		await ApiController.createOrder(data, price!);
+		await ApiController.createOrder(reqData, price!);
 		form.reset();
 		setSuccess("Спасибо за заявку! С вами свяжется наш менеджер");
 	};
@@ -168,18 +173,36 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 								Узнать детали
 							</MainButton>
 						</div>
-						<div className="polz">
-							Нажимая Отправить, вы соглашаетесь с{" "}
-							<a
-								href="/docs/conf.docx"
-								download="Условия пользования.docx"
-								style={{ textDecoration: "none", color: "inherit" }}
-							>
-								<ButtonWithBottomLine type="button">
-									условиями пользования
-								</ButtonWithBottomLine>
-							</a>
-						</div>
+						<Controller
+							name="agree"
+							control={control}
+							rules={{
+								validate: (value) =>
+									value === true || "Необходимо согласиться с политикой",
+							}}
+							render={({ field }) => (
+								<div className="polz">
+									<Checkbox
+										checked={field.value}
+										onClick={() => field.onChange(!field.value)}
+										className="agree"
+									/>{" "}
+									<div>
+										я ознакомлен с{" "}
+										<a
+											href="/docs/conf.docx"
+											download="политика сайта.docx"
+											style={{ textDecoration: "none", color: "inherit" }}
+										>
+											<ButtonWithBottomLine type="button">
+												политикой сайта
+											</ButtonWithBottomLine>
+										</a>
+										<ErrorMessage>{errors.agree?.message}</ErrorMessage>
+									</div>
+								</div>
+							)}
+						/>
 					</form>
 				</div>
 				{width > 900 && (
