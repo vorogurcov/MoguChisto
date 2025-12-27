@@ -1,14 +1,15 @@
 import { FC, forwardRef, memo, SVGProps } from "react";
 import { Logo } from "../../../public/svg";
-import ButtonLikeText from "../../Buttons/ButtonLikeText/ButtonLikeText";
+import ButtonLikeText from "../../UI/Buttons/ButtonLikeText/ButtonLikeText";
 import PageItem from "../../PageItem";
-import MainButton from "../../Buttons/MainButton/MainButton";
+import MainButton from "../../UI/Buttons/MainButton/MainButton";
 // import ButtonWithBottomLine from "../../Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import "./css.scss";
 import { useNavigate } from "react-router-dom";
 import { useActiveSectionContext } from "../../../hooks/ActiveSectionContext";
 import { PagePart } from "../../NavigatePanel/NavigatePanel";
 import { Link } from "react-router-dom";
+import ButtonWithBottomLine from "../../UI/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 
 const tools = [
 	{ name: "Услуги", type: PagePart.service },
@@ -221,14 +222,20 @@ const Footer = forwardRef<HTMLDivElement>((_, ref) => {
 			</div>
 			<footer>
 				<p>© 2025 Могу чисто. All rights reserved.</p>
-				{/* <div>
-					<ButtonWithBottomLine className="settingsFooter">
-						Политика конфиденциальности
-					</ButtonWithBottomLine>
-					<ButtonWithBottomLine className="settingsFooter">
+				<div>
+					<a
+						href="/docs/conf.docx"
+						download="Условия пользования.docx"
+						style={{ textDecoration: "none", color: "inherit" }}
+					>
+						<ButtonWithBottomLine className="settingsFooter">
+							Условия пользования
+						</ButtonWithBottomLine>
+					</a>
+					{/* <ButtonWithBottomLine className="settingsFooter">
 						Условия пользования
-					</ButtonWithBottomLine>
-				</div> */}
+					</ButtonWithBottomLine> */}
+				</div>
 			</footer>
 		</PageItem>
 	);

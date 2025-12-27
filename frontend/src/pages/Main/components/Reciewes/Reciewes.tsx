@@ -2,7 +2,7 @@ import { forwardRef, memo, useState } from "react";
 import ScrollCards from "../../../../components/ScrollCards/ScrollCards";
 import Info from "../Title";
 import "./css.scss";
-import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+import ButtonWithBottomLine from "../../../../components/UI/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import PageItem from "../../../../components/PageItem";
 import classNames from "classnames";
 import useWindowWidth from "../../../../hooks/useWindowWidth";

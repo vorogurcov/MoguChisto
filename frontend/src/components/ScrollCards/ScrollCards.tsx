@@ -1,7 +1,7 @@
 import { ReactElement, RefObject, useRef } from "react";
 import { LeftSVG, RightSVG } from "./SVG";
 import "./css.scss";
-import ButtonLikeText from "../Buttons/ButtonLikeText/ButtonLikeText";
+import ButtonLikeText from "../UI/Buttons/ButtonLikeText/ButtonLikeText";
 
 type Props = {
 	children: ReactElement[];

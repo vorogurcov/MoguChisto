@@ -1,11 +1,11 @@
 import { FC, forwardRef, memo, SVGProps } from "react";
 import PageItem from "../../../../components/PageItem";
 import Info from "../Title";
-import MainButton from "../../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../../components/UI/Buttons/MainButton/MainButton";
 import { FooterSVG, WhatsApp } from "../../../../public/svg";
 import { CleanerSVG } from "./CleanerSVG";
 import "./css.scss";
-import ButtonWithBottomLine from "../../../../components/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
+import ButtonWithBottomLine from "../../../../components/UI/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 import { Link } from "react-router-dom";
 

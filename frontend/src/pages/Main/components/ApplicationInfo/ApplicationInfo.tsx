@@ -1,9 +1,9 @@
 import { forwardRef, memo, ReactElement, SVGProps, useState } from "react";
 import { CacheSVG, CloudSVG, PersonSVG, RaketSVG, TimeSVG } from "./SVG";
 import classNames from "classnames";
-import MainButton from "../../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../../components/UI/Buttons/MainButton/MainButton";
 import "./css.scss";
-import { ButtonPropsType } from "../../../../components/Buttons/ButtonPropsTypeAlias";
+import { ButtonPropsType } from "../../../../components/UI/Buttons/ButtonPropsTypeAlias";
 import CardInfoPanel from "../../../../components/CardInfoPanel/CardInfoPanel";
 import CardItemInfo from "../../../../components/CardItemInfo/CardItemInfo";
 import { FooterSVG, MiniCleanerSVG } from "../../../../public/svg";

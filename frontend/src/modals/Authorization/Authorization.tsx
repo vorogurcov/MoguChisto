@@ -1,4 +1,4 @@
-import MainButton from "../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../components/UI/Buttons/MainButton/MainButton";
 import TextInput, { isValidNumber } from "../../components/UI/Inputs/TextInput";
 import ModalHeader from "../components/ModalHeader/ModalHeader";
 import ModalBase from "../ModalBase/ModalBase";

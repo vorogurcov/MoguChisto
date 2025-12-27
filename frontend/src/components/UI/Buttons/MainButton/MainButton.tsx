@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ButtonPropsType } from "../ButtonPropsTypeAlias";
 import "./css.scss";
-import useWindowWidth from "../../../hooks/useWindowWidth";
+import useWindowWidth from "../../../../hooks/useWindowWidth";
 
 export default function MainButton({
 	children,

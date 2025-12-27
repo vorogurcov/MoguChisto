@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode, useEffect, useState } from "react";
-import MainButton from "../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../components/UI/Buttons/MainButton/MainButton";
 import {
 	CleaningType,
 	typesCleaning,

@@ -9,7 +9,7 @@ import SideBar, { ProfileEnum } from "../components/SideBar/SideBar";
 import ProfileContent from "../components/ProfileContent/ProfileContent";
 import BorderedItem from "../components/BorderedItem/BorderedItem";
 import InputWihUnderLine from "../../../components/UI/Inputs/InputWihUnderLine";
-import MainButton from "../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../components/UI/Buttons/MainButton/MainButton";
 import { Controller, useForm } from "react-hook-form";
 import { isValidNumber } from "../../../components/UI/Inputs/TextInput";
 import useDateInput from "../../../hooks/useDateInput";

@@ -4,7 +4,7 @@ import TextInput, {
 	isValidNumber,
 } from "../../../../components/UI/Inputs/TextInput";
 import Selection from "../../../../components/UI/Selections/Selection";
-import MainButton from "../../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../../components/UI/Buttons/MainButton/MainButton";
 import "./css.scss";
 import { FooterSVG, NameBrend } from "../../../../public/svg";
 import PageItem from "../../../../components/PageItem";
@@ -15,6 +15,7 @@ import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 import classNames from "classnames";
 import ApiController from "../../../../api/ApiController";
+import ButtonWithBottomLine from "../../../../components/UI/Buttons/ButtonWithBottomLine/ButtonWithBottomLine";
 
 export type CleaningType = "express" | "comfort" | "elite";
 
@@ -166,6 +167,18 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 							>
 								Узнать детали
 							</MainButton>
+						</div>
+						<div className="polz">
+							Нажимая Отправить, вы соглашаетесь с{" "}
+							<a
+								href="/docs/conf.docx"
+								download="Условия пользования.docx"
+								style={{ textDecoration: "none", color: "inherit" }}
+							>
+								<ButtonWithBottomLine type="button">
+									правилами пользования
+								</ButtonWithBottomLine>
+							</a>
 						</div>
 					</form>
 				</div>

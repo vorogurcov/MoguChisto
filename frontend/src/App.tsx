@@ -13,6 +13,8 @@ import { ModalContextProvider } from "./hooks/ModalContext";
 import Profile from "./pages/Profile/ProfileRouters";
 import { sessIdKey } from "./core";
 import useShowModal from "./hooks/useShowModal";
+import CookieWarn from "./components/CookieWarn/CookieWarn";
+import { CookiesProvider } from "react-cookie";
 
 const ProtectedRoute: React.FC = () => {
 	const showModal = useShowModal();
@@ -39,6 +41,9 @@ function App() {
 						<ModalRoot />
 					</BrowserRouter>
 				</ActiveSectionProvider>
+				<CookiesProvider>
+					<CookieWarn />
+				</CookiesProvider>
 			</ModalContextProvider>
 		</ErrorBoundary>
 	);

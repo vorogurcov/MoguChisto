@@ -1,11 +1,11 @@
 import React, { forwardRef, useState } from "react";
-import MainButton from "../../../../components/Buttons/MainButton/MainButton";
+import MainButton from "../../../../components/UI/Buttons/MainButton/MainButton";
 import { NoSVG, YesSVG } from "./svg";
 import { PagePart } from "../../../../components/NavigatePanel/NavigatePanel";
 import { useActiveSectionContext } from "../../../../hooks/ActiveSectionContext";
 import useWindowWidth from "../../../../hooks/useWindowWidth";
 import { CleaningType, typesCleaning } from "../Application/Application";
-import ButtonLikeText from "../../../../components/Buttons/ButtonLikeText/ButtonLikeText";
+import ButtonLikeText from "../../../../components/UI/Buttons/ButtonLikeText/ButtonLikeText";
 import classNames from "classnames";
 
 export type RazdelT = "kitchen" | "bathroom" | "total";

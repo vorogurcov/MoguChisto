@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import ButtonLikeText from "../../../../components/Buttons/ButtonLikeText/ButtonLikeText";
+import ButtonLikeText from "../../../../components/UI/Buttons/ButtonLikeText/ButtonLikeText";
 import classNames from "classnames";
 import "./css.scss";
 import ApiController from "../../../../api/ApiController";

@@ -1,11 +1,11 @@
 import { Logo, Phone, Telegram, WhatsApp } from "../../public/svg";
-import ButtonLikeText from "../Buttons/ButtonLikeText/ButtonLikeText";
-import MainButton from "../Buttons/MainButton/MainButton";
+import ButtonLikeText from "../UI/Buttons/ButtonLikeText/ButtonLikeText";
+import MainButton from "../UI/Buttons/MainButton/MainButton";
 import "./css.scss";
 import { useActiveSectionContext } from "../../hooks/ActiveSectionContext";
 import { useNavigate } from "react-router-dom";
 import useWindowWidth from "../../hooks/useWindowWidth";
-import { ButtonPropsType } from "../Buttons/ButtonPropsTypeAlias";
+import { ButtonPropsType } from "../UI/Buttons/ButtonPropsTypeAlias";
 import classNames from "classnames";
 import { ProfileEnum } from "../../pages/Profile/components/SideBar/SideBar";
 import { sessIdKey } from "../../core";
