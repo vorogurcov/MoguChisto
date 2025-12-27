@@ -197,7 +197,8 @@ const Application = forwardRef<HTMLDivElement>((_, ref) => {
 											<ButtonWithBottomLine type="button">
 												политикой сайта
 											</ButtonWithBottomLine>
-										</a>
+										</a>{" "}
+										и согласен(на) на обработку персональных данных
 										<ErrorMessage>{errors.agree?.message}</ErrorMessage>
 									</div>
 								</div>
