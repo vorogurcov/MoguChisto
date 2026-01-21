@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -23,7 +24,7 @@ func main() {
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{
-			"http://localhost:3000",      // для локальной разработки
+			"http://localhost:3000",     // для локальной разработки
 			"https://moguchisto.ru",     // основной домен
 			"https://www.moguchisto.ru", // с www, если используется
 			"https://webhook.site",
@@ -56,11 +57,27 @@ func main() {
 	handler := c.Handler(mux)
 
 	server := &http.Server{
-		Addr:    httpAddr,
-		Handler: handler,
+		Addr:         httpAddr,
+		Handler:      handler,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 
 	serverErrors := make(chan error, 1)
+	go func() {
+		ticker := time.NewTicker(5 * time.Minute)
+		for range ticker.C {
+			stats := db.Stats()
+			log.Printf(
+				"[MONITOR] Goroutines: %d | DB Open: %d | DB In Use: %d | DB Idle: %d",
+				runtime.NumGoroutine(),
+				stats.OpenConnections,
+				stats.InUse,
+				stats.Idle,
+			)
+		}
+	}()
 
 	go func() {
 		log.Printf("listen on %v", httpAddr)

@@ -184,10 +184,7 @@ func (r *mySqlUserRepository) UpdateUserByID(ctx context.Context, userID string,
 
 		args = append(args, emailValue)
 	}
-	if changeUserProfileDto.PhoneNumber != nil {
-		setClauses = append(setClauses, "phone_number = ?")
-		args = append(args, *changeUserProfileDto.PhoneNumber)
-	}
+
 	if changeUserProfileDto.BirthdayDate != nil {
 		setClauses = append(setClauses, "birthday_date = ?")
 

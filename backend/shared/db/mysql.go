@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -65,16 +66,20 @@ func NewMySQLDatabase() (*sql.DB, error) {
 			return
 		}
 
+		db.SetMaxOpenConns(25)
+		db.SetMaxIdleConns(25)
+		db.SetConnMaxLifetime(5 * time.Minute)
+
 		if pingErr := db.Ping(); pingErr != nil {
 			err = fmt.Errorf("failed to ping db: %w", pingErr)
 			return
 		}
 
-        // Run migrations automatically after successful connection
-        if migErr := RunMigrations(db, "tools/migrations"); migErr != nil {
-            err = fmt.Errorf("run migrations: %w", migErr)
-            return
-        }
+		// Run migrations automatically after successful connection
+		if migErr := RunMigrations(db, "tools/migrations"); migErr != nil {
+			err = fmt.Errorf("run migrations: %w", migErr)
+			return
+		}
 
 		log.Printf("Successfully connected to MySQL at %s:%s/%s",
 			newMySQLDefaultConfig().Host,
